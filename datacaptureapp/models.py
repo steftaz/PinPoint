@@ -18,8 +18,8 @@ class Attribute(models.Model):
 
 class Node(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    latitude = models.DecimalField(decimal_places=10, max_digits=8)
-    longitude = models.DecimalField(decimal_places=11, max_digits=8)
+    latitude = models.DecimalField(decimal_places=8, max_digits=10)
+    longitude = models.DecimalField(decimal_places=8, max_digits=11)
 
 
 class Data(models.Model):
