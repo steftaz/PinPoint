@@ -1,4 +1,4 @@
-<!doctype html>
+<!Doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -6,7 +6,7 @@
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <title>Home Page</title>
+    <title>New Project</title>
   </head>
   <body>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -18,7 +18,7 @@
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item active">
-        <a class="nav-link" href='home.html'><i class="fa fa-home" > </i> Home <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href='home.html '><i class="fa fa-home"> </i> Home <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="#"><i class="fa fa-user"> </i> Profile</a>
@@ -27,42 +27,53 @@
   </div>
 </nav>
   <BR>
-    <h1 class="text-center">Choose your project below</h1>
+    <h1 class="text-center">Adding Attributes</h1>
 	<BR>
-	<div class ="text-center">
-		<div class="btn-group-vertical ">
-            <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#gotoproject"><i class="fa fa-folder"> </i> Go to Existing project  </button>
+  <div class="alert alert-info text-center" role="alert">
+  Note: attributes are created one at a time an this is the only moment you can add them!
+</div>
+	<form action="Project.html">
+  <div class="form-group">
+      <div class="container center_div">
+        <label for="ProjectName">Name</label>
+        <input type="email" class="form-control" id="ProjectName" aria-describedby="emailHelp" placeholder="Entername">
+      <div class="form-group">
+          <br>
+        <label for="ProjectDescription">Description</label>
+        <input type="password" class="form-control" id="ProjectDescription" placeholder="Desciption">
+      </div>
+            <div class="form-group">
+    <label for="exampleFormControlSelect1">Type of data</label>
+    <select class="form-control" id="exampleFormControlSelect1">
+      <option>Text</option>
+      <option>Integer</option>
+    </select>
+  </div>
+         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addAttribute">
+  Save attribute
+</button>
+                    <button  type="submit" class="btn btn-primary">Save project</button>
 
-			<button onclick="location.href='NewProject.html '" type="button" class="btn btn-light btn-lg" ><i class="fa fa-plus"> </i> Create new Project</button>
-		</div>
-	</div>
 
-<div class="modal fade" id="gotoproject" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<!-- Modal -->
+<div class="modal fade" id="addAttribute" tabindex="-1" role="dialog" aria-labelledby="#addAttribute" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Project ID</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Attribute successfully added!</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body">
-        <form>
-          <div class="form-group">
-            <label for="recipient-name" class="col-form-label">Enter Project ID</label>
-            <input type="text" class="form-control" id="recipient-name">
-          </div>
-        </form>
-      </div>
       <div class="modal-footer">
-        <button onclick="location.href='Project.html '" type="button" class="btn btn-primary" >Submit</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
 </div>
-
-
-
+  </div>
+  </div>
+</form>
 
 
 	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
@@ -70,3 +81,4 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
  </body>
+</html>
