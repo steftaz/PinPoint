@@ -4,15 +4,25 @@ from account.models import Account
 
 # Create your models here.
 class Project(models.Model):
-	name = models.CharField(max_length=50)
-	user = models.ForeignKey(Account, on_delete=models.CASCADE)  # A project belongs to a single user
-
-
-class Form(models.Model):
-	project = models.ForeignKey(Project, on_delete=models.CASCADE)  # A form belongs to a single project
+    name = models.CharField(max_length=50)
+    description = models.TextField()
+    user = models.ManyToManyField(Account)  # A project belongs to a single user
 
 
 class Attribute(models.Model):
-	form = models.ForeignKey(Form, on_delete=models.CASCADE)  # An attribute belongs to a single form
-	type = models.CharField(max_length=50)
-	value = models.CharField(max_length=50)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)  # A form belongs to a single project
+    type = models.CharField(max_length=50)
+    name = models.CharField(max_length=50)
+    description = models.TextField()
+
+
+class Node(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    latitude = models.DecimalField(decimal_places=10, max_digits=8)
+    longitude = models.DecimalField(decimal_places=11, max_digits=8)
+
+
+class Data(models.Model):
+    attribute = models.ForeignKey(Attribute, on_delete=models.CASCADE)
+    node = models.ForeignKey(Node, on_delete=models.CASCADE)
+    value = models.CharField(max_length=50)
