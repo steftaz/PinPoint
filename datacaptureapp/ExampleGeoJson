@@ -1,0 +1,27 @@
+"TestProject" : {
+	"type": "FeatureCollection",
+	"features" : [
+		{
+			"type" : "Feature",
+			"Geometry" : {
+				"Type" : "Point"
+				"Coordinates" : [6.8 , 52.2]
+			},
+			"properties": {
+				"Test text" : "TestOak",
+				"Test number" : "Test100"
+			}
+		},
+		{
+			"type" : "Feature",
+			"Geometry" : {
+				"Type" : "Point"
+				"Coordinates" : [6.81 , 52.21]
+			},
+			"properties": {
+				"Test text" : "TestPine",
+				"Test number" : "Test20"
+			}
+		}
+	]
+}
