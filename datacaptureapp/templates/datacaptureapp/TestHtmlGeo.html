@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>Add Feature</title>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  </head>
+<body>
+
+<p>Click the button to get your coordinates.</p>
+
+<!-- <button onclick="getLocation()">Try It</button> -->
+
+<p id="demo"></p>
+<form id="geolocation">
+    <input type="hidden" id="latitude">
+    <input type="hidden" id="longitude">
+    <input type="submit" value="Save">
+</form>
+<button onclick="postCoordinates()">Post Coordinates</button>
+<div id="output">
+
+</div>
+
+<script>
+
+    var latitude;
+    var longitude;
+
+    function showPosition(position) {
+        latitude = position.coords.latitude;
+        longitude = position.coords.longitude;
+    }
+
+
+    function postCoordinates() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+        } else {
+            alert("Geolocation is not supported by this browser.");
+            return
+    }
+        $.ajax({
+            type: "POST",
+            url: "http://127.0.0.1:8000/geolocation",
+            dataType: "json",
+            async: true,
+            data: {
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                latitude: latitude,
+                longitude: longitude
+            },
+            success: function (json) {
+
+                $('#output').html(json.message);
+
+            }
+        });
+    }
+
+</script>
+
+
+
+
+</body>
+</html>
