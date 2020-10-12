@@ -1,11 +1,12 @@
-"TestProject" : {
-	"type": "FeatureCollection",
+{
+    "name" : "TestProject",
+	"type" : "FeatureCollection",
 	"features" : [
 		{
 			"type" : "Feature",
-			"Geometry" : {
-				"Type" : "Point"
-				"Coordinates" : [6.8 , 52.2]
+			"geometry" : {
+				"type" : "Point",
+				"coordinates" : [6.8 , 52.2]
 			},
 			"properties": {
 				"Test text" : "TestOak",
@@ -14,9 +15,9 @@
 		},
 		{
 			"type" : "Feature",
-			"Geometry" : {
-				"Type" : "Point"
-				"Coordinates" : [6.81 , 52.21]
+			"geometry" : {
+				"type" : "Point",
+				"coordinates" : [6.81 , 52.21]
 			},
 			"properties": {
 				"Test text" : "TestPine",
