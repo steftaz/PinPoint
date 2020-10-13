@@ -7,9 +7,8 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", DEFAULT_SETTINGS_MODULE)
 django.setup()
 from datacaptureapp.models import *
 
-
-def generate(name):
-    project = Project.objects.filter(name=name).first()
+def generate(id):
+    project = Project.objects.filter(id=id).first()
     nodes = Node.objects.filter(project=project)
     JSNodeList = []
     for node in nodes:
@@ -32,5 +31,4 @@ def generate(name):
     JSProject["features"] = JSNodeList
     return json.dumps(JSProject)
 
-
-print(generate("TestProject"))
+print(generate(1))
