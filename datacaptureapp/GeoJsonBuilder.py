@@ -7,8 +7,8 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", DEFAULT_SETTINGS_MODULE)
 django.setup()
 from datacaptureapp.models import *
 
-def generate(id):
-    project = Project.objects.filter(id=id).first()
+def generate_geojson(project_id):
+    project = Project.objects.filter(id=project_id).first()
     nodes = Node.objects.filter(project=project)
     JSNodeList = []
     for node in nodes:
@@ -31,4 +31,5 @@ def generate(id):
     JSProject["features"] = JSNodeList
     return json.dumps(JSProject)
 
-print(generate(1))
+
+print(generate_geojson(1))
