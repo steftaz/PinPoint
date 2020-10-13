@@ -4,14 +4,15 @@
   <BR>
     <h1 class="text-center">New Project</h1>
 	<BR>
-	<form action="../formcreation">
+	<form method="POST">
   <div class="form-group">
+      {% csrf_token %}
       <div class="container center_div">
-        <label for="ProjectName">Project Name</label>
-        <input type="email" class="form-control" id="ProjectName" aria-describedby="emailHelp" placeholder="Entername">
+        <label for="name">Project Name</label>
+        {{ form.name }}
       <div class="form-group">
-        <label for="ProjectDescription">Description</label>
-        <input type="password" class="form-control" id="ProjectDescription" placeholder="Desciption">
+        <label for="Description">Description</label>
+        {{ form.description }}
       </div>
         <button  type="submit" class="btn btn-primary"> Create Form <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-caret-right-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
 </svg> </button>
