@@ -6,33 +6,22 @@
 
 	<div class ="text-center">
 
-<button class="text-center btn btn-primary btn-lg" onclick="getLocation()">Get Coordinates</button>
+<!--<button class="text-center btn btn-primary btn-lg" onclick="getLocation()">Get Coordinates</button>-->
 
 <p id="demo"></p>
         <BR>
         <button onclick="location.href='../addfeature'" class="text-center btn btn-primary btn-lg"  type="button"><i class="fa fa-plus"> </i> Add Data</button>
 	</div>
+<br>
 
-<script>
-var x = document.getElementById("demo");
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+   crossorigin=""/>
+ <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+   crossorigin=""></script>
 
-function getLocation() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(showPosition);
-  } else {
-    x.innerHTML = "Geolocation is not supported by this browser.";
-  }
-}
-
-function showPosition(position) {
-  x.innerHTML = "Latitude: " + position.coords.latitude +
-  "<br>Longitude: " + position.coords.longitude;
-}
-</script>
-
-  	<BR>
-{% load static %}
-  <img src="{% static 'images/mapdummy.jpg' %}" class="img-fluid rounded mx-auto d-block" alt="Responsive image">
+<div id="map" style="height:400px"></div>
 
   <BR>
  <div class="container text-center">
@@ -57,5 +46,104 @@ function showPosition(position) {
     </div>
   </div>
 </div>
+
+
+<script>
+// LEAFLET script:
+
+	var map = L.map('map').fitWorld();
+
+	L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+		maxZoom: 18,
+		attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+			'<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+			'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+		id: 'mapbox/streets-v11',
+		tileSize: 512,
+		zoomOffset: -1
+	}).addTo(map);
+
+	function onLocationFound(e) {
+		L.marker(e.latlng).addTo(map)
+			.bindPopup("You are here").openPopup();
+	}
+
+	function onLocationError(e) {
+		alert(e.message);
+	}
+
+
+
+
+var geojsonFeature = {
+  "name": "TestProject",
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.84851199,
+          52.24202239
+        ]
+      },
+      "properties": {
+        "Test text": "TestOak",
+        "Test number": "Test100"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.849,
+          52.244
+        ]
+      },
+      "properties": {
+        "Test text": "TestPine",
+        "Test number": "Test50"
+      }
+    }
+  ]
+}
+
+
+	map.on('locationfound', onLocationFound);
+
+	function onEachFeature(feature, layer) {
+    if (feature.properties && feature.properties["Test text"]) {
+        layer.bindPopup(feature.properties["Test text"]);
+    }
+}
+
+ L.geoJSON(geojsonFeature, {
+    onEachFeature: onEachFeature
+}).addTo(map);
+
+	map.locate({setView: true, maxZoom: 16});
+
+
+
+
+//Location to put in DB script:
+
+var x = document.getElementById("demo");
+
+function getLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(showPosition);
+  } else {
+    x.innerHTML = "Geolocation is not supported by this browser.";
+  }
+}
+
+function showPosition(position) {
+  x.innerHTML = "Latitude: " + position.coords.latitude +
+  "<br>Longitude: " + position.coords.longitude;
+}
+</script>
 
 {% endblock %}
