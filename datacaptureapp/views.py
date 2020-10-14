@@ -18,14 +18,16 @@ def newproject(request):
             new_project = form.save()
             creator = UserAccount.objects.filter(email=user.email).first()
             new_project.user.add(creator)
-            form = CreateProjectForm()
-            return render(request, "datacaptureapp/home.html", {'form': form})
+            return render(request, "datacaptureapp/home.html")
     else:
         form = CreateProjectForm
         return render(request, "datacaptureapp/NewProject.html", {'form': form})
 
 
 def project(request):
+    requested_project = Project.objects.filter(id=request.GET['project_id']).first()
+    owner = requested_project.user.all().first()
+    return render(request, 'datacaptureapp/Project.html', {'project': requested_project, 'owner': owner})
     if request.method == 'POST':
         #TODO Get correct project id out  of request
         id = 1
