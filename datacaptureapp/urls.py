@@ -4,9 +4,9 @@ from . import views
 
 urlpatterns = [
     path('', views.home),
-    path('newproject/', views.newproject),
+    path('newproject/', views.newproject, name='newproject'),
     path('project/', views.project),
     path('addfeature/', views.addfeature),
     path('featureoverview/', views.featureoverview),
-    path('formcreation/', views.formcreation),
+    path('add_attribute/', views.add_attribute),
 ]

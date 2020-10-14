@@ -36,5 +36,9 @@ def featureoverview(request):
     return render(request, 'datacaptureapp/FeatureOverview.html', {})
 
 
-def formcreation(request):
-    return render(request, 'datacaptureapp/FormCreation.html', {})
+def add_attribute(request):
+    if request.method == 'POST':
+        user = request.user
+    else:
+        form = CreateAttributeForm
+        return render(request, 'datacaptureapp/FormCreation.html', {'form': form})

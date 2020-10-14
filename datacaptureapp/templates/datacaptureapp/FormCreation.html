@@ -7,22 +7,19 @@
   <div class="alert alert-info text-center" role="alert">
   Note: attributes are created one at a time an this is the only moment you can add them!
 </div>
-	<form action="../project">
+	<form action="/add_attribute/" method="POST" id="addAttribute">
   <div class="form-group">
       <div class="container center_div">
-        <label for="ProjectName">Name</label>
-        <input type="email" class="form-control" id="ProjectName" aria-describedby="emailHelp" placeholder="Entername">
+        <label for="name">Name</label>
+        {{ form.name }}
       <div class="form-group">
           <br>
-        <label for="ProjectDescription">Description</label>
-        <input type="password" class="form-control" id="ProjectDescription" placeholder="Desciption">
+        <label for="description">Description</label>
+        {{ form.description }}
       </div>
             <div class="form-group">
-    <label for="exampleFormControlSelect1">Type of data</label>
-    <select class="form-control" id="exampleFormControlSelect1">
-      <option>Text</option>
-      <option>Integer</option>
-    </select>
+    <label for="type">Type of data</label>
+        {{ form.type }}
   </div>
          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addAttribute">
   Save attribute
@@ -47,5 +44,12 @@
   </div>
   </div>
 </form>
+
+    <script>
+        $('#addAttribute').on('submit', function(event) {
+           event.preventDefault();
+           console.log("form submitted");
+        });
+    </script>
 
 {% endblock %}

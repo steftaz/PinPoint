@@ -6,29 +6,16 @@
 
 	<div class ="text-center">
 
-<button class="text-center btn btn-primary btn-lg" onclick="getLocation()">Get Coordinates</button>
+
 
 <p id="demo"></p>
         <BR>
-        <button onclick="location.href='../addfeature'" class="text-center btn btn-primary btn-lg"  type="button"><i class="fa fa-plus"> </i> Add Data</button>
+        <button onclick="location.href='../add_attribute'" class="text-center btn btn-primary btn-lg"  type="button"><i class="fa fa-plus"> </i> Add Feature</button>
+        <br>
+        <br>
+        <button onclick="location.href='../addfeature'" class="text-center btn btn-primary btn-lg"  type="button"><i class="fa fa-plus"> </i> Record data point</button>
 	</div>
 
-<script>
-var x = document.getElementById("demo");
-
-function getLocation() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(showPosition);
-  } else {
-    x.innerHTML = "Geolocation is not supported by this browser.";
-  }
-}
-
-function showPosition(position) {
-  x.innerHTML = "Latitude: " + position.coords.latitude +
-  "<br>Longitude: " + position.coords.longitude;
-}
-</script>
 
   	<BR>
 {% load static %}
