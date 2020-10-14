@@ -22,11 +22,10 @@
         </button>
       </div>
       <div class="modal-body">
-        <form action="project" type="GET">
+        <form action="project/" type="GET">
           <div class="form-group">
-              {% csrf_token %}
             <label for="project_id" class="col-form-label">Enter Project ID</label>
-            <input type="text" class="form-control" name="project_id">
+            <input type="number" step="1" class="form-control" name="project_id">
           </div>
             <div class="modal-footer">
         <button type="submit" class="btn btn-primary" >Submit</button>
