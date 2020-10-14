@@ -1,10 +1,4 @@
-import os
-import django
 import json
-from manage import DEFAULT_SETTINGS_MODULE
-
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", DEFAULT_SETTINGS_MODULE)
-django.setup()
 from datacaptureapp.models import *
 
 def generate_geojson(project_id):
@@ -30,6 +24,3 @@ def generate_geojson(project_id):
     JSProject["type"] = "FeatureCollection"
     JSProject["features"] = JSNodeList
     return json.dumps(JSProject)
-
-
-# print(generate_geojson(1))

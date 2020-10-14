@@ -23,6 +23,9 @@
 
 <div id="map" style="height:400px"></div>
 
+        {{ geojson|json_script:"geojson_map" }}
+
+
   <BR>
  <div class="container text-center">
   <div class="row justify-content-center">
@@ -30,6 +33,7 @@
 	<h1 > About </h1>
         <BR>
         <h5 > ID: {{ project.id }} </h5>
+        <h5 > Name: {{ project.name }} </h5>
         <h5 > Description: {{ project.description }} </h5>
         <h5 > Creation date: 8-10-2020 </h5>
         <h5 > Owner:{{ owner.username }} </h5>
@@ -47,7 +51,7 @@
                 </div>
     </div>
   </div>
-</div>
+ </div>
 
 
 <script>
@@ -76,43 +80,6 @@
 
 
 
-
-var geojsonFeature = {
-  "name": "TestProject",
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          6.84851199,
-          52.24202239
-        ]
-      },
-      "properties": {
-        "Test text": "TestOak",
-        "Test number": "Test100"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          6.849,
-          52.244
-        ]
-      },
-      "properties": {
-        "Test text": "TestPine",
-        "Test number": "Test50"
-      }
-    }
-  ]
-}
-
-
 	map.on('locationfound', onLocationFound);
 
 	function onEachFeature(feature, layer) {
@@ -121,7 +88,7 @@ var geojsonFeature = {
     }
 }
 
- L.geoJSON(geojsonFeature, {
+ L.geoJSON(JSON.parse(JSON.parse(document.getElementById('geojson_map').textContent)), {
     onEachFeature: onEachFeature
 }).addTo(map);
 
