@@ -32,4 +32,4 @@ def generate_geojson(project_id):
     return json.dumps(JSProject)
 
 
-print(generate_geojson(1))
+# print(generate_geojson(1))

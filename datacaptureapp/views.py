@@ -1,3 +1,4 @@
+from django.http import FileResponse
 from django.shortcuts import render
 from datacaptureapp.forms import *
 from datacaptureapp.models import *
@@ -26,10 +27,17 @@ def newproject(request):
 
 def project(request):
     if request.method == 'POST':
-        # id=request.GET['project_id']
+        #TODO Get correct project id out  of request
         id = 1
+
         project = generate_geojson(id)
-        return render(request, 'datacaptureapp/Project.html', {'project': project})
+        file_path = "datacaptureapp/tmp/" + project.split("\"")[3] + ".geojson"
+        file = open(file_path, "w")
+        file.write(project)
+        file.close()
+        return FileResponse(open(file_path, 'rb'))
+
+        # TODO Remove new file (os.remove throws an error)
     else:
         return render(request, 'datacaptureapp/Project.html', {})
 

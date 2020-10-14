@@ -40,12 +40,10 @@
         		<div class="btn-group-vertical ">
                     <button onclick="location.href='../featureoverview'" class="text-center btn btn-primary btn-lg"  type="button"> See full overview</button>
 
-                    <form method="POST">
+                    <form method="POST" >
                         {% csrf_token %}
 
-                        <a href="" download=""></a>
                         <button class="text-center btn btn-danger btn-lg"  type="submit"> Export Data</button>
-                        {{ project }}
 
                     </form>
                 </div>
