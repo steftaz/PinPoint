@@ -25,13 +25,8 @@ def newproject(request):
 
 
 def project(request):
-    requested_project = Project.objects.filter(id=request.GET['project_id']).first()
-    owner = requested_project.user.all().first()
-    return render(request, 'datacaptureapp/Project.html', {'project': requested_project, 'owner': owner})
+    id = request.GET['project_id']
     if request.method == 'POST':
-        #TODO Get correct project id out  of request
-        id = 1
-
         project = generate_geojson(id)
         file_path = "datacaptureapp/tmp/" + project.split("\"")[3] + ".geojson"
         file = open(file_path, "w")
@@ -41,7 +36,10 @@ def project(request):
 
         # TODO Remove new file (os.remove throws an error)
     else:
-        return render(request, 'datacaptureapp/Project.html', {})
+        requested_project = Project.objects.filter(id=id).first()
+        geojson = generate_geojson(id)
+        owner = requested_project.user.all().first()
+        return render(request, 'datacaptureapp/Project.html', {'project': requested_project, 'owner': owner, 'geojson' : geojson})
 
 
 def addfeature(request):
