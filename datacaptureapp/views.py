@@ -28,7 +28,7 @@ def project(request):
     id = request.GET['project_id']
     if request.method == 'POST':
         project = generate_geojson(id)
-        file_path = "datacaptureapp/tmp/" + project.split("\"")[3] + ".geojson"
+        file_path = "datacaptureapp/tmp/" + json.loads(project)['name'] + ".geojson"
         file = open(file_path, "w")
         file.write(project)
         file.close()
@@ -39,7 +39,7 @@ def project(request):
         requested_project = Project.objects.filter(id=id).first()
         geojson = generate_geojson(id)
         owner = requested_project.user.all().first()
-        return render(request, 'datacaptureapp/Project.html', {'project': requested_project, 'owner': owner, 'geojson' : geojson})
+        return render(request, 'datacaptureapp/Project.html', {'project': requested_project, 'owner': owner, 'geojson': geojson})
 
 
 def addfeature(request):

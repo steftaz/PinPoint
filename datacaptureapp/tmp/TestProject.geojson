@@ -1,0 +1,1 @@
+{"name": "TestProject", "type": "FeatureCollection", "features": [{"type": "Feature", "geometry": {"type": "Point", "coordinates": [6.84851199, 52.24202239]}, "properties": {"Test text": "TestOak", "Test number": "Test100"}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [6.81, 52.21]}, "properties": {"Test text": "TestPine", "Test number": "Test50"}}]}
