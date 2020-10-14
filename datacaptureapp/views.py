@@ -2,6 +2,7 @@ from django.shortcuts import render
 from datacaptureapp.forms import *
 from datacaptureapp.models import *
 from account.models import Account as UserAccount
+from datacaptureapp.GeoJsonBuilder import *
 
 
 def home(request):
@@ -24,8 +25,13 @@ def newproject(request):
 
 
 def project(request):
-    project = Project.objects.filter(id=request.GET['project_id']).first()
-    return render(request, 'datacaptureapp/Project.html', {'project': project})
+    if request.method == 'POST':
+        # id=request.GET['project_id']
+        id = 1
+        project = generate_geojson(id)
+        return render(request, 'datacaptureapp/Project.html', {'project': project})
+    else:
+        return render(request, 'datacaptureapp/Project.html', {})
 
 
 def addfeature(request):
@@ -38,3 +44,5 @@ def featureoverview(request):
 
 def formcreation(request):
     return render(request, 'datacaptureapp/FormCreation.html', {})
+
+
