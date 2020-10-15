@@ -26,3 +26,4 @@ class Data(models.Model):
     attribute = models.ForeignKey(Attribute, on_delete=models.CASCADE)
     node = models.ForeignKey(Node, on_delete=models.CASCADE)
     value = models.CharField(max_length=50)
+
