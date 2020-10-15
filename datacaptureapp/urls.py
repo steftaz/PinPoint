@@ -3,9 +3,9 @@ from django.urls import path, include
 from . import views
 
 urlpatterns = [
-    path('', views.projects),
-    path('projects/', views.projects),
-    path('projects/<int:pk>/', views.projects, name='projects'),
+    path('', views.projects, name='projects'),
+    path('projects/', views.projects, name='projects'),
+    path('projects/<int:pk>/', views.project, name='project'),
     path('projects/new/', views.newproject, name='new-project'),
     path('projects/<int:pk>/attributes/', views.add_attribute, name='attributes'),
     # path('projects/<int:pk>/attributes/new/', views.add_attribute, name='new-attribute'),

@@ -5,12 +5,15 @@ from datacaptureapp.models import *
 from account.models import Account as UserAccount
 from datacaptureapp.GeoJsonBuilder import *
 
+# def project(request, pk):
+#     requested_project = Project.objects.filter(id=pk).first()
+#     owner = requested_project.user.all().first()
+#     return render(request, 'datacaptureapp/Project.html', {'project': requested_project, 'owner': owner})
 
-def home(request):
+def projects(request):
     user = request.user
     projects = Project.objects.filter(user=user)
     return render(request, 'datacaptureapp/home.html', {'projects': projects})
-
 
 def newproject(request):
     if request.method == 'POST':
@@ -26,7 +29,7 @@ def newproject(request):
         return render(request, "datacaptureapp/NewProject.html", {'form': form})
 
 
-def projects(request, pk=0):
+def project(request, pk=0):
     if pk == 0:
         return render(request, 'datacaptureapp/home.html')
     if request.method == 'POST':
