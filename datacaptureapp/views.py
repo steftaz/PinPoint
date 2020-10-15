@@ -61,3 +61,17 @@ def add_attribute(request, pk):
     else:
         form = CreateAttributeForm
         return render(request, 'datacaptureapp/FormCreation.html', {'form': form})
+
+def formcreation(request):
+    return render(request, 'datacaptureapp/FormCreation.html', {})
+
+def login(request):
+    return render(request, 'datacaptureapp/Login.html', {})
+
+def profile(request):
+    return render(request, 'datacaptureapp/Profile.html', {})
+
+def newprofile(request):
+    return render(request, 'datacaptureapp/NewProfile.html', {})
+
+

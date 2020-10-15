@@ -10,7 +10,8 @@ urlpatterns = [
     path('projects/<int:pk>/attributes/', views.add_attribute, name='attributes'),
     # path('projects/<int:pk>/attributes/new/', views.add_attribute, name='new-attribute'),
     path('projects/<int:pk>/nodes/new/', views.addnode, name='addnode'),
-    path('projects/<int:pk>/nodes/', views.nodes, name='nodes')
+    path('projects/<int:pk>/nodes/', views.nodes, name='nodes'),
+    path('login/', views.login),
+    path('profile/', views.profile),
+    path('newprofile/', views.newprofile)
 ]
-
-
