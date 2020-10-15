@@ -1,5 +1,5 @@
 from django import forms
-from datacaptureapp.models import Project
+from datacaptureapp.models import Project, Attribute
 
 
 class CreateProjectForm(forms.ModelForm):
@@ -13,4 +13,13 @@ class CreateProjectForm(forms.ModelForm):
         }
 
 
+class CreateAttributeForm(forms.ModelForm):
 
+    class Meta:
+        model = Attribute
+        fields = ['name', 'type', 'description']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter attribute name'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Description'}),
+            'type': forms.Select(attrs={'class': 'form-control'}, choices=(('text', 'Text'), ('number', 'Number')))
+        }
