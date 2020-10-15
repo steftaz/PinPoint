@@ -10,11 +10,11 @@
 
 <p id="demo"></p>
         <BR>
-        <button onclick="location.href='../add_attribute'" class="text-center btn btn-primary btn-lg"  type="button"><i class="fa fa-plus"> </i> Add Feature</button>
+{#        <button onclick="location.href='../add_attribute'" class="text-center btn btn-primary btn-lg"  type="button"><i class="fa fa-plus"> </i> Add Feature</button>#}
+{#        <br>#}
+        <button onclick="location.href='nodes/new'" class="text-center btn btn-primary btn-lg"  type="button"><i class="fa fa-plus"> </i> Record data point</button>
         <br>
-        <br>
-        <button onclick="location.href='../addfeature'" class="text-center btn btn-primary btn-lg"  type="button"><i class="fa fa-plus"> </i> Record data point</button>
-	</div>
+    </div>
 <br>
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
@@ -45,7 +45,7 @@
     <div class="col-md-4">
      <h1> Data Overview </h1>
         		<div class="btn-group-vertical ">
-                    <button onclick="location.href='../featureoverview'" class="text-center btn btn-primary btn-lg"  type="button"> See full overview</button>
+                    <button onclick="location.href='nodes'" class="text-center btn btn-primary btn-lg"  type="button"> See full overview</button>
 
                     <form method="POST" >
                         {% csrf_token %}

@@ -12,3 +12,5 @@ urlpatterns = [
     path('projects/<int:pk>/nodes/new/', views.addnode, name='addnode'),
     path('projects/<int:pk>/nodes/', views.nodes, name='nodes')
 ]
+
+

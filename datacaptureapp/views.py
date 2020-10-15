@@ -20,39 +20,30 @@ def newproject(request):
             new_project = form.save()
             creator = UserAccount.objects.filter(email=user.email).first()
             new_project.user.add(creator)
-            return render(request, "datacaptureapp/home.html")
+            return render(request, "datacaptureapp/AddFeature.html")
     else:
         form = CreateProjectForm
         return render(request, "datacaptureapp/NewProject.html", {'form': form})
 
 
-def project(request, pk=0):
-    id = request.GET['project_id']
+def projects(request, pk=0):
+    if pk == 0:
+        return render(request, 'datacaptureapp/home.html')
     if request.method == 'POST':
-        project = generate_geojson(id)
+        project = generate_geojson(pk)
         file_path = "datacaptureapp/tmp/" + json.loads(project)['name'] + ".geojson"
         file = open(file_path, "w")
         file.write(project)
         file.close()
-        return FileResponse(open(file_path, 'rb'))
-
-        # TODO Remove new file (os.remove throws an error)
+        return FileResponse(open(file_path, 'rb'))  # TODO Remove new file (os.remove throws an error)
     else:
-        if pk != 0:
-            requested_project = Project.objects.filter(id=pk).first()
-            owner = requested_project.user.all().first()
-            context = {'project': requested_project, 'owner': owner}
-            return render(request, 'datacaptureapp/Project.html', context)
-        else:
-            return render(request, 'datacaptureapp/home.html')
-
-        # requested_project = Project.objects.filter(id=id).first()
-        # geojson = generate_geojson(id)
-        # owner = requested_project.user.all().first()
-        # return render(request, 'datacaptureapp/Project.html', {'project': requested_project, 'owner': owner, 'geojson': geojson})
+        requested_project = Project.objects.filter(id=pk).first()
+        geojson = generate_geojson(pk)
+        owner = requested_project.user.all().first()
+        return render(request, 'datacaptureapp/Project.html', {'project': requested_project, 'owner': owner, 'geojson': geojson})
 
 
-def addnode(request):
+def addnode(request, pk):
     return render(request, 'datacaptureapp/AddFeature.html', {})
 
 
