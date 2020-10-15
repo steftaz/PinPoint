@@ -6,6 +6,7 @@ import sys
 
 DEFAULT_SETTINGS_MODULE = 'gisproject.settings'
 
+
 def main():
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', DEFAULT_SETTINGS_MODULE)
