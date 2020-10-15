@@ -2,14 +2,23 @@
 
 {% block content %}
 
-<br>
-<br> profile picture <br>
-
-<br> username <br>
-
-<br> bio <br>
-
-<br> number of created projects <br>
-<br>
+ <BR>
+    <h1 class="text-center">Profile</h1>
+	<BR>
+	<form method="POST">
+  <div class="form-group">
+      {% csrf_token %}
+      <div class="container center_div">
+        <label for="name">Project Name</label>
+        {{ form.name }}
+      <div class="form-group">
+        <label for="Description">Description</label>
+        {{ form.description }}
+      </div>
+        <button  type="submit" class="btn btn-primary"> Create Form <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-caret-right-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+</svg> </button>
+  </div>
+  </div>
+</form>
 
 {% endblock %}
