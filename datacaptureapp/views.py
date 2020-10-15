@@ -3,12 +3,15 @@ from datacaptureapp.forms import *
 from datacaptureapp.models import *
 from account.models import Account as UserAccount
 
+def project(request, pk):
+    requested_project = Project.objects.filter(id=pk).first()
+    owner = requested_project.user.all().first()
+    return render(request, 'datacaptureapp/Project.html', {'project': requested_project, 'owner': owner})
 
-def home(request):
+def projects(request):
     user = request.user
     projects = Project.objects.filter(user=user)
     return render(request, 'datacaptureapp/home.html', {'projects': projects})
-
 
 def newproject(request):
     if request.method == 'POST':
@@ -24,18 +27,6 @@ def newproject(request):
         return render(request, "datacaptureapp/NewProject.html", {'form': form})
 
 
-def projects(request, pk=0):
-    # requested_project = Project.objects.filter(id=request.GET['project_id']).first()
-    # owner = requested_project.user.all().first()
-    context = {}
-
-    if pk !=0:
-        requested_project = Project.objects.filter(id=pk).first()
-        owner = requested_project.user.all().first()
-        context = {'project': requested_project, 'owner': owner}
-        return render(request, 'datacaptureapp/Project.html', context)
-    else:
-        return render(request, 'datacaptureapp/home.html')
 
 
 def addnode(request):
