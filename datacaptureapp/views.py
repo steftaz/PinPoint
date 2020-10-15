@@ -5,11 +5,6 @@ from datacaptureapp.models import *
 from account.models import Account as UserAccount
 from datacaptureapp.GeoJsonBuilder import *
 
-# def project(request, pk):
-#     requested_project = Project.objects.filter(id=pk).first()
-#     owner = requested_project.user.all().first()
-#     return render(request, 'datacaptureapp/Project.html', {'project': requested_project, 'owner': owner})
-
 def projects(request):
     user = request.user
     projects = Project.objects.filter(user=user)
