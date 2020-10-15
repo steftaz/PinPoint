@@ -9,4 +9,7 @@ urlpatterns = [
     path('addfeature/', views.addfeature),
     path('featureoverview/', views.featureoverview),
     path('formcreation/', views.formcreation),
+    path('login/', views.login),
+    path('profile/', views.profile),
+    path('newprofile/', views.newprofile),
 ]
