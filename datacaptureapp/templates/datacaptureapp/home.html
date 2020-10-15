@@ -22,7 +22,10 @@
         </button>
       </div>
       <div class="modal-body">
-        <form action="project/" type="GET">
+
+          <!-- Go to project by ID -->
+
+        <form id="getProjectByID" action="{% url 'projects' project.id %}">
           <div class="form-group">
             <label for="project_id" class="col-form-label">Enter Project ID</label>
             <input type="number" step="1" class="form-control" name="project_id">
@@ -36,6 +39,23 @@
     </div>
   </div>
 </div>
+<h1 class="text-center">Your projects</h1>
+<br>
+<div class="text-center">
+    {% for project in  projects %}
+        <p><a href="{% url 'projects' project.id %}">{{ project.name }}</a></p>
+    {% endfor %}
+
 </div>
+</div>
+
+{#    <script>#}
+{#        $('#getProjectByID').on('submit', function (event) {#}
+{#            var project_id = $("[name='project_id']").value;#}
+{#            $('#getProjectByID').attr(action, "/project/" + project_id + "/");#}
+{#            return true;#}
+{#        })#}
+{#    </script>#}
+
 {% endblock %}
 

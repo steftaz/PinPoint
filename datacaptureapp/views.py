@@ -5,7 +5,9 @@ from account.models import Account as UserAccount
 
 
 def home(request):
-    return render(request, 'datacaptureapp/home.html', {})
+    user = request.user
+    projects = Project.objects.filter(user=user)
+    return render(request, 'datacaptureapp/home.html', {'projects': projects})
 
 
 def newproject(request):
@@ -22,17 +24,25 @@ def newproject(request):
         return render(request, "datacaptureapp/NewProject.html", {'form': form})
 
 
-def project(request):
-    requested_project = Project.objects.filter(id=request.GET['project_id']).first()
-    owner = requested_project.user.all().first()
-    return render(request, 'datacaptureapp/Project.html', {'project': requested_project, 'owner': owner})
+def projects(request, pk=0):
+    # requested_project = Project.objects.filter(id=request.GET['project_id']).first()
+    # owner = requested_project.user.all().first()
+    context = {}
+
+    if pk !=0:
+        requested_project = Project.objects.filter(id=pk).first()
+        owner = requested_project.user.all().first()
+        context = {'project': requested_project, 'owner': owner}
+        return render(request, 'datacaptureapp/Project.html', context)
+    else:
+        return render(request, 'datacaptureapp/home.html')
 
 
-def addfeature(request):
+def addnode(request):
     return render(request, 'datacaptureapp/AddFeature.html', {})
 
 
-def featureoverview(request):
+def nodes(request):
     return render(request, 'datacaptureapp/FeatureOverview.html', {})
 
 
