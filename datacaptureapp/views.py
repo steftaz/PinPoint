@@ -46,20 +46,19 @@ def project(request, pk=0):
 def addnode(request, pk):
     requested_project = Project.objects.filter(id=pk).first()
     attributes = Attribute.objects.filter(project=requested_project)
+    attribute_names = []
+    print(attributes)
+    for attribute in attributes.iterator():
+        print(attribute.name)
+        attribute_names.append(attribute.name)
+    form = CreateDataForm(*attribute_names)
+    #form = CreateNodeForm()
+    print(form.fields)
     if request.method == "POST":
-        latitude = request.POST.get('latitude')
-        longitude = request.POST.get('longitude')
-        print(latitude)
-        print(longitude)
-        node = Node.objects.create(latitude=latitude, longitude=longitude)
-        node.save()
-        for field in request.POST:
-            data = Data.objects.create(value=request.POST.get(field))
-            data.node = node
-            data.save()
-        return render(request, 'datacaptureapp/AddFeature.html', {"attributes": attributes})
+        return render(request, 'datacaptureapp/AddFeature.html', {"form": form})
     else:
-        return render(request, 'datacaptureapp/AddFeature.html', {"attributes": attributes, "project_id": pk})
+        # return render(request, 'datacaptureapp/AddFeature.html', {"attributes": attributes, "project_id": pk})
+        return render(request, 'datacaptureapp/AddFeature.html', {'form': form})
 
 
 def nodes(request):
@@ -76,7 +75,8 @@ def add_attribute(request, pk):
             new_attribute.save()
             return redirect('../attributes/')
     else:
-        form = CreateAttributeForm
+        form = CreateAttributeForm()
+        print(form)
         return render(request, 'datacaptureapp/FormCreation.html', {'form': form})
 
 def formcreation(request):

@@ -11,10 +11,12 @@
       <div class="container center_div">
            <div class="form-group">
                {% csrf_token %}
-               {% for attribute in attributes %}
-                   <label for="{{ attribute.name }}">{{ attribute.name }}</label>
-                   <input  class="form-control" id="{{ attribute.name }}" type="{{ attribute.type }}">
-               {% endfor %}
+{#               {% for attribute in attributes %}#}
+{#                   <label for="{{ attribute.name }}">{{ attribute.name }}</label>#}
+{#                   <input  class="form-control" id="{{ attribute.name }}" type="{{ attribute.type }}">#}
+{#               {% endfor %}#}
+               {{ form }}
+{#                {{ form }}#}
                 <input class="form-control" type="hidden" id="latitude">
                 <input class="form-control" type="hidden" id="longitude">
            </div>
