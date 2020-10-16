@@ -15,8 +15,6 @@
                    <label for="{{ attribute.name }}">{{ attribute.name }}</label>
                    <input  class="form-control" id="{{ attribute.name }}" type="{{ attribute.type }}">
                {% endfor %}
-{#                <input class="form-control" type="hidden" id="latitude">#}
-{#                               <input class="form-control" type="hidden" id="longitude">#}
            </div>
 
 <BR>
@@ -25,39 +23,21 @@
   </div>
 </form>
 
-              <button onclick="postCoordinates()" class="btn btn-primary">Store data point</button>
+              <button onclick="getPosition()" class="btn btn-primary">Store data point</button>
 
     <script>
-        {# function showPosition(position) {#}
-        {#    document.getElementById("latitude").value = position.coords.latitude;#}
-        {#    document.getElementById("longitude").value = position.coords.longitude;#}
-        {# }#}
-        {##}
-        {#$('#storeDataPoint').submit(function() {#}
-        {#    if (navigator.geolocation) {#}
-        {#        navigator.geolocation.getCurrentPosition(showPosition);#}
-        {#        console.log(document.getElementById("latitude").value);#}
-        {#        return true#}
-        {#    } else {#}
-        {#        alert("Geolocation is not supported by this browser");#}
-        {#        return false#}
-        {#    }#}
-        {# })#}
-
     var latitude;
     var longitude;
 
-    function showPosition(position) {
-        latitude = position.coords.latitude;
-        longitude = position.coords.longitude;
+    function getPosition() {
+        navigator.geolocation.getCurrentPosition(postCoordinates);
     }
 
 
-    function postCoordinates() {
+    function postCoordinates(position) {
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(showPosition);
-            console.log(latitude);
-            console.log(longitude);
+            latitude = position.coords.latitude;
+            longitude = position.coords.longitude;
         } else {
             alert("Geolocation is not supported by this browser.");
             return
