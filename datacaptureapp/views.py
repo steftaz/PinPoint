@@ -4,6 +4,7 @@ from datacaptureapp.forms import *
 from datacaptureapp.models import *
 from account.models import Account as UserAccount
 from datacaptureapp.GeoJsonBuilder import *
+from django import forms
 
 def projects(request):
     user = request.user
@@ -42,7 +43,22 @@ def project(request, pk=0):
 
 
 def addnode(request, pk):
-    return render(request, 'datacaptureapp/AddFeature.html', {})
+    requested_project = Project.objects.filter(id=pk).first()
+    attributes = Attribute.objects.filter(project=requested_project)
+    if request.method == "POST":
+        for i in request.POST:
+            print(i)
+        latitude = request.POST.get('latitude')
+        longitude = request.POST.get('longitude')
+        node = Node.objects.create(latitude=latitude, longitude=longitude)
+        node.save()
+        for field in request.POST:
+            data = Data.objects.create(value=request.POST.get(field))
+            data.node = node
+            data.save()
+        return render(request, 'datacaptureapp/AddFeature.html', {"attributes": attributes})
+    else:
+        return render(request, 'datacaptureapp/AddFeature.html', {"attributes": attributes})
 
 
 def nodes(request):
