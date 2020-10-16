@@ -15,8 +15,13 @@
                    <label for="{{ attribute.name }}">{{ attribute.name }}</label>
                    <input  class="form-control" id="{{ attribute.name }}" type="{{ attribute.type }}">
                {% endfor %}
-                <input class="form-control" type="hidden" id="latitude">
-                <input class="form-control" type="hidden" id="longitude">
+{#                <input class="form-control" type="hidden" id="latitude">#}
+{#                <input class="form-control" type="hidden" id="longitude">#}
+
+           {{ form.as_p }}
+                {{ form.latitude }}
+
+                {{ form.longitude }}
            </div>
 
 <BR>
@@ -34,15 +39,19 @@
 
         function showPosition(position) {
             if (navigator.geolocation) {
+
+                {#document.getElementById("latitude").setAttribute('value', position.coords.latitude);#}
+                {#document.getElementById("longitude").setAttribute('value', position.coords.longitude);#}
                 document.getElementById("latitude").value = position.coords.latitude;
                 document.getElementById("longitude").value = position.coords.longitude;
                 console.log(document.getElementById("latitude").value);
+                console.log("waaa")
                 return true
             } else {
                 alert("Geolocation is not supported by this browser");
                 return false
             }
-        }
+         }
 
 
 

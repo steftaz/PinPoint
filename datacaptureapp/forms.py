@@ -25,16 +25,14 @@ class CreateAttributeForm(forms.ModelForm):
         }
 
 
-
 class CreateNodeForm(forms.Form):
     class Meta:
         model = Node
         fields = ['latitude', 'longitude']
         widgets = {
-            'latitude': forms.TextInput(attrs={'class': 'form-control', 'type': 'hidden'}),
-            'longitude': forms.TextInput(attrs={'class': 'form-control', 'type': 'hidden'})
+            'latitude': forms.HiddenInput(attrs={'class': 'form-control'}),
+            'longitude': forms.HiddenInput(attrs={'class': 'form-control'})
         }
-
 
 
 class CreateProfileForm(forms.ModelForm):

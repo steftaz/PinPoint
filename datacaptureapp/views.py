@@ -47,19 +47,26 @@ def addnode(request, pk):
     requested_project = Project.objects.filter(id=pk).first()
     attributes = Attribute.objects.filter(project=requested_project)
     if request.method == "POST":
-        latitude = request.POST.get('latitude')
-        longitude = request.POST.get('longitude')
-        print(latitude)
-        print(longitude)
-        node = Node.objects.create(latitude=latitude, longitude=longitude)
-        node.save()
-        for field in request.POST:
-            data = Data.objects.create(value=request.POST.get(field))
-            data.node = node
-            data.save()
+
+
+        print(request.POST)
+        form = CreateNodeForm(request.POST)
+        if form.is_valid():
+            print(form.fields)
+        # latitude = request.POST.get('latitude')
+        # longitude = request.POST.get('longitude')
+        # print(latitude)
+        # print(longitude)
+        # node = Node.objects.create(latitude=latitude, longitude=longitude)
+        # node.save()
+        # for field in request.POST:
+        #     data = Data.objects.create(value=request.POST.get(field))
+        #     data.node = node
+        #     data.save()
         return render(request, 'datacaptureapp/AddFeature.html', {"attributes": attributes})
     else:
-        return render(request, 'datacaptureapp/AddFeature.html', {"attributes": attributes, "project_id": pk})
+        form = CreateNodeForm
+        return render(request, 'datacaptureapp/AddFeature.html', {"attributes": attributes, "project_id": pk, "form": form})
 
 
 def nodes(request):
