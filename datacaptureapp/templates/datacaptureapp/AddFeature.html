@@ -5,7 +5,7 @@
     <h1 class="text-center">Add Data</h1>
 	<BR>
 
-  <form method="POST" action="{% url 'addnode' attributes.first.id %}" id="storeDataPoint">
+  <form id="storeDataPoint">
   <div class="form-group">
 
       <div class="container center_div">
@@ -15,34 +15,68 @@
                    <label for="{{ attribute.name }}">{{ attribute.name }}</label>
                    <input  class="form-control" id="{{ attribute.name }}" type="{{ attribute.type }}">
                {% endfor %}
-                <input class="form-control" type="hidden" id="latitude">
-                               <input class="form-control" type="hidden" id="longitude">
+{#                <input class="form-control" type="hidden" id="latitude">#}
+{#                               <input class="form-control" type="hidden" id="longitude">#}
            </div>
 
 <BR>
-
-          <button  type="submit" class="btn btn-primary">Store data point</button>
 
   </div>
   </div>
 </form>
 
-    <script>
-         function showPosition(position) {
-            document.getElementById("latitude").value = position.coords.latitude;
-            document.getElementById("longitude").value = position.coords.longitude;
-         }
+              <button onclick="postCoordinates()" class="btn btn-primary">Store data point</button>
 
-        $('#storeDataPoint').submit(function() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(showPosition);
-                console.log(document.getElementById("latitude").value);
-                return true
-            } else {
-                alert("Geolocation is not supported by this browser");
-                return false
+    <script>
+        {# function showPosition(position) {#}
+        {#    document.getElementById("latitude").value = position.coords.latitude;#}
+        {#    document.getElementById("longitude").value = position.coords.longitude;#}
+        {# }#}
+        {##}
+        {#$('#storeDataPoint').submit(function() {#}
+        {#    if (navigator.geolocation) {#}
+        {#        navigator.geolocation.getCurrentPosition(showPosition);#}
+        {#        console.log(document.getElementById("latitude").value);#}
+        {#        return true#}
+        {#    } else {#}
+        {#        alert("Geolocation is not supported by this browser");#}
+        {#        return false#}
+        {#    }#}
+        {# })#}
+
+    var latitude;
+    var longitude;
+
+    function showPosition(position) {
+        latitude = position.coords.latitude;
+        longitude = position.coords.longitude;
+    }
+
+
+    function postCoordinates() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+            console.log(latitude);
+            console.log(longitude);
+        } else {
+            alert("Geolocation is not supported by this browser.");
+            return
+    }
+        $.ajax({
+            type: "POST",
+            url: "http://127.0.0.1:8000/projects/"+({{ project_id }})+"/nodes/new/",
+            dataType: "json",
+            async: true,
+            data: {
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                latitude: latitude,
+                longitude: longitude
+            },
+            success: function (json) {
+                $('#output').html(json.message);
             }
-        })
+        });
+    }
     </script>
 
 {% endblock %}

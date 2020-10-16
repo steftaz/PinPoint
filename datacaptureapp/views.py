@@ -61,7 +61,7 @@ def addnode(request, pk):
             data.save()
         return render(request, 'datacaptureapp/AddFeature.html', {"attributes": attributes})
     else:
-        return render(request, 'datacaptureapp/AddFeature.html', {"attributes": attributes})
+        return render(request, 'datacaptureapp/AddFeature.html', {"attributes": attributes, "project_id": pk})
 
 
 def nodes(request):
