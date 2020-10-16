@@ -1,5 +1,11 @@
 from django import forms
+<<<<<<< HEAD
 from datacaptureapp.models import Project, Attribute, Node
+=======
+from datacaptureapp.models import Project
+from datacaptureapp.models import Profile
+from datacaptureapp.models import Project, Attribute
+>>>>>>> a0a55b820a14f5fb750704ce0781e1a918b8d593
 
 
 class CreateProjectForm(forms.ModelForm):
@@ -23,6 +29,7 @@ class CreateAttributeForm(forms.ModelForm):
         }
 
 
+
 class CreateNodeForm(forms.Form):
     class Meta:
         model = Node
@@ -32,4 +39,16 @@ class CreateNodeForm(forms.Form):
             'longitude': forms.TextInput(attrs={'class': 'form-control', 'type': 'hidden'})
         }
 
+
+
+class CreateProfileForm(forms.ModelForm):
+
+    class Meta:
+        model = Profile
+        fields = ['username', 'email', 'password']
+        widgets = {
+            'username': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter project name'}),
+            'email': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter project name'}),
+            'password': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter project name'}),
+        }
 

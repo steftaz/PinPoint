@@ -8,6 +8,10 @@ class Project(models.Model):
     description = models.TextField()
     user = models.ManyToManyField(Account)  # A project belongs to a single user
 
+class Profile(models.Model):
+    username = models.CharField(max_length=50)
+    email = models.CharField(max_length=50)
+    password = models.CharField(max_length=50)
 
 class Attribute(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)  # A form belongs to a single project
@@ -26,4 +30,3 @@ class Data(models.Model):
     attribute = models.ForeignKey(Attribute, on_delete=models.CASCADE)
     node = models.ForeignKey(Node, on_delete=models.CASCADE)
     value = models.CharField(max_length=50)
-

@@ -3,22 +3,29 @@
 {% block content %}
 
   <BR>
-    <h1 class="text-center">Create Profile</h1>
+    <h1 class="text-center">New Account</h1>
 	<BR>
-	<form method="POST">
+
   <div class="form-group">
-      {% csrf_token %}
       <div class="container center_div">
-        <label for="name">Username</label>
-        {{ form.username }}
+        <label for="username">Username</label>
+        <input type="username" class="form-control" id="UserName" aria-describedby="emailHelp" placeholder="Create username">
       <div class="form-group">
-        <label for="Description">Bio</label>
-        {{ form.bio }}
+          <br>
+        <label for="email">Email</label>
+        <input type="email" class="form-control" id="Email" placeholder="Enter email address">
+          <div class="form-group">
+          <br>
+        <label for="password">Password</label>
+        <input type="password" class="form-control" id="Password" placeholder="Create password">
       </div>
-        <button  type="submit" class="btn btn-primary"> Create Profile <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-caret-right-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-</svg> </button>
+
+      <button  type="submit" onclick="location.href='../login'" class="btn btn-primary">Create Account</button>
+
+
   </div>
   </div>
-</form>
+
 
 {% endblock %}
+

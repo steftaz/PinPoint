@@ -1,15 +1,10 @@
 from django.http import FileResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from datacaptureapp.forms import *
 from datacaptureapp.models import *
 from account.models import Account as UserAccount
 from datacaptureapp.GeoJsonBuilder import *
 from django import forms
-
-# def project(request, pk):
-#     requested_project = Project.objects.filter(id=pk).first()
-#     owner = requested_project.user.all().first()
-#     return render(request, 'datacaptureapp/Project.html', {'project': requested_project, 'owner': owner})
 
 def projects(request):
     user = request.user
@@ -24,7 +19,7 @@ def newproject(request):
             new_project = form.save()
             creator = UserAccount.objects.filter(email=user.email).first()
             new_project.user.add(creator)
-            return render(request, "datacaptureapp/AddFeature.html")
+            return redirect('../{}/attributes/'.format(new_project.id))
     else:
         form = CreateProjectForm
         return render(request, "datacaptureapp/NewProject.html", {'form': form})
@@ -70,9 +65,29 @@ def nodes(request):
     return render(request, 'datacaptureapp/FeatureOverview.html', {})
 
 
-def add_attribute(request):
+def add_attribute(request, pk):
     if request.method == 'POST':
-        user = request.user
+        form = CreateAttributeForm(request.POST)
+        if form.is_valid():
+            new_attribute = form.save(commit=False)
+            project = Project.objects.filter(id=pk).first()
+            new_attribute.project = project
+            new_attribute.save()
+            return redirect('../attributes/')
     else:
         form = CreateAttributeForm
         return render(request, 'datacaptureapp/FormCreation.html', {'form': form})
+
+def formcreation(request):
+    return render(request, 'datacaptureapp/FormCreation.html', {})
+
+def login(request):
+    return render(request, 'datacaptureapp/Login.html', {})
+
+def profile(request):
+    return render(request, 'datacaptureapp/Profile.html', {})
+
+def newprofile(request):
+    return render(request, 'datacaptureapp/NewProfile.html', {})
+
+
