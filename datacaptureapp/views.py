@@ -47,8 +47,6 @@ def addnode(request, pk):
     requested_project = Project.objects.filter(id=pk).first()
     attributes = Attribute.objects.filter(project=requested_project)
     if request.method == "POST":
-        for i in request.POST:
-            print(i)
         latitude = request.POST.get('latitude')
         longitude = request.POST.get('longitude')
         print(latitude)
