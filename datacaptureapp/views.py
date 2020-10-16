@@ -6,6 +6,7 @@ from account.models import Account as UserAccount
 from datacaptureapp.GeoJsonBuilder import *
 from django import forms
 
+
 def projects(request):
     user = request.user
     projects = Project.objects.filter(user=user)
@@ -50,6 +51,8 @@ def addnode(request, pk):
             print(i)
         latitude = request.POST.get('latitude')
         longitude = request.POST.get('longitude')
+        print(latitude)
+        print(longitude)
         node = Node.objects.create(latitude=latitude, longitude=longitude)
         node.save()
         for field in request.POST:
