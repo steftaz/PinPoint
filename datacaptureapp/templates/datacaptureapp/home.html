@@ -25,15 +25,15 @@
 
           <!-- Go to project by ID -->
 
-        <form id="getProjectByID">
+{#        <form id="getProjectByID">#}
           <div class="form-group">
             <label for="project_id" class="col-form-label">Enter Project ID</label>
-            <input type="number" step="1" class="form-control" name="project_id">
+            <input type="number" step="1" class="form-control" name="project_id" id="project_id">
           </div>
             <div class="modal-footer">
-        <button type="submit" class="btn btn-primary" >Submit</button>
+        <button onclick="goToProjectById()" class="btn btn-primary" id="goToProjectById">Submit</button>
       </div>
-        </form>
+{#        </form>#}
       </div>
 
     </div>
@@ -49,13 +49,12 @@
 </div>
 </div>
 
-{#    <script>#}
-{#        $('#getProjectByID').on('submit', function (event) {#}
-{#            var project_id = $("[name='project_id']").value;#}
-{#            $('#getProjectByID').attr(action, "/project/" + project_id + "/");#}
-{#            return true;#}
-{#        })#}
-{#    </script>#}
+    <script>
+    function goToProjectById() {
+        var id = document.getElementById('project_id').value;
+        location.href= ("/projects/" + id + "/");
+    }
+    </script>
 
 {% endblock %}
 
