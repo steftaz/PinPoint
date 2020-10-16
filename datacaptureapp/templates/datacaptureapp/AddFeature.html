@@ -29,11 +29,12 @@
 
     <script>
          function showPosition(position) {
+             alert(position.coords.latitude);
             document.getElementById("latitude").value = position.coords.latitude;
             document.getElementById("longitude").value = position.coords.longitude;
          }
 
-        $('#storeDataPoint').submit(function() {
+        $('#storeDataPoint').onsubmit(function() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(showPosition);
                 return true
