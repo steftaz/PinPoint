@@ -48,24 +48,19 @@ def addnode(request, pk):
     attributes = Attribute.objects.filter(project=requested_project)
     if request.method == "POST":
         node = Node.objects.filter(project=requested_project).first()  # TODO create correct node attribute
-        token = str(request.POST.get('csrfmiddlewaretoken'))
         for attribute in attributes:
-            post = QueryDict('csrfmiddlewaretoken={}&Value={}'.format(token, request.POST.get(attribute.name)))
-            form = CreateDataForm(post)
+            form = CreateDataForm(QueryDict())
             if form.is_valid():
                 form = form.save(commit=False)
                 form.node = node
                 form.attribute = Attribute.objects.filter(project=requested_project, name=attribute.name).first()
+                form.value = request.POST.get(attribute.name)
                 form.save()
         return redirect('project', pk)
     else:
         form = CreateDataForm()
         for attribute in attributes:
-            if attribute.type == "text":
-                type = forms.CharField()
-            else:
-                type = forms.DecimalField()
-            form.fields[attribute.name] = type
+            form.fields[attribute.name] = forms.CharField() if attribute.type == "text" else forms.DecimalField()
         return render(request, 'datacaptureapp/AddFeature.html', {'form': form, 'project_id': pk})
 
 
