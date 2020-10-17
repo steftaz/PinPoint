@@ -1,1 +1,1 @@
-{"name": "TestProject2", "type": "FeatureCollection", "features": []}
+{"name": "TestProject2", "type": "FeatureCollection", "features": [{"type": "Feature", "geometry": {"type": "Point", "coordinates": [52.2, 6.8]}, "properties": {"TestProject3": "", "wwww": "", "aaa": "", "www": "", "omg ja": "", "ik ben": ""}}]}

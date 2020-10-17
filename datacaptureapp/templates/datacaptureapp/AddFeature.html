@@ -1,88 +1,61 @@
 {% extends "datacaptureapp/base.html" %}
 
 {% block content %}
-  <BR>
+    <BR>
     <h1 class="text-center">Add Data</h1>
-	<BR>
+    <BR>
 
-  <form method="POST" id="storeDataPoint">
-  <div class="form-group">
+    <div class="form-group">
 
-      <div class="container center_div">
-           <div class="form-group">
-               {% csrf_token %}
-{#               {% for attribute in attributes %}#}
-{#                   <label for="{{ attribute.name }}">{{ attribute.name }}</label>#}
-{#                   <input  class="form-control" id="{{ attribute.name }}" type="{{ attribute.type }}">#}
-{#               {% endfor %}#}
-               {{ form }}
-{#                {{ form }}#}
-                <input class="form-control" type="hidden" id="latitude">
-                <input class="form-control" type="hidden" id="longitude">
-           </div>
+        <div class="container center_div">
+            <form method="POST" id="storeDataPoint">
 
-<BR>
+                <div class="form-group">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <input class="form-control" type="hidden" id="latitude">
+                    <input class="form-control" type="hidden" id="longitude">
+                </div>
 
-          <button  onclick="getLocation()" type="submit" class="btn btn-primary">Store data point</button>
+                <BR>
 
-  </div>
-  </div>
-</form>
+                <button type="submit" class="btn btn-primary">Store data point</button>
+            </form>
+
+        </div>
+    </div>
 
     <script>
-         function getLocation() {
-             navigator.geolocation.getCurrentPosition(showPosition);
-         }
+        var latitude;
+        var longitude;
 
-        function showPosition(position) {
-            if (navigator.geolocation) {
-                document.getElementById("latitude").value = position.coords.latitude;
-                document.getElementById("longitude").value = position.coords.longitude;
-                console.log(document.getElementById("latitude").value);
-                return true
-            } else {
-                alert("Geolocation is not supported by this browser");
-                return false
-            }
+        function getPosition() {
+            navigator.geolocation.getCurrentPosition(postCoordinates);
         }
 
 
-
-
-    {#    var latitude;#}
-    {#var longitude;#}
-    {##}
-    {#function getPosition() {#}
-    {#    navigator.geolocation.getCurrentPosition(postCoordinates);#}
-    {# }#}
-    {##}
-    {##}
-    {#function postCoordinates(position) {#}
-    {#    if (navigator.geolocation) {#}
-    {#        latitude = position.coords.latitude;#}
-    {#        longitude = position.coords.longitude;#}
-    {#    } else {#}
-    {#        alert("Geolocation is not supported by this browser.");#}
-    {#        return#}
-    {# }#}
-    {#    $.ajax({#}
-    {#        type: "POST",#}
-    {#        url: "http://127.0.0.1:8000/projects/"+({{ project_id }})+"/nodes/new/",#}
-    {#        dataType: "json",#}
-    {#        async: true,#}
-    {#        data: {#}
-    {#            csrfmiddlewaretoken: '{{ csrf_token }}',#}
-    {#            latitude: latitude,#}
-    {#            longitude: longitude,#}
-    {#            {% for attribute in attributes %}#}
-    {#                {{ attribute.name }}: document.getElementById('{{ attribute.name }}').value,#}
-    {#            {% endfor %}#}
-    {#        },#}
-    {#        success: function (json) {#}
-    {#            $('#output').html(json.message);#}
-    {#        }#}
-    {#    });#}
-    {# }#}
+        function postCoordinates(position) {
+            if (navigator.geolocation) {
+                latitude = position.coords.latitude;
+                longitude = position.coords.longitude;
+            } else {
+                alert("Geolocation is not supported by this browser.");
+                return
+            }$.ajax({
+                type: "POST",
+                url: "http://127.0.0.1:8000/projects/{{ project_id }}/nodes/new/",
+                dataType: "json",
+                async: true,
+                data: {
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    latitude: latitude,
+                    longitude: longitude
+                },
+                success: function (json) {
+                    $('#output').html(json.message);
+                }
+            })
+        }
     </script>
 
 {% endblock %}

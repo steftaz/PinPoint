@@ -1,4 +1,4 @@
-from django.http import FileResponse
+from django.http import FileResponse, QueryDict
 from django.shortcuts import render, redirect
 from datacaptureapp.forms import *
 from datacaptureapp.models import *
@@ -46,19 +46,27 @@ def project(request, pk=0):
 def addnode(request, pk):
     requested_project = Project.objects.filter(id=pk).first()
     attributes = Attribute.objects.filter(project=requested_project)
-    attribute_names = []
-    print(attributes)
-    for attribute in attributes.iterator():
-        print(attribute.name)
-        attribute_names.append(attribute.name)
-    form = CreateDataForm(*attribute_names)
-    #form = CreateNodeForm()
-    print(form.fields)
     if request.method == "POST":
-        return render(request, 'datacaptureapp/AddFeature.html', {"form": form})
+        node = Node.objects.filter(project=requested_project).first()  # TODO create correct node attribute
+        token = str(request.POST.get('csrfmiddlewaretoken'))
+        for attribute in attributes:
+            post = QueryDict('csrfmiddlewaretoken={}&Value={}'.format(token, request.POST.get(attribute.name)))
+            form = CreateDataForm(post)
+            if form.is_valid():
+                form = form.save(commit=False)
+                form.node = node
+                form.attribute = Attribute.objects.filter(project=requested_project, name=attribute.name).first()
+                form.save()
+        return redirect('project', pk)
     else:
-        # return render(request, 'datacaptureapp/AddFeature.html', {"attributes": attributes, "project_id": pk})
-        return render(request, 'datacaptureapp/AddFeature.html', {'form': form})
+        form = CreateDataForm()
+        for attribute in attributes:
+            if attribute.type == "text":
+                type = forms.CharField()
+            else:
+                type = forms.DecimalField()
+            form.fields[attribute.name] = type
+        return render(request, 'datacaptureapp/AddFeature.html', {'form': form, 'project_id': pk})
 
 
 def nodes(request):
@@ -75,8 +83,7 @@ def add_attribute(request, pk):
             new_attribute.save()
             return redirect('../attributes/')
     else:
-        form = CreateAttributeForm()
-        print(form)
+        form = CreateAttributeForm
         return render(request, 'datacaptureapp/FormCreation.html', {'form': form})
 
 def formcreation(request):
