@@ -5,12 +5,14 @@ from datacaptureapp.models import *
 from account.models import Account as UserAccount
 from datacaptureapp.GeoJsonBuilder import *
 from django import forms
+from decimal import Decimal
 
 
 def projects(request):
     user = request.user
     projects = Project.objects.filter(user=user)
     return render(request, 'datacaptureapp/home.html', {'projects': projects})
+
 
 def newproject(request):
     if request.method == 'POST':
@@ -40,25 +42,50 @@ def project(request, pk=0):
         requested_project = Project.objects.filter(id=pk).first()
         geojson = generate_geojson(pk)
         owner = requested_project.user.all().first()
-        return render(request, 'datacaptureapp/Project.html', {'project': requested_project, 'owner': owner, 'geojson': geojson})
+        return render(request, 'datacaptureapp/Project.html',
+                      {'project': requested_project, 'owner': owner, 'geojson': geojson})
 
 
 def addnode(request, pk):
     requested_project = Project.objects.filter(id=pk).first()
     attributes = Attribute.objects.filter(project=requested_project)
     if request.method == "POST":
-        node = Node.objects.filter(project=requested_project).first()  # TODO create correct node attribute
-        for attribute in attributes:
-            form = CreateDataForm(QueryDict())
-            if form.is_valid():
-                form = form.save(commit=False)
-                form.node = node
-                form.attribute = Attribute.objects.filter(project=requested_project, name=attribute.name).first()
-                form.value = request.POST.get(attribute.name)
-                form.save()
+        # Create dict with latitude and longitude to use in CreateNodeForm()
+        node_dict = {'latitude': request.POST.get('latitude'), 'longitude': request.POST.get('longitude')}
+        latitude_formatted = "{:.8f}".format(Decimal(node_dict['latitude']))
+        longitude_formatted = "{:.8f}".format(Decimal(node_dict['longitude']))
+        node_query_dict = QueryDict('latitude=' + latitude_formatted + '&' + 'longitude=' + longitude_formatted)
+        node_form = CreateNodeForm(node_query_dict)
+        if node_form.is_valid():
+            node = node_form.save(commit=False)
+            node.project = requested_project
+            node.save()
+
+        for key in request.POST.keys():
+            if (key != 'latitude') and (key != 'longitude'):
+                data_query_dict = QueryDict('value=' + request.POST.get(key))
+                data_form = CreateDataForm(data_query_dict)
+                if data_form.is_valid():
+                    data = data_form.save(commit=False)
+                    data.node = node
+                    print(Attribute.objects.filter(name=key))
+                    data.attribute = attributes.get(name=key)
+                    data.save()
+
+        # for attribute in attributes:
+        #     form = CreateDataForm(QueryDict())
+        #
+        #     if form.is_valid():
+        #         form = form.save(commit=False)
+        #         # form.node = node
+        #         form.attribute = Attribute.objects.filter(project=requested_project, name=attribute.name).first()
+        #         form.value = request.POST.get(attribute.name)
+        #
+        #         # form.save()
         return redirect('project', pk)
     else:
         form = CreateDataForm()
+        form.fields.pop('value')
         for attribute in attributes:
             form.fields[attribute.name] = forms.CharField() if attribute.type == "text" else forms.DecimalField()
         return render(request, 'datacaptureapp/AddFeature.html', {'form': form, 'project_id': pk})
@@ -81,16 +108,18 @@ def add_attribute(request, pk):
         form = CreateAttributeForm
         return render(request, 'datacaptureapp/FormCreation.html', {'form': form})
 
+
 def formcreation(request):
     return render(request, 'datacaptureapp/FormCreation.html', {})
+
 
 def login(request):
     return render(request, 'datacaptureapp/Login.html', {})
 
+
 def profile(request):
     return render(request, 'datacaptureapp/Profile.html', {})
 
+
 def newprofile(request):
     return render(request, 'datacaptureapp/NewProfile.html', {})
-
-

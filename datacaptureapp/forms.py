@@ -29,8 +29,8 @@ class CreateAttributeForm(forms.ModelForm):
 class CreateDataForm(forms.ModelForm):
     class Meta:
         model = Data
-        fields = []
-        widgets = {}
+        fields = ['value']
+
 
 
 class CreateNodeForm(forms.ModelForm):
