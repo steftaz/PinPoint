@@ -91,7 +91,7 @@ def addnode(request, pk):
         return render(request, 'datacaptureapp/AddFeature.html', {'form': form, 'project_id': pk})
 
 
-def nodes(request):
+def nodes(request, pk):
     return render(request, 'datacaptureapp/FeatureOverview.html', {})
 
 
