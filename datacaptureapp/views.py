@@ -31,16 +31,15 @@ def newproject(request):
 def project(request, pk=0):
     if pk == 0:
         return render(request, 'datacaptureapp/home.html')
+    geojson = generate_geojson(pk)
     if request.method == 'POST':
-        project = generate_geojson(pk)
-        file_path = "datacaptureapp/tmp/" + json.loads(project)['name'] + ".geojson"
+        file_path = "datacaptureapp/tmp/{}.geojson".format(json.loads(geojson)['name'])
         file = open(file_path, "w")
-        file.write(project)
+        file.write(geojson)
         file.close()
         return FileResponse(open(file_path, 'rb'))  # TODO Remove new file (os.remove throws an error)
     else:
         requested_project = Project.objects.filter(id=pk).first()
-        geojson = generate_geojson(pk)
         owner = requested_project.user.all().first()
         return render(request, 'datacaptureapp/Project.html',
                       {'project': requested_project, 'owner': owner, 'geojson': geojson})
@@ -50,10 +49,8 @@ def addnode(request, pk):
     requested_project = Project.objects.filter(id=pk).first()
     attributes = Attribute.objects.filter(project=requested_project)
     if request.method == "POST":
-        # Create dict with latitude and longitude to use in CreateNodeForm()
-        node_dict = {'latitude': request.POST.get('latitude'), 'longitude': request.POST.get('longitude')}
-        latitude_formatted = "{:.8f}".format(Decimal(node_dict['latitude']))
-        longitude_formatted = "{:.8f}".format(Decimal(node_dict['longitude']))
+        latitude_formatted = "{:.8f}".format(Decimal(request.POST.get('latitude')))
+        longitude_formatted = "{:.8f}".format(Decimal(request.POST.get('longitude')))
         node_query_dict = QueryDict('latitude=' + latitude_formatted + '&' + 'longitude=' + longitude_formatted)
         node_form = CreateNodeForm(node_query_dict)
         if node_form.is_valid():
@@ -61,33 +58,20 @@ def addnode(request, pk):
             node.project = requested_project
             node.save()
 
-        for key in request.POST.keys():
-            if (key != 'latitude') and (key != 'longitude'):
-                data_query_dict = QueryDict('value=' + request.POST.get(key))
-                data_form = CreateDataForm(data_query_dict)
-                if data_form.is_valid():
-                    data = data_form.save(commit=False)
-                    data.node = node
-                    print(Attribute.objects.filter(name=key))
-                    data.attribute = attributes.get(name=key)
-                    data.save()
-
-        # for attribute in attributes:
-        #     form = CreateDataForm(QueryDict())
-        #
-        #     if form.is_valid():
-        #         form = form.save(commit=False)
-        #         # form.node = node
-        #         form.attribute = Attribute.objects.filter(project=requested_project, name=attribute.name).first()
-        #         form.value = request.POST.get(attribute.name)
-        #
-        #         # form.save()
+        for attribute in attributes:
+            data_query_dict = QueryDict('value=' + request.POST.get(attribute.name))
+            data_form = CreateDataForm(data_query_dict)
+            if data_form.is_valid():
+                data = data_form.save(commit=False)
+                data.node = node
+                data.attribute = attribute
+                data.save()
         return redirect('project', pk)
     else:
         form = CreateDataForm()
-        form.fields.pop('value')
+        del form.fields['value']
         for attribute in attributes:
-            form.fields[attribute.name] = forms.CharField() if attribute.type == "text" else forms.DecimalField()
+            form.fields[attribute.name] = forms.DecimalField() if attribute.type == "number" else forms.CharField()
         return render(request, 'datacaptureapp/AddFeature.html', {'form': form, 'project_id': pk})
 
 
