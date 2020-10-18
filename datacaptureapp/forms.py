@@ -32,7 +32,6 @@ class CreateDataForm(forms.ModelForm):
         fields = ['value']
 
 
-
 class CreateNodeForm(forms.ModelForm):
     class Meta:
         model = Node

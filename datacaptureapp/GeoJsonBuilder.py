@@ -10,7 +10,7 @@ def generate_geojson(project_id):
         JSNode["type"] = "Feature"
         JSGeometry = {}
         JSGeometry["type"] = "Point"
-        JSGeometry["coordinates"] = [float(node.latitude), float(node.longitude)]
+        JSGeometry["coordinates"] = [float(node.longitude), float(node.latitude)]
         JSNode["geometry"] = JSGeometry
         datas = Data.objects.filter(node=node)
         JSData = {}
