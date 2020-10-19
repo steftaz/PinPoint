@@ -102,6 +102,10 @@ def add_attribute(request, pk):
         return render(request, 'datacaptureapp/FormCreation.html', {'form': form})
 
 
+def team(request, pk):
+    return render(request, 'datacaptureapp/ProjectTeam.html', {})
+
+
 def formcreation(request):
     return render(request, 'datacaptureapp/FormCreation.html', {})
 
