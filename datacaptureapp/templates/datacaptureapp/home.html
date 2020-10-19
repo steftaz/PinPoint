@@ -9,61 +9,53 @@
 		<div class="btn-group-vertical ">
             <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#gotoproject"><i class="fa fa-arrow-right" aria-hidden="true"></i> Go to Existing project  </button>
 
-			<button onclick="location.href='new'" type="button" class="btn btn-light btn-lg" ><i class="fa fa-plus"> </i> Create new Project</button>
-		</div>
-	</div>
+                <button onclick="location.href='new'" type="button" class="btn btn-light btn-lg" ><i class="fa fa-plus"> </i> Create new Project</button>
+            </div>
+        </div>
 
-<div class="modal fade" id="gotoproject" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Project ID</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
+        <div class="modal fade" id="gotoproject" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Project ID</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
 
-          <!-- Go to project by ID -->
+                        <!-- Go to project by ID -->
 
-        <form id="getProjectByID">
-          <div class="form-group">
-            <label for="project_id" class="col-form-label">Enter Project ID</label>
-            <input type="number" step="1" class="form-control" name="project_id">
-          </div>
-            <div class="modal-footer">
-        <button type="submit" class="btn btn-info" >Submit</button>
-      </div>
-        </form>
-      </div>
+                        {#        <form id="getProjectByID">#}
+                        <div class="form-group">
+                            <label for="project_id" class="col-form-label">Enter Project ID</label>
+                            <input type="number" step="1" class="form-control" name="project_id" id="project_id">
+                        </div>
+                        <div class="modal-footer">
+                            <button onclick="goToProjectById()" class="btn btn-primary" id="goToProjectById">Submit</button>
+                        </div>
+                        {#        </form>#}
+                    </div>
 
+                </div>
+            </div>
+        </div>
+        <h1 class="text-center">Your projects</h1>
+        <br>
+        <div class="text-center">
+            {% for project in  projects %}
+                <p><a href="{% url 'project' project.id %}">{{ project.name }}</a></p>
+            {% endfor %}
+
+        </div>
     </div>
-  </div>
-</div>
-    <br>
-    <div class="container">
 
-        <div class="row-justify-content-center">
-<h1 class="text-center display-4">Your projects</h1>
-            <hr/>
-<div class="text-center">
-    {% for project in  projects %}
-
-    <a class="btn btn-info btn-lg" role="button" href="{% url 'project' project.id %}" style="margin-top:15px; margin-left:5px"> <i class="fa fa-folder" aria-hidden="true"></i> {{ project.name }}</a>
-    {% endfor %}
-
-</div>
-        </div>
-        </div>
-</div>
-
-{#    <script>#}
-{#        $('#getProjectByID').on('submit', function (event) {#}
-{#            var project_id = $("[name='project_id']").value;#}
-{#            $('#getProjectByID').attr(action, "/project/" + project_id + "/");#}
-{#            return true;#}
-{#        })#}
-{#    </script>#}
+    <script>
+        function goToProjectById() {
+            var id = document.getElementById('project_id').value;
+            location.href= ("/projects/" + id + "/");
+        }
+    </script>
 
 {% endblock %}
 

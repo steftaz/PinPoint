@@ -6,21 +6,60 @@
 <hr/>
 	<BR>
 
-  <form action="../project">
-  <div class="form-group">
+    <div class="form-group">
 
-      <div class="container center_div">
-           <div class="form-group">
-        <label for="ProjectDescription">Attribute name</label>
-        <input  class="form-control" id="Attribute_name">
-      </div>
-        <label for="ProjectName">Attribute type</label>
-        <input  class="form-control" id="Attribute_type">
-<BR>
-          <button  type="submit" class="btn btn-info">Submit</button>
+        <div class="container center_div">
+            <form method="POST" id="storeDataPoint">
 
-  </div>
-  </div>
-</form>
+                <div class="form-group">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <input class="form-control" type="hidden" id="latitude" name="latitude">
+                    <input class="form-control" type="hidden" id="longitude" name="longitude">
+                </div>
+
+                <BR>
+
+                <button type="button" onclick="onSubmit()" class="btn btn-primary">Store data point</button>
+            </form>
+
+        </div>
+    </div>
+
+    <script>
+        function onSubmit() {
+            var iLat = document.getElementById('latitude');
+            if (!iLat.value) {
+                getLocation();
+                return false;
+            }
+        }
+
+        function recordPosition(position) {
+            var iLat = document.getElementById('latitude');
+            var iLong = document.getElementById('longitude');
+            iLat.value = position.coords.latitude;
+            iLong.value = position.coords.longitude;
+            iLat.form.submit();
+        }
+
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(getLocation_success, getLocation_error);
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function getLocation_success(pos) {
+            //showPosition(pos);
+            recordPosition(pos);
+        }
+
+        function getLocation_error(err) {
+            console.warn('ERROR(' + err.code + '): ' + err.message);
+        }
+
+    </script>
 
 {% endblock %}
