@@ -2,22 +2,22 @@
 
 {% block content %}
 
- <BR>
+    <BR>
     <h1 class="text-center">Profile</h1>
-	<BR>
-	<form method="POST">
-  <div class="form-group">
-      {% csrf_token %}
-      <div class="container center_div">
-        <label for="username">Show username</label>
-        {{ form.username }}
-      <div class="form-group">
-        <label for="Description">Projects overview</label>
-        {{ form.description }}
-      </div>
+    <BR>
+    <form method="POST">
+        <div class="form-group">
+            {% csrf_token %}
+            <div class="container center_div">
+                <label for="username">Show username</label>
+                {{ form.username }}
+                <div class="form-group">
+                    <label for="Description">Projects overview</label>
+                    {{ form.description }}
+                </div>
 
-  </div>
-  </div>
-</form>
+            </div>
+        </div>
+    </form>
 
 {% endblock %}

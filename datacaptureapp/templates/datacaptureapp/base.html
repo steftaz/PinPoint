@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-      <link rel="shortcut icon" href="https://www.flaticon.com/svg/static/icons/svg/721/721985.svg"/>
-      <title>GeoApp</title>
-  </head>
-  <body>
+    <link rel="shortcut icon" href="https://www.flaticon.com/svg/static/icons/svg/721/721985.svg"/>
+    <title>GeoApp</title>
+</head>
+<body>
 
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 
@@ -19,26 +19,26 @@
 
 
 
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href='{% url 'projects' %}'>GeoApp</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href='{% url 'projects' %}'>GeoApp</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
 
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
-        <a class="nav-link" href='{% url 'projects' %}'><i class="fa fa-home" > </i> Home <span class="sr-only">(current)</span></a>
-          <a class="nav-link" href='../profile'><i class="fa fa-user-circle-o" > </i> Profile <span class="sr-only">(current)</span></a>
-        <a class="nav-link" href='../login'><i class="fa fa-sign-in" > </i> Sign in <span class="sr-only">(current)</span></a>
-      </li>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href='{% url 'projects' %}'><i class="fa fa-home" > </i> Home <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href='../profile'><i class="fa fa-user-circle-o" > </i> Profile <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href='../login'><i class="fa fa-sign-in" > </i> Sign in <span class="sr-only">(current)</span></a>
+            </li>
 
-      </ul>
-  </div>
-      </div>
-      </div>
+        </ul>
+    </div>
+    </div>
+    </div>
 </nav>
- {% block content %}
-  {% endblock %}
+{% block content %}
+{% endblock %}
 
- </body>
+</body>

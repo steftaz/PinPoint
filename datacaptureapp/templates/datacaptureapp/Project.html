@@ -1,50 +1,50 @@
 {% extends "datacaptureapp/base.html" %}
 
 {% block content %}
-  <BR>
+    <BR>
     <h1 class="text-center">[Project Name]</h1>
 
-	<div class ="text-center">
+    <div class ="text-center">
 
 
 
-<p id="demo"></p>
+        <p id="demo"></p>
         <BR>
-{#        <button onclick="location.href='../add_attribute'" class="text-center btn btn-primary btn-lg"  type="button"><i class="fa fa-plus"> </i> Add Feature</button>#}
-{#        <br>#}
+        {#        <button onclick="location.href='../add_attribute'" class="text-center btn btn-primary btn-lg"  type="button"><i class="fa fa-plus"> </i> Add Feature</button>#}
+        {#        <br>#}
         <button onclick="location.href='nodes/new'" class="text-center btn btn-primary btn-lg"  type="button"><i class="fa fa-plus"> </i> Record data point</button>
         <br>
     </div>
-<br>
+    <br>
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
-   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
-   crossorigin=""/>
- <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
-   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
-   crossorigin=""></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+          integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+          crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+            integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+            crossorigin=""></script>
 
-<div id="map" style="height:400px"></div>
+    <div id="map" style="height:400px"></div>
 
-        {{ geojson|json_script:"geojson_map" }}
+    {{ geojson|json_script:"geojson_map" }}
 
 
-  <BR>
- <div class="container text-center">
-  <div class="row justify-content-center">
-    <div class="col-md-4">
-	<h1 > About </h1>
-        <BR>
-        <h5 > ID: {{ project.id }} </h5>
-        <h5 > Name: {{ project.name }} </h5>
-        <h5 > Description: {{ project.description }} </h5>
-        <h5 > Creation date: 8-10-2020 </h5>
-        <h5 > Owner:{{ owner.username }} </h5>
+    <BR>
+    <div class="container text-center">
+        <div class="row justify-content-center">
+            <div class="col-md-4">
+                <h1 > About </h1>
+                <BR>
+                <h5 > ID: {{ project.id }} </h5>
+                <h5 > Name: {{ project.name }} </h5>
+                <h5 > Description: {{ project.description }} </h5>
+                <h5 > Creation date: 8-10-2020 </h5>
+                <h5 > Owner:{{ owner.username }} </h5>
 
-    </div>
-    <div class="col-md-4">
-     <h1> Data Overview </h1>
-        		<div class="btn-group-vertical ">
+            </div>
+            <div class="col-md-4">
+                <h1> Data Overview </h1>
+                <div class="btn-group-vertical ">
                     <button onclick="location.href='nodes'" class="text-center btn btn-primary btn-lg"  type="button"> See full overview</button>
 
                     <form method="POST" >
@@ -52,70 +52,70 @@
                         <button class="text-center btn btn-danger btn-lg"  type="submit"> Export Data</button>
                     </form>
                 </div>
+            </div>
+        </div>
     </div>
-  </div>
- </div>
 
 
-<script>
-// LEAFLET script:
+    <script>
+        // LEAFLET script:
 
-	var map = L.map('map').fitWorld();
+        var map = L.map('map').fitWorld();
 
-	L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
-		maxZoom: 18,
-		attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
-			'<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-			'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-		id: 'mapbox/streets-v11',
-		tileSize: 512,
-		zoomOffset: -1
-	}).addTo(map);
+        L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+            maxZoom: 18,
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+                '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+                'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+            id: 'mapbox/streets-v11',
+            tileSize: 512,
+            zoomOffset: -1
+        }).addTo(map);
 
-	function onLocationFound(e) {
-		L.marker(e.latlng).addTo(map)
-			.bindPopup("You are here").openPopup();
-	}
+        function onLocationFound(e) {
+            L.marker(e.latlng).addTo(map)
+                .bindPopup("You are here").openPopup();
+        }
 
-	function onLocationError(e) {
-		alert(e.message);
-	}
+        function onLocationError(e) {
+            alert(e.message);
+        }
 
 
 
-	map.on('locationfound', onLocationFound);
+        map.on('locationfound', onLocationFound);
 
-	function onEachFeature(feature, layer) {
-    if (feature.properties && feature.properties["Test text"]) {
-        layer.bindPopup(feature.properties["Test text"]);
-    }
-}
+        function onEachFeature(feature, layer) {
+            if (feature.properties && feature.properties["Test text"]) {
+                layer.bindPopup(feature.properties["Test text"]);
+            }
+        }
 
- L.geoJSON(JSON.parse(JSON.parse(document.getElementById('geojson_map').textContent)), {
-    onEachFeature: onEachFeature
-}).addTo(map);
+        L.geoJSON(JSON.parse(JSON.parse(document.getElementById('geojson_map').textContent)), {
+            onEachFeature: onEachFeature
+        }).addTo(map);
 
-	map.locate({setView: true, maxZoom: 16});
+        map.locate({setView: true, maxZoom: 16});
 
 
 
 
-//Location to put in DB script:
+        //Location to put in DB script:
 
-var x = document.getElementById("demo");
+        var x = document.getElementById("demo");
 
-function getLocation() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(showPosition);
-  } else {
-    x.innerHTML = "Geolocation is not supported by this browser.";
-  }
-}
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition);
+            } else {
+                x.innerHTML = "Geolocation is not supported by this browser.";
+            }
+        }
 
-function showPosition(position) {
-  x.innerHTML = "Latitude: " + position.coords.latitude +
-  "<br>Longitude: " + position.coords.longitude;
-}
-</script>
+        function showPosition(position) {
+            x.innerHTML = "Latitude: " + position.coords.latitude +
+                "<br>Longitude: " + position.coords.longitude;
+        }
+    </script>
 
 {% endblock %}
