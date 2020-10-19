@@ -2,11 +2,18 @@
 
 {% block content %}
     <BR>
-    <h1 class="text-center">Feature overview</h1>
-    <BR>
-    <div class="text-center">
-        <button class="text-center btn btn-primary btn-lg" onclick="location.href='../project'" type="button"> Back to Map</button>
+    <h1 class="text-center display-4">Feature overview</h1>
+<hr/>
+<div class="container">
+<div class="row justify-content-center">
+        <button class="text-center btn btn-info btn-lg" onclick="location.href='../'" type="button"> Back to Map</button>
+                    <form method="POST" >
+                        {% csrf_token %}
+                        <button class=" btn btn-outline-danger btn-lg"  type="submit"> Export Data</button>
+                    </form>
     </div>
+</div>
+
     <BR>
     <div class="row justify-content-center">
         <div class="col-auto">
