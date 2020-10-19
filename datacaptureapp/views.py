@@ -22,7 +22,7 @@ def newproject(request):
             new_project = form.save()
             creator = UserAccount.objects.filter(email=user.email).first()
             new_project.user.add(creator)
-            return redirect('../{}/attributes/'.format(new_project.id))
+            return redirect('attributes', new_project.id)
     else:
         form = CreateProjectForm
         return render(request, "datacaptureapp/NewProject.html", {'form': form})
@@ -57,7 +57,6 @@ def addnode(request, pk):
             node = node_form.save(commit=False)
             node.project = requested_project
             node.save()
-
         for attribute in attributes:
             data_query_dict = QueryDict('value=' + request.POST.get(attribute.name))
             data_form = CreateDataForm(data_query_dict)
@@ -96,7 +95,7 @@ def add_attribute(request, pk):
             project = Project.objects.filter(id=pk).first()
             new_attribute.project = project
             new_attribute.save()
-            return redirect('../attributes/')
+            return redirect('attributes', pk)
     else:
         form = CreateAttributeForm
         return render(request, 'datacaptureapp/FormCreation.html', {'form': form})
