@@ -5,15 +5,22 @@ from datacaptureapp.models import *
 from account.models import Account as UserAccount
 from datacaptureapp.GeoJsonBuilder import *
 from django import forms
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+
 from decimal import Decimal
 
 
+
+@login_required()
 def projects(request):
     user = request.user
     projects = Project.objects.filter(user=user)
     return render(request, 'datacaptureapp/home.html', {'projects': projects, 'user': user})
 
 
+
+@login_required()
 def newproject(request):
     if request.method == 'POST':
         user = request.user
@@ -28,6 +35,7 @@ def newproject(request):
         return render(request, "datacaptureapp/NewProject.html", {'form': form})
 
 
+@login_required()
 def project(request, pk=0):
     if pk == 0:
         return render(request, 'datacaptureapp/home.html')
@@ -103,6 +111,24 @@ def add_attribute(request, pk):
 
 def formcreation(request):
     return render(request, 'datacaptureapp/FormCreation.html', {})
+
+
+def login_view(request):
+    username = request.POST['username']
+    password = request.POST['password']
+    user = authenticate(request, username=username, password=password)
+    if user is not None:
+        print('login successful')
+#       redirect to projects
+        redirect('/projects/')
+    else:
+        print('failed to login')
+#       display invalid login
+
+
+def logout_view(request):
+    logout(request)
+#   redirect to home page
 
 
 def login(request):

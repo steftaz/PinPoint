@@ -122,3 +122,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+LOGIN_REDIRECT_URL = "/projects/"
+LOGIN_URL = "/login/"
+
