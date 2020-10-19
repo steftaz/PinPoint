@@ -6,6 +6,7 @@ from account.models import Account as UserAccount
 from datacaptureapp.GeoJsonBuilder import *
 from django import forms
 from decimal import Decimal
+from django.contrib import messages
 
 
 def projects(request):
@@ -103,7 +104,22 @@ def add_attribute(request, pk):
 
 
 def team(request, pk):
-    return render(request, 'datacaptureapp/ProjectTeam.html', {})
+    requested_project = Project.objects.filter(pk=pk).first()
+    team_members = requested_project.user.all()
+    if request.POST:
+        form = AddMemberForm(request.POST)
+        if form.is_valid():
+            if Account.objects.filter(email=request.POST.get('email')).exists():
+                account = Account.objects.filter(email=request.POST.get('email')).first()
+                requested_project.user.add(account)
+                message = 'User added to project'
+            else:
+                message = 'Unknown user'
+        form = AddMemberForm()
+        return render(request, 'datacaptureapp/ProjectTeam.html', {'message': message, 'form': form, 'team': team_members, 'project': requested_project})
+    else:
+        member_form = AddMemberForm()
+        return render(request, 'datacaptureapp/ProjectTeam.html', {'form': member_form, 'team': team_members, 'project': requested_project})
 
 
 def formcreation(request):

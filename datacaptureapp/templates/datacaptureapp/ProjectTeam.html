@@ -1,17 +1,57 @@
 {% extends "datacaptureapp/base.html" %}
 
 {% block content %}
-    <div class="container">
-        <div  class="card">
-            <div class="card-body">
-                This is some text within a card body.
+    <div class="container pt-5">
+        <form type="POST" id="addMember" data-url="{% url 'team' project.id %}">
+            {% csrf_token %}
+            <div class="input-group mb-3">
+                {{ message }}
+                {{ form }}
+                <div class="input-group-append">
+                    <button class="text-center btn btn-info" type="submit"><i class="fa fa-plus"> </i> Add team member
+                    </button>
+                </div>
             </div>
-            <div class="card-body">
-                This is some text within a card body.
-            </div>
-            <div class="card-body">
-                This is some text within a card body.
-            </div>
-        </div>
+        </form>
     </div>
+    <div class="container py-5">
+            <table class="table py-3">
+                <thead>
+                <tr>
+                    <th scope="col">e-mail</th>
+                    <th scope="col">name</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for member in team %}
+                    <tr>
+                        <td>{{ member.email }}</td>
+                        <td>{{ member.username }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+    </div>
+
+
+    <script>
+        $("#addMember").submit(function (e) {
+
+            e.preventDefault(); // avoid to execute the actual submit of the form.
+
+            var form = $(this);
+            var url = $(this).attr('data-url');
+
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: form.serialize(), // serializes the form's elements.
+                success: function (data) {
+                    window.location.href = url
+                }
+            });
+
+
+        });
+    </script>
 {% endblock %}
