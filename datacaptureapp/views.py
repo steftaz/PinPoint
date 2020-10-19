@@ -11,7 +11,6 @@ from django.contrib.auth.decorators import login_required
 from decimal import Decimal
 
 
-
 @login_required()
 def projects(request):
     user = request.user
@@ -46,6 +45,7 @@ def project(request, pk=0):
                   {'project': requested_project, 'owner': owner, 'geojson': geojson})
 
 
+@login_required()
 def addnode(request, pk):
     requested_project = Project.objects.filter(id=pk).first()
     attributes = Attribute.objects.filter(project=requested_project)
@@ -75,6 +75,7 @@ def addnode(request, pk):
         return render(request, 'datacaptureapp/AddFeature.html', {'form': form, 'project_id': pk})
 
 
+@login_required()
 def nodes(request, pk):
     if request.method == 'POST':
         geojson = generate_geojson(pk)
@@ -95,6 +96,7 @@ def nodes(request, pk):
     return render(request, 'datacaptureapp/FeatureOverview.html', {'overview': overview, 'attributes': attributes})
 
 
+@login_required()
 def add_attribute(request, pk):
     if request.method == 'POST':
         form = CreateAttributeForm(request.POST)
@@ -109,35 +111,22 @@ def add_attribute(request, pk):
         return render(request, 'datacaptureapp/FormCreation.html', {'form': form})
 
 
+@login_required()
 def formcreation(request):
     return render(request, 'datacaptureapp/FormCreation.html', {})
 
 
-def login_view(request):
-    username = request.POST['username']
-    password = request.POST['password']
-    user = authenticate(request, username=username, password=password)
-    if user is not None:
-        print('login successful')
-#       redirect to projects
-        redirect('/projects/')
-    else:
-        print('failed to login')
-#       display invalid login
-
-
+@login_required()
 def logout_view(request):
     logout(request)
-#   redirect to home page
+    return redirect("/login/")
 
 
-def login(request):
-    return render(request, 'datacaptureapp/Login.html', {})
-
-
+@login_required()
 def profile(request):
     return render(request, 'datacaptureapp/Profile.html', {})
 
 
+@login_required()
 def newprofile(request):
     return render(request, 'datacaptureapp/NewProfile.html', {})

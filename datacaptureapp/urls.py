@@ -13,5 +13,6 @@ urlpatterns = [
     path('projects/<int:pk>/nodes/', views.nodes, name='nodes'),
     # path('login/', views.login),
     path('profile/', views.profile),
-    path('newprofile/', views.newprofile)
+    path('newprofile/', views.newprofile),
+    path('logout/', views.logout_view)
 ]
