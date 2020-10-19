@@ -91,8 +91,11 @@
         }).addTo(map);
 
         function onLocationFound(e) {
-            L.marker(e.latlng).addTo(map)
-                .bindPopup("You are here").openPopup();
+            L.circleMarker(e.latlng, {radius: 7, color: '#FFFFFF', fillOpacity: 1, fillColor: '#FF0000', opacity: 0.5})
+                .addTo(map).bindPopup("You are here");
+
+            {#L.marker(e.latlng).addTo(map)   #}
+            {#    .bindPopup("You are here").openPopup();#}
         }
 
         function onLocationError(e) {
