@@ -32,17 +32,10 @@ def project(request, pk=0):
     if pk == 0:
         return render(request, 'datacaptureapp/home.html')
     geojson = generate_geojson(pk)
-    if request.method == 'POST':
-        file_path = "datacaptureapp/tmp/{}.geojson".format(json.loads(geojson)['name'])
-        file = open(file_path, "w")
-        file.write(geojson)
-        file.close()
-        return FileResponse(open(file_path, 'rb'))  # TODO Remove new file (os.remove throws an error)
-    else:
-        requested_project = Project.objects.filter(id=pk).first()
-        owner = requested_project.user.all().first()
-        return render(request, 'datacaptureapp/Project.html',
-                      {'project': requested_project, 'owner': owner, 'geojson': geojson})
+    requested_project = Project.objects.filter(id=pk).first()
+    owner = requested_project.user.all().first()
+    return render(request, 'datacaptureapp/Project.html',
+                  {'project': requested_project, 'owner': owner, 'geojson': geojson})
 
 
 def addnode(request, pk):
@@ -75,6 +68,13 @@ def addnode(request, pk):
 
 
 def nodes(request, pk):
+    if request.method == 'POST':
+        geojson = generate_geojson(pk)
+        file_path = "datacaptureapp/tmp/{}.geojson".format(json.loads(geojson)['name'])
+        file = open(file_path, "w")
+        file.write(geojson)
+        file.close()
+        return FileResponse(open(file_path, 'rb'))  # TODO Remove new file (os.remove throws an error)
     attributes = Attribute.objects.filter(project__id=pk)
     data = Data.objects.filter(attribute__in=attributes)
     requested_nodes = Node.objects.filter(project_id=pk)
