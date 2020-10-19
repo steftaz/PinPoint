@@ -1,12 +1,13 @@
 {% extends "datacaptureapp/base.html" %}
 
 {% block content %}
-    <div class="home">
-        <h1 class="text-center">Choose your project below</h1>
-        <BR>
-        <div class ="text-center">
-            <div class="btn-group-vertical ">
-                <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#gotoproject"><i class="fa fa-folder"> </i> Go to Existing project  </button>
+<div class="home">
+    <h1 class="text-center display-4 ">Choose your project below</h1>
+    <hr/>
+	<BR>
+	<div class ="text-center">
+		<div class="btn-group-vertical ">
+            <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#gotoproject"><i class="fa fa-arrow-right" aria-hidden="true"></i> Go to Existing project  </button>
 
                 <button onclick="location.href='new'" type="button" class="btn btn-light btn-lg" ><i class="fa fa-plus"> </i> Create new Project</button>
             </div>
@@ -39,14 +40,23 @@
                 </div>
             </div>
         </div>
-        <h1 class="text-center">Your projects</h1>
         <br>
-        <div class="text-center">
-            {% for project in  projects %}
-                <p><a href="{% url 'project' project.id %}">{{ project.name }}</a></p>
-            {% endfor %}
+        <div class="container">
 
+        <div class="row-justify-content-center">
+<h1 class="text-center display-4">Your projects</h1>
+            <hr/>
+<div class="text-center">
+    {% for project in  projects %}
+
+    <a class="btn btn-info btn-lg" role="button" href="{% url 'project' project.id %}" style="margin-top:15px; margin-left:5px"> <i class="fa fa-folder" aria-hidden="true"></i> {{ project.name }}</a>
+    {% endfor %}
+
+</div>
         </div>
+        </div>
+</div>
+
     </div>
 
     <script>

@@ -1,59 +1,77 @@
 {% extends "datacaptureapp/base.html" %}
 
 {% block content %}
-    <BR>
-    <h1 class="text-center">[Project Name]</h1>
-
-    <div class ="text-center">
+<h1 class="text-center display-4 ">{{project.name}}</h1>
+	<hr/>
 
 
+<div class="container">
+    <div class="row-justify-content-center">
+        <div class="col lg auto">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+   crossorigin=""/>
+ <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+   crossorigin=""></script>
 
-        <p id="demo"></p>
-        <BR>
-        {#        <button onclick="location.href='../add_attribute'" class="text-center btn btn-primary btn-lg"  type="button"><i class="fa fa-plus"> </i> Add Feature</button>#}
-        {#        <br>#}
-        <button onclick="location.href='nodes/new'" class="text-center btn btn-primary btn-lg"  type="button"><i class="fa fa-plus"> </i> Record data point</button>
-        <br>
-    </div>
-    <br>
-
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
-          integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
-          crossorigin=""/>
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
-            integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
-            crossorigin=""></script>
-
-    <div id="map" style="height:400px"></div>
-
-    {{ geojson|json_script:"geojson_map" }}
-
-
-    <BR>
-    <div class="container text-center">
-        <div class="row justify-content-center">
-            <div class="col-md-4">
-                <h1 > About </h1>
-                <BR>
-                <h5 > ID: {{ project.id }} </h5>
-                <h5 > Name: {{ project.name }} </h5>
-                <h5 > Description: {{ project.description }} </h5>
-                <h5 > Creation date: 8-10-2020 </h5>
-                <h5 > Owner:{{ owner.username }} </h5>
-
-            </div>
-            <div class="col-md-4">
-                <h1> Data Overview </h1>
-                <div class="btn-group-vertical ">
-                    <button onclick="location.href='nodes'" class="text-center btn btn-primary btn-lg"  type="button"> See full overview</button>
-
-                    <form method="POST" >
-                        {% csrf_token %}
-                        <button class="text-center btn btn-danger btn-lg"  type="submit"> Export Data</button>
-                    </form>
-                </div>
-            </div>
+<div id="map" style="height:450px"></div>
+<br>
+        {{ geojson|json_script:"geojson_map" }}
         </div>
+
+                            <div class ="text-center">
+
+{#        <button onclick="location.href='../add_attribute'" class="text-center btn btn-primary btn-lg"  type="button"><i class="fa fa-plus"> </i> Add Feature</button>#}
+{#        <br>#}
+        <button onclick="location.href='nodes/new'" class="text-center btn btn-info btn-lg"  type="button"><i class="fa fa-plus"> </i> Record data point</button>
+                    <button onclick="location.href='nodes'" class="text-center btn btn-info btn-lg"  type="button"> Data overview</button>
+
+
+
+
+        </div>
+</div>
+</div>
+
+
+
+ <div class="container">
+  <div class="row sm">
+    <div class="col sm auto">
+	<h1 class="display-4 text-center"> About </h1>
+    </div>
+  </div>
+      <div class="row-justify-content-center">
+    <div class="col sm auto">
+        <table class="table table-center table-unbordered  text-muted">
+  <tbody>
+    <tr>
+      <th scope="row">ID</th>
+      <td>{{project.id}}</td>
+    </tr>
+    <tr>
+      <th scope="row">Name</th>
+      <td>{{project.name}}</td>
+
+    </tr>
+    <tr>
+      <th scope="row">Description</th>
+      <td> {{project.description}}</td>
+
+    </tr>
+  <tr>
+      <th scope="row">Creation date</th>
+      <td>8-10-2020</td>
+    </tr>
+  <tr>
+      <th scope="row">Owner</th>
+      <td>{{owner.username}}</td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+</div>
     </div>
 
 
