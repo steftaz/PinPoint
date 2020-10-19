@@ -18,7 +18,6 @@ def projects(request):
     return render(request, 'datacaptureapp/home.html', {'projects': projects, 'user': user})
 
 
-
 @login_required()
 def newproject(request):
     if request.method == 'POST':
