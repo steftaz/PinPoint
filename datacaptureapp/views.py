@@ -11,7 +11,7 @@ from decimal import Decimal
 def projects(request):
     user = request.user
     projects = Project.objects.filter(user=user)
-    return render(request, 'datacaptureapp/home.html', {'projects': projects})
+    return render(request, 'datacaptureapp/home.html', {'projects': projects, 'user': user})
 
 
 def newproject(request):
