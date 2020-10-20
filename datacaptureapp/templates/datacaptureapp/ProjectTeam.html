@@ -1,11 +1,27 @@
 {% extends "datacaptureapp/base.html" %}
 
 {% block content %}
+    <div>
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+    </div>
+
+
+
     <div class="container pt-5">
-        <form type="POST" id="addMember" data-url="{% url 'team' project.id %}">
+        <div id="div_messages">
+
+        </div>
+        <form  method="POST" id="addMember" data-url="{% url 'team' project.id %}">
             {% csrf_token %}
+
             <div class="input-group mb-3">
-                {{ message }}
                 {{ form }}
                 <div class="input-group-append">
                     <button class="text-center btn btn-info" type="submit"><i class="fa fa-plus"> </i> Add team member
@@ -15,7 +31,7 @@
         </form>
     </div>
     <div class="container py-5">
-            <table class="table py-3">
+            <table class="table py-3" id="team-members">
                 <thead>
                 <tr>
                     <th scope="col">e-mail</th>
@@ -47,11 +63,40 @@
                 url: url,
                 data: form.serialize(), // serializes the form's elements.
                 success: function (data) {
-                    window.location.href = url
+                    success = data.success;
+                    update_messages(data.messages);
+                    if (data.email && data.username) {
+                        update_member_table(data.email, data.username)
+                    }
+
+
+
                 }
             });
 
 
         });
+
+        function update_messages(messages){
+            $("#div_messages").html("");
+            $.each(messages, function (i, m) {
+                switch (m.extra_tags) {
+                    case 'success':
+                        $("#div_messages").append("<div class='alert alert-success' role='alert'>"+m.message+"</div>");
+                        break;
+                    case 'error':
+                        $("#div_messages").append("<div class='alert alert-danger' role='alert'>"+m.message+"</div>");
+
+                }
+
+            });
+        }
+
+        function update_member_table(email, username) {
+            $("#team-members tbody").append(
+                "<tr><td>" + email + "</td><td>" + username + "</td></tr>"
+            )
+        }
+
     </script>
 {% endblock %}
