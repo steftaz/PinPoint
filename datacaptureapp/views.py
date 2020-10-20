@@ -133,3 +133,6 @@ def newprofile(request):
 @login_required()
 def editprofile(request):
     return render(request, 'datacaptureapp/EditProfile.html', {})
+
+def about(request):
+    return render(request, 'datacaptureapp/About.html', {})

@@ -5,9 +5,7 @@
     <h1 class="text-center display-4">{{ user.username }}'s profile</h1>
 <hr/>
 	<BR>
-    <div class="container">
-        <img src="../images/profilepic.png" width="236" height="236">
-    </div>
+
 
 	<div class="container">
   <BR>
@@ -26,12 +24,12 @@
     </tr>
     <tr>
       <th scope="row">User since</th>
-      <td> {{Account.date_joined}}</td>
+      <td> {{user.date_joined}}</td>
 
     </tr>
   <tr>
       <th scope="row">Last login</th>
-      <td>{{Account.last_login}}</td>
+      <td>{{user.last_login}}</td>
     </tr>
 
   </tbody>
