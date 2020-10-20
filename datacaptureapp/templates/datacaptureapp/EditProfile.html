@@ -1,7 +1,7 @@
 {% extends "datacaptureapp/base.html" %}
 
 {% block content %}
-  <BR>
+    <BR xmlns="http://www.w3.org/1999/html">
     <h1 class="text-center display-4">{{ user.username }}'s profile</h1>
 <hr/>
 	<BR>
@@ -12,7 +12,27 @@
 
 	<div class="container">
     <BR>
-    <button type="button" class="btn btn-link">Change profile picture</></button>
+    <button class="btn btn-link" data-toggle="modal" data-target="#changeprofpic">Change profile picture</></button>
+        <!-- Modal -->
+<div class="modal fade" id="changeprofpic" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">New profile picture</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save new profile picture</button>
+      </div>
+    </div>
+  </div>
+</div>
   <BR>
         <BR>
 
@@ -106,7 +126,7 @@
     </div>
 
    <div class="text-center">
-     <a href="../profile" type="button" class="btn btn-info">Save changes</a>
+     <a href="../profile" type="button" class="btn btn-info">View profile</a>
 
 
       </div>
