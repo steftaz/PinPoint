@@ -2,6 +2,7 @@
 
 {% block content %}
   <BR>
+
     <h1 class="text-center display-4">New Project</h1>
 <hr/>
 	<BR>
@@ -10,6 +11,7 @@
       {% csrf_token %}
       <div class="container center_div">
         <label for="name">Project Name</label>
+          <i tabindex="0" class="fa fa-question-circle" data-container="body" data-toggle="popover"  data-placement="right" data-trigger=focus" data-content="Add a name and description for your new project" aria-hidden=true"></i>
         {{ form.name }}
       <div class="form-group">
         <label for="Description">Description</label>
@@ -20,5 +22,14 @@
   </div>
   </div>
 </form>
+<script>
+$(function () {
+  $('[data-toggle="popover"]').popover()
+})
+
+$('.popover-dismiss').popover({
+  trigger: 'focus'
+})
+</script>
 
 {% endblock %}
