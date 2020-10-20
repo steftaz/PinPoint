@@ -36,6 +36,15 @@
   </div>
       </div>
 </nav>
+<script>
+$(function () {
+  $('[data-toggle="popover"]').popover()
+})
+
+$('.popover-dismiss').popover({
+  trigger: 'focus'
+})
+</script>
 {% block content %}
 {% endblock %}
 

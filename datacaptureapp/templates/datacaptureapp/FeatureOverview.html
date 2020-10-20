@@ -6,10 +6,11 @@
 <hr/>
 <div class="container">
 <div class="row justify-content-center">
-        <button class="text-center btn btn-info btn-lg" onclick="location.href='../'" type="button"> Back to Map</button>
+        <button class="text-center btn btn-info btn-lg" onclick="location.href='../'" type="button" style="margin-right:10px"> Back to Map</button>
                     <form method="POST" >
                         {% csrf_token %}
-                        <button class=" btn btn-outline-danger btn-lg"  type="submit"> Export Data</button>
+                        <button class=" btn btn-outline-danger btn-lg"  type="submit" style="margin-right:5px"> Export Data</button>          <i tabindex="0" class="fa fa-question-circle" data-container="body" data-toggle="popover"  data-placement="right" data-trigger=focus" data-content="Click the 'Export Data' button to export the data of the project to a geojson file." aria-hidden=true"></i>
+
                     </form>
     </div>
 </div>
