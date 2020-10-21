@@ -197,12 +197,15 @@ def profile(request):
 def newprofile(request):
     return render(request, 'datacaptureapp/NewProfile.html', {})
 
+
 @login_required()
 def editprofile(request):
     return render(request, 'datacaptureapp/EditProfile.html', {})
 
+
 def about(request):
     return render(request, 'datacaptureapp/About.html', {})
+
 
 def faq(request):
     return render(request, 'datacaptureapp/FAQ.html', {})
