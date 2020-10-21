@@ -25,30 +25,30 @@
         <span class="navbar-toggler-icon"></span>
     </button>
 
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-        <a class="nav-link" href='{% url 'home' %}'><i class="fa fa-home" > </i> Home <span class="sr-only">(current)</span></a>
-        <a class="nav-link" href='{% url 'profile' %}'><i class="fa fa-user-circle-o" > </i> Profile <span class="sr-only">(current)</span></a>
-        <a class="nav-link" href='{% url 'logout' %}'><i class="fa fa-sign-in" > </i> Logout <span class="sr-only">(current)</span></a>
-    </ul>
-      <form class="form-inline my-2 my-lg-0">
-          <a class="nav-link" href='../about'><i class="fa fa-info" > </i> About GeoApp <span class="sr-only">(current)</span></a>
-             <a class="nav-link" href='../FAQ'><i class="fa fa-question-circle" > </i> FAQ <span class="sr-only">(current)</span></a>
-      </form>
-        </div>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <a class="nav-link" href='{% url 'home' %}'><i class="fa fa-home" > </i> Home <span class="sr-only">(current)</span></a>
+            <a class="nav-link" href='{% url 'profile' %}'><i class="fa fa-user-circle-o" > </i> Profile <span class="sr-only">(current)</span></a>
+            <a class="nav-link" href='{% url 'logout' %}'><i class="fa fa-sign-in" > </i> Logout <span class="sr-only">(current)</span></a>
+        </ul>
+        <form class="form-inline my-2 my-lg-0">
+            <a class="nav-link" href='{% url 'about' %}'><i class="fa fa-info" > </i> About GeoApp <span class="sr-only">(current)</span></a>
+            <a class="nav-link" href='{% url 'faq' %}'><i class="fa fa-question-circle" > </i> FAQ <span class="sr-only">(current)</span></a>
+        </form>
+    </div>
 
 
 
 
 </nav>
 <script>
-$(function () {
-  $('[data-toggle="popover"]').popover()
-})
+    $(function () {
+        $('[data-toggle="popover"]').popover()
+    })
 
-$('.popover-dismiss').popover({
-  trigger: 'focus'
-})
+    $('.popover-dismiss').popover({
+        trigger: 'focus'
+    })
 </script>
 {% block content %}
 {% endblock %}
