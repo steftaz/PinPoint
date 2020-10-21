@@ -63,12 +63,12 @@
                         {% for data in value.values %}
                             <td>{{ data }}</td>
                         {% endfor %}
-                        <td style="border:none;"><a onclick="edit_node({{ key }})"><button class="btn btn-outline-secondary btn-sm" type="button">
+                        <td style="border:none;"><a onclick="edit_node({{ key }})" class="btn btn-outline-secondary btn-sm" type="button">
                             Edit
-                        </button></a></td>
-                        <td style="border:none;"><a onclick="remove_node({{ key }})"><button class="close" aria-label="Close" style="color: red; opacity: 1;" type="button">
+                        </a></td>
+                        <td style="border:none;"><a onclick="remove_node({{ key }})" class="close" aria-label="Close" style="color: red; opacity: 1;" type="button">
                             <span aria-hidden="true">&times;</span>
-                        </button></a></td>
+                        </a></td>
                     </tr>
                 {% endfor %}
                 </tbody>
