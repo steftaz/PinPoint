@@ -1,62 +1,53 @@
 {% extends "datacaptureapp/base.html" %}
 
 {% block content %}
-  <BR>
+    <BR>
     <h1 class="text-center display-4">Adding Attributes</h1>
 
-<hr/>
-	<BR>
+    <hr/>
+    <BR>
 
-	<form method="POST" id="addAttribute">
-    {% csrf_token %}
-  <div class="form-group">
-      <div class="container center_div">
-           <div class="alert alert-info text-center" role="alert">
-  Note: attributes are created one at a time an this is the only moment you can add them!
-</div>
-<div class="text-center">
-            <a href="../" class="btn btn-outline-danger">Go to project</a> {# This line cannot be inside the form I think #}
-</div>
-        <label for="name">Name</label>
-          <i tabindex="0" class="fa fa-question-circle" data-container="body" data-toggle="popover"  data-placement="right" data-trigger=focus" data-content="Add a name and description for each attribute and define the type of data." aria-hidden=true"></i>
+    <form method="POST" id="addAttribute">
+        {% csrf_token %}
+        <div class="form-group">
+            <div class="container center_div">
+                <div class="alert alert-info text-center" role="alert">
+                    Note: attributes are created one at a time an this is the only moment you can add them!
+                </div>
+                <div class="text-center">
+                    <a href="../" class="btn btn-outline-danger">Go to project</a>
+                </div>
+                <label for="name">Name</label>
+                <i tabindex="0" class="fa fa-question-circle" data-container="body" data-toggle="popover"  data-placement="right" data-trigger=focus" data-content="Add a name and description for each attribute and define the type of data." aria-hidden=true"></i>
 
-        {{ form.name }}
-      <div class="form-group">
-          <br>
-        <label for="description">Description</label>
-        {{ form.description }}
-      </div>
-            <div class="form-group">
-    <label for="type">Type of data</label>
-        {{ form.type }}
-  </div>
-          <button type="submit" class="btn btn-info"> Save attribute </button>
+                {{ form.name }}
+                <div class="form-group">
+                    <br>
+                    <label for="description">Description</label>
+                    {{ form.description }}
+                </div>
+                <div class="form-group">
+                    <label for="type">Type of data</label>
+                    {{ form.type }}
+                </div>
+                <button type="submit" class="btn btn-info"> Save attribute </button>
 
-        <div class="modal fade" id="addAttribute" tabindex="-1" role="dialog" aria-labelledby="#addAttribute" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Attribute successfully added!</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
-
-      </div>
-    </div>
-  </div>
-</div>
-  </div>
-  </div>
-</form>
-
-{#    <script>#}
-{#        $('#addAttribute').on('submit', function(event) {#}
-{#           event.preventDefault();#}
-{#           console.log("form submitted");#}
-{#        });#}
-{#    </script>#}
-
+                <div class="modal fade" id="addAttribute" tabindex="-1" role="dialog" aria-labelledby="#addAttribute" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Attribute successfully added!</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
 {% endblock %}
