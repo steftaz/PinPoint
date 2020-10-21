@@ -4,7 +4,6 @@ from datacaptureapp.models import Profile
 from datacaptureapp.models import Project, Attribute, Data, Node
 
 
-
 class CreateProjectForm(forms.ModelForm):
     class Meta:
         model = Project
@@ -39,7 +38,6 @@ class CreateNodeForm(forms.ModelForm):
 
 
 class CreateProfileForm(forms.ModelForm):
-
     class Meta:
         model = Profile
         fields = ['username', 'email', 'password']
@@ -49,3 +47,7 @@ class CreateProfileForm(forms.ModelForm):
             'password': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter project name'}),
         }
 
+
+class AddMemberForm(forms.Form):
+    email = forms.CharField(label='', widget=forms.TextInput(attrs= {'name': "email", 'type': 'text', 'class': 'form-control', 'placeholder': 'e-mail',
+                   'aria-label': 'email', 'aria-describedby': 'basic-addon1'}))

@@ -1,5 +1,8 @@
-from django.http import FileResponse, QueryDict
+from django.core import serializers
+from django.http import FileResponse, QueryDict, HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
+from django.urls import reverse
+
 from datacaptureapp.forms import *
 from datacaptureapp.models import *
 from account.models import Account as UserAccount
@@ -9,6 +12,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
 from decimal import Decimal
+from django.contrib import messages
 
 
 @login_required()
@@ -110,7 +114,43 @@ def add_attribute(request, pk):
         return render(request, 'datacaptureapp/FormCreation.html', {'form': form})
 
 
+
 @login_required()
+def messagesToList(django_messages, request):
+    django_messages = []
+    for message in messages.get_messages(request):
+        django_messages.append({
+            "level": message.level,
+            "message": message.message,
+            "extra_tags": message.tags,
+        })
+    return django_messages
+
+@login_required()
+def team(request, pk):
+    requested_project = Project.objects.filter(pk=pk).first()
+    team_members = requested_project.user.all()
+    if request.POST:
+        form = AddMemberForm(request.POST)
+        if form.is_valid():
+            if Account.objects.filter(email=request.POST.get('email')).exists():
+                account = Account.objects.filter(email=form.cleaned_data.get('email')).first()
+                requested_project.user.add(account)
+                #serialized_account = serializers.serialize('json', [account, ])
+                messages.success(request, 'Successfully added the user to this project')
+                return JsonResponse({"messages": messagesToList(messages, request), 'email': account.email, 'username': account.username})
+            else:
+                messages.error(request, 'Adding team member failed: no user found with that email')
+                return JsonResponse({"messages": messagesToList(messages, request)})
+
+    else:
+        for message in messages.get_messages(request):
+            print(message)
+        form = AddMemberForm()
+        return render(request, 'datacaptureapp/ProjectTeam.html',
+                      {'form': form, 'team': team_members, 'project': requested_project})
+
+
 def formcreation(request):
     return render(request, 'datacaptureapp/FormCreation.html', {})
 
