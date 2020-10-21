@@ -121,7 +121,7 @@ def add_attribute(request, pk):
 
 
 @login_required()
-def messagesToList(django_messages, request):
+def messagesToList(request):
     django_messages = []
     for message in messages.get_messages(request):
         django_messages.append({
@@ -141,7 +141,6 @@ def team(request, pk):
             if Account.objects.filter(email=request.POST.get('email')).exists():
                 account = Account.objects.filter(email=form.cleaned_data.get('email')).first()
                 requested_project.user.add(account)
-                #serialized_account = serializers.serialize('json', [account, ])
                 messages.success(request, 'Successfully added the user to this project')
                 return JsonResponse({"messages": messagesToList(messages, request), 'email': account.email, 'username': account.username})
             else:
@@ -149,8 +148,6 @@ def team(request, pk):
                 return JsonResponse({"messages": messagesToList(messages, request)})
 
     else:
-        for message in messages.get_messages(request):
-            print(message)
         form = AddMemberForm()
         return render(request, 'datacaptureapp/ProjectTeam.html',
                       {'form': form, 'team': team_members, 'project': requested_project})
