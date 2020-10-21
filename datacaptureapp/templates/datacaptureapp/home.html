@@ -2,6 +2,18 @@
 
 {% block content %}
 <div class="home">
+    <h3 id="helpIcon" tabindex="0" class="pull-right" data-toggle="popover" style="margin-left:5px"
+        data-placement="left" data-trigger=focus" aria-hidden=true" data-html="true"
+        title="Home Page"
+        data-content="<b> Open project </b> <br>
+        The overview of your projects is visible below 'Your Projects'. Click on a project to visit its page. To open a project with a project ID click 'Go to existing project' and enter the project ID<br>
+        <br>
+        <b> Create project </b> <br>
+        To create a new project click the button 'Create new Project'. You will be redirected to a page where you can define the specifications.
+            ">
+        <span class="fa fa-question-circle" style="color:grey; margin-right:10px"></span>
+    </h3>
+
     <h1 class="text-center display-4 ">Choose your project below</h1>
     <hr/>
 	<BR>
@@ -32,7 +44,7 @@
                             <input type="number" step="1" class="form-control" name="project_id" id="project_id">
                         </div>
                         <div class="modal-footer">
-                            <button onclick="goToProjectById()" class="btn btn-primary" id="goToProjectById">Submit</button>
+                            <button onclick="goToProjectById()" class="btn btn-info" id="goToProjectById">Submit</button>
                         </div>
                         {#        </form>#}
                     </div>
@@ -47,7 +59,6 @@
     <h1 class="text-center display-4">{{ user.username }}'s projects </h1>
             <hr/>
 <div class="text-center">
-              <i tabindex="0" class="fa fa-question-circle" data-container="body" data-toggle="popover"  data-placement="right" data-trigger=focus" data-content="Click a project to see its content." aria-hidden=true"></i>
 
     {% for project in  projects %}
 

@@ -1,7 +1,19 @@
 {% extends "datacaptureapp/base.html" %}
 
 {% block content %}
-  <BR>
+    <h3 id="helpIcon" tabindex="0" class="pull-right" data-toggle="popover" style="margin-left:5px"
+        data-placement="left" data-trigger=focus" aria-hidden=true" data-html="true"
+        title="Adding Attributes"
+        data-content="<b> Defining an attribute </b> <br>
+        Add an attribute to the project by filling in its name, description and data type. In case of a text data type you can specify in the description the possible options and in case of a number data type you can specify the unit.
+        <br> For example: <br> Type of tree - Oak, Den - Text <br> Height of tree - meters - Number
+        <br>
+        <br>
+        <b> Adding multiple attributes</b> <br>
+        Attributes are created one at a time. After clicking 'Save attribute' you can continue to the next one. If all the attributes are added click 'Go to Project' to visit the project page.
+         ">
+        <span class="fa fa-question-circle" style="color:grey; margin-right:10px"></span>
+    </h3>
     <h1 class="text-center display-4">Adding Attributes</h1>
 
 <hr/>
@@ -18,8 +30,6 @@
             <a href="../" class="btn btn-outline-danger">Go to project</a> {# This line cannot be inside the form I think #}
 </div>
         <label for="name">Name</label>
-          <i tabindex="0" class="fa fa-question-circle" data-container="body" data-toggle="popover"  data-placement="right" data-trigger=focus" data-content="Add a name and description for each attribute and define the type of data." aria-hidden=true"></i>
-
         {{ form.name }}
       <div class="form-group">
           <br>
