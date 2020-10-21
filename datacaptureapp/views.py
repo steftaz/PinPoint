@@ -136,3 +136,6 @@ def editprofile(request):
 
 def about(request):
     return render(request, 'datacaptureapp/About.html', {})
+
+def faq(request):
+    return render(request, 'datacaptureapp/FAQ.html', {})

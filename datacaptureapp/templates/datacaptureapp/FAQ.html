@@ -1,10 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "datacaptureapp/base.html" %}
 
-</body>
-</html>
+{% block content %}
+  <BR>
+    <h1 class="text-center display-4">Frequesntly Asked Questions</h1>
+<hr/>
+	<BR>
+<div class="container">
+<p class ="text-center">
+    <BR>
+    <div class="font-weight-bold">What is a project?</div>
+    <div>Project allows you to focus on certain objects, for example trees, for which you can collect geographical data points and attributes. You are then able to view the objects on a map and export the geographical data and attribute values.</div>
+    <BR>
+    <div class="font-weight-bold">What is an attribute?</div>
+    <div>An attribute is a certain characteristic of the object of focus. For example, if a project is focused on trees an attribute can be type or height of a tree.</div>
+    <BR>
+    <div class="font-weight-bold">What types of attributes can be added to a project?</div>
+    <div>Text and number. For example if the project is focused on trees, a text attribute can be type of a tree, a number attribute can be the height of a tree.</div>
+    <BR>
+    <div class="font-weight-bold">How to add an attribute when the project is already created?</div>
+    <div>Once the project is created it is no longer possible to add new attributes to the project. In that case it is neccessary to create a new project with all the required attributes.</div>
+    <BR>
+    <div class="font-weight-bold">How to export the project data?</div>
+    <div>In order to export the project data you need to open your project, go to data overview and click on the data export button. There you can select the format of the exported data file and download the data.</div>
+    <BR>
+    <div class="font-weight-bold">Question</div>
+    <div>Answer</div><BR>
+    <div class="font-weight-bold">Question</div>
+    <div>Answer</div>
+
+</p>
+
+{% endblock %}
