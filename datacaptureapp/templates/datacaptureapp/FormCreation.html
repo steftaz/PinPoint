@@ -3,19 +3,23 @@
 {% block content %}
   <BR>
     <h1 class="text-center display-4">Adding Attributes</h1>
+
 <hr/>
 	<BR>
-  <div class="alert alert-info text-center" role="alert">
+
+	<form method="POST" id="addAttribute">
+    {% csrf_token %}
+  <div class="form-group">
+      <div class="container center_div">
+           <div class="alert alert-info text-center" role="alert">
   Note: attributes are created one at a time an this is the only moment you can add them!
 </div>
 <div class="text-center">
             <a href="../" class="btn btn-outline-danger">Go to project</a> {# This line cannot be inside the form I think #}
 </div>
-	<form method="POST" id="addAttribute">
-    {% csrf_token %}
-  <div class="form-group">
-      <div class="container center_div">
         <label for="name">Name</label>
+          <i tabindex="0" class="fa fa-question-circle" data-container="body" data-toggle="popover"  data-placement="right" data-trigger=focus" data-content="Add a name and description for each attribute and define the type of data." aria-hidden=true"></i>
+
         {{ form.name }}
       <div class="form-group">
           <br>

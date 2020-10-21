@@ -30,12 +30,26 @@
         <a class="nav-link" href='{% url 'projects' %}'><i class="fa fa-home" > </i> Home <span class="sr-only">(current)</span></a>
           <a class="nav-link" href='../profile'><i class="fa fa-user-circle-o" > </i> Profile <span class="sr-only">(current)</span></a>
         <a class="nav-link" href='../logout'><i class="fa fa-sign-in" > </i> Logout <span class="sr-only">(current)</span></a>
-      </ul>
+    </ul>
+      <form class="form-inline my-2 my-lg-0">
+          <a class="nav-link" href='../about'><i class="fa fa-info" > </i> About GeoApp <span class="sr-only">(current)</span></a>
+             <a class="nav-link" href='../FAQ'><i class="fa fa-question-circle" > </i> FAQ <span class="sr-only">(current)</span></a>
+      </form>
         </div>
 
-  </div>
-      </div>
+
+
+
 </nav>
+<script>
+$(function () {
+  $('[data-toggle="popover"]').popover()
+})
+
+$('.popover-dismiss').popover({
+  trigger: 'focus'
+})
+</script>
 {% block content %}
 {% endblock %}
 
