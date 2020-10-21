@@ -21,7 +21,14 @@
 
                 <div class="form-group">
                     {% csrf_token %}
-                    {{ form.as_p }}
+                    {% for data in datas %}
+                        <br />
+                        <div class="container center_div">
+                        <label for="name">{{ data.attribute.name }}</label>
+                        <input type="{{ data.attribute.type }}" name="{{ data.attribute.name }}" class="form-control"
+                               placeholder="{{ data.attribute.name }}" id="{{ data.attribute.name }} required ">
+                        </div>
+                    {% endfor %}
                     <input class="form-control" type="hidden" id="latitude" name="latitude">
                     <input class="form-control" type="hidden" id="longitude" name="longitude">
                 </div>

@@ -1,12 +1,38 @@
 {% extends "datacaptureapp/base.html" %}
 
 {% block content %}
-
-
-    {% for data in datas %}
-        {{ data.attribute.name }}
-    {% endfor %}
-
+    <h3 id="helpIcon" tabindex="0" class="pull-right" data-toggle="popover" style="margin-left:5px"
+        data-placement="left" data-trigger=focus" aria-hidden=true" data-html="true"
+        title="Adding Data"
+        data-content="<b>Edit the data of a point</b> <br />
+        Edit the previously entered values of a point and save the new values. <br />
+        Leaving a field empty keeps the value unchanged.
+        <br />">
+        <span class="fa fa-question-circle" style="color:grey; margin-right:10px"></span>
+    </h3>
+    <h1 class="text-center display-4">Edit Data</h1>
+    <hr/>
+    <BR>
+    <div class="form-group">
+        <div class="container center_div">
+            <form method="POST" id="storeDataPoint">
+                <div class="form-group">
+                    {% csrf_token %}
+                    {% for data in datas %}
+                        <br />
+                        <div class="container center_div">
+                        <label for="name">{{ data.attribute.name }}</label>
+                        <input type="{{ data.attribute.type }}" name="{{ data.attribute.name }}" class="form-control"
+                               placeholder="{{ data.value }}" id="{{ data.attribute.name }}">
+                        </div>
+                    {% endfor %}
+                </div>
+                <br />
+                <button type="submit" class="btn btn-info">Store data point</button>
+                <button class="btn btn-outline-danger" onclick="location.href.replace('..../')">Return to overview</button>
+            </form>
+        </div>
+    </div>
 
 {% endblock %}
 

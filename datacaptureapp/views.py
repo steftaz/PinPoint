@@ -111,6 +111,17 @@ def nodes(request, pk):
 
 @login_required()
 def edit_node(request, pk, nk):
+    if request.method == 'POST':
+        post = request.POST
+        node = Node.objects.get(id=nk)
+        attributes = Attribute.objects.filter(project=Project.objects.get(id=pk))
+        for attribute in attributes:
+            value = post[attribute.name]
+            if value != '':
+                data = Data.objects.get(node=node, attribute=attribute)
+                data.value = value
+                data.save()
+        return redirect('nodes', pk)
     node = Node.objects.get(id=nk)
     datas = Data.objects.filter(node=node)
     return render(request, 'datacaptureapp/EditNode.html', {'datas': datas})
