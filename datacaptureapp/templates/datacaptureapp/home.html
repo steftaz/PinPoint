@@ -1,25 +1,25 @@
 {% extends "datacaptureapp/base.html" %}
 
 {% block content %}
-<div class="home">
-    <h3 id="helpIcon" tabindex="0" class="pull-right" data-toggle="popover" style="margin-left:5px"
-        data-placement="left" data-trigger=focus" aria-hidden=true" data-html="true"
-        title="Home Page"
-        data-content="<b> Open project </b> <br>
+    <div class="home">
+        <h3 id="helpIcon" tabindex="0" class="pull-right" data-toggle="popover" style="margin-left:5px"
+            data-placement="left" data-trigger=focus" aria-hidden=true" data-html="true"
+            title="Home Page"
+            data-content="<b> Open project </b> <br>
         The overview of your projects is visible below 'Your Projects'. Click on a project to visit its page. To open a project with a project ID click 'Go to existing project' and enter the project ID<br>
         <br>
         <b> Create project </b> <br>
         To create a new project click the button 'Create new Project'. You will be redirected to a page where you can define the specifications.
             ">
-        <span class="fa fa-question-circle" style="color:grey; margin-right:10px"></span>
-    </h3>
+            <span class="fa fa-question-circle" style="color:grey; margin-right:10px"></span>
+        </h3>
 
-    <h1 class="text-center display-4 ">Choose your project below</h1>
-    <hr/>
-	<BR>
-	<div class ="text-center">
-		<div class="btn-group-vertical ">
-            <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#gotoproject"><i class="fa fa-arrow-right" aria-hidden="true"></i> Go to Existing project  </button>
+        <h1 class="text-center display-4 ">Choose your project below</h1>
+        <hr/>
+        <BR>
+        <div class ="text-center">
+            <div class="btn-group-vertical ">
+                <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#gotoproject"><i class="fa fa-arrow-right" aria-hidden="true"></i> Go to Existing project  </button>
 
                 <button onclick="location.href='new'" type="button" class="btn btn-light btn-lg" ><i class="fa fa-plus"> </i> Create new Project</button>
             </div>
@@ -55,20 +55,20 @@
         <br>
         <div class="container">
 
-        <div class="row-justify-content-center">
-    <h1 class="text-center display-4">{{ user.username }}'s projects </h1>
-            <hr/>
-<div class="text-center">
+            <div class="row-justify-content-center">
+                <h1 class="text-center display-4">{{ user.username }}'s projects </h1>
+                <hr/>
+                <div class="text-center">
 
-    {% for project in  projects %}
+                    {% for project in  projects %}
 
-    <a class="btn btn-info btn-lg" role="button" href="{% url 'project' project.id %}" style="margin-top:15px; margin-left:5px"> <i class="fa fa-folder" aria-hidden="true"></i> {{ project.name }}</a>
-    {% endfor %}
+                        <a class="btn btn-info btn-lg" role="button" href="{% url 'project' project.id %}" style="margin-top:15px; margin-left:5px"> <i class="fa fa-folder" aria-hidden="true"></i> {{ project.name }}</a>
+                    {% endfor %}
 
-</div>
+                </div>
+            </div>
         </div>
-        </div>
-</div>
+    </div>
 
     </div>
 
