@@ -34,7 +34,12 @@ class CreateDataForm(forms.ModelForm):
 class CreateNodeForm(forms.ModelForm):
     class Meta:
         model = Node
-        fields = ('latitude', 'longitude')
+        fields = ('latitude', 'longitude', 'picture')
+        widgets = {
+            'latitude': forms.HiddenInput(attrs={'class': 'form-control', 'id': 'latitude', 'name': 'latitude'}),
+            'longitude': forms.HiddenInput(attrs={'class': 'form-control', 'id': 'longitude', 'name': 'longitude'})
+
+        }
 
 
 class CreateProfileForm(forms.ModelForm):
@@ -49,5 +54,6 @@ class CreateProfileForm(forms.ModelForm):
 
 
 class AddMemberForm(forms.Form):
-    email = forms.CharField(label='', widget=forms.TextInput(attrs= {'name': "email", 'type': 'text', 'class': 'form-control', 'placeholder': 'e-mail',
-                   'aria-label': 'email', 'aria-describedby': 'basic-addon1'}))
+    email = forms.CharField(label='', widget=forms.TextInput(
+        attrs={'name': "email", 'type': 'text', 'class': 'form-control', 'placeholder': 'e-mail',
+               'aria-label': 'email', 'aria-describedby': 'basic-addon1'}))

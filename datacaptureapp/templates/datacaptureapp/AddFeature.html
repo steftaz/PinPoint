@@ -17,13 +17,19 @@
     <div class="form-group">
 
         <div class="container center_div">
-            <form method="POST" id="storeDataPoint">
+            <form method="POST" id="storeDataPoint" enctype="multipart/form-data">
 
                 <div class="form-group">
                     {% csrf_token %}
-                    {{ form.as_p }}
-                    <input class="form-control" type="hidden" id="latitude" name="latitude">
-                    <input class="form-control" type="hidden" id="longitude" name="longitude">
+
+                    <div id="data-form">
+                        {{ data_form }}
+                    </div>
+                    <div>
+                        {{ node_form }}
+                    </div>
+
+
                 </div>
 
                 <BR>
@@ -35,6 +41,13 @@
     </div>
 
     <script>
+        $('#data-form').children(':input').each(function () {
+            $(this).attr('class', 'form-control');
+        })
+
+        $('#id_picture').attr('capture', 'environment')
+
+
         function onSubmit() {
             var iLat = document.getElementById('latitude');
             if (!iLat.value) {
@@ -67,6 +80,8 @@
         function getLocation_error(err) {
             console.warn('ERROR(' + err.code + '): ' + err.message);
         }
+
+
 
     </script>
 
