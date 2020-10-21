@@ -72,11 +72,13 @@ def addnode(request, pk):
                 data.attribute = attribute
                 data.save()
             return redirect('project', pk)
-    form = CreateDataForm()
-    del form.fields['value']
+    datas = []
     for attribute in attributes:
-        form.fields[attribute.name] = forms.DecimalField() if attribute.type == "number" else forms.CharField()
-    return render(request, 'datacaptureapp/AddFeature.html', {'form': form, 'project_id': pk})
+        data = CreateDataForm(QueryDict('value=Null'))
+        data = data.save(commit=False)
+        data.attribute = attribute
+        datas.append(data)
+    return render(request, 'datacaptureapp/AddFeature.html', {'datas': datas, 'project_id': pk})
 
 
 @login_required()
