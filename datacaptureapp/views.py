@@ -1,9 +1,9 @@
-from django.http import FileResponse, QueryDict
+from django.http import FileResponse, QueryDict, HttpResponse
 from django.shortcuts import render, redirect
 from datacaptureapp.forms import *
 from datacaptureapp.models import *
 from account.models import Account as UserAccount
-from datacaptureapp.GeoJsonBuilder import *
+from datacaptureapp.export_builder import *
 from django import forms
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -66,23 +66,27 @@ def addnode(request, pk):
                 data.attribute = attribute
                 data.save()
         return redirect('project', pk)
-    else:
-        form = CreateDataForm()
-        del form.fields['value']
-        for attribute in attributes:
-            form.fields[attribute.name] = forms.DecimalField() if attribute.type == "number" else forms.CharField()
-        return render(request, 'datacaptureapp/AddFeature.html', {'form': form, 'project_id': pk})
+    form = CreateDataForm()
+    del form.fields['value']
+    for attribute in attributes:
+        form.fields[attribute.name] = forms.DecimalField() if attribute.type == "number" else forms.CharField()
+    return render(request, 'datacaptureapp/AddFeature.html', {'form': form, 'project_id': pk})
 
 
 @login_required()
 def nodes(request, pk):
     if request.method == 'POST':
-        geojson = generate_geojson(pk)
-        file_path = "datacaptureapp/tmp/{}.geojson".format(json.loads(geojson)['name'])
-        file = open(file_path, "w")
-        file.write(geojson)
-        file.close()
-        return FileResponse(open(file_path, 'rb'))  # TODO Remove new file (os.remove throws an error)
+        data_type = request.POST.get('data_type')
+        if data_type == 'CSV':
+            response = HttpResponse(content_type='text/csv')
+            response['Content-Disposition'] = 'attachment; filename="{}.csv"'.format(Project.objects.filter(id=pk).first().name)
+            generate_csv(response, pk)
+        elif data_type == 'GeoJSON':
+            geojson = generate_geojson(pk)
+            response = HttpResponse(content_type='application/json')
+            response['Content-Disposition'] = 'attachment; filename="{}.geojson"'.format(json.loads(geojson)['name'])
+            response.write(geojson)
+        return response
     attributes = Attribute.objects.filter(project__id=pk)
     data = Data.objects.filter(attribute__in=attributes)
     requested_nodes = Node.objects.filter(project_id=pk)
