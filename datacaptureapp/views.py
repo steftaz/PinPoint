@@ -62,15 +62,16 @@ def addnode(request, pk):
             node = node_form.save(commit=False)
             node.project = requested_project
             node.save()
-        for attribute in attributes:
-            data_query_dict = QueryDict('value=' + request.POST.get(attribute.name))
-            data_form = CreateDataForm(data_query_dict)
-            if data_form.is_valid():
+            for attribute in attributes:
+                data_query_dict = QueryDict('value=' + request.POST.get(attribute.name))
+                data_form = CreateDataForm(data_query_dict)
+                if not data_form.is_valid():
+                    data_form = CreateDataForm(QueryDict("value=Null"))
                 data = data_form.save(commit=False)
                 data.node = node
                 data.attribute = attribute
                 data.save()
-        return redirect('project', pk)
+            return redirect('project', pk)
     form = CreateDataForm()
     del form.fields['value']
     for attribute in attributes:
@@ -96,10 +97,6 @@ def nodes(request, pk):
             return response
         elif 'remove_node' in post:
             Node.objects.get(id=post['remove_node']).delete()
-        elif 'edit_node' in post:
-            datas = Data.objects.filter(node=Node.objects.get(id=post['edit_node']))
-            print(datas)
-            pass
     attributes = Attribute.objects.filter(project__id=pk)
     data = Data.objects.filter(attribute__in=attributes)
     requested_nodes = Node.objects.filter(project_id=pk)
@@ -110,6 +107,13 @@ def nodes(request, pk):
             if data_object.node == node:
                 overview[node.pk][data_object.attribute.name] = data_object.value
     return render(request, 'datacaptureapp/FeatureOverview.html', {'overview': overview, 'attributes': attributes})
+
+
+@login_required()
+def edit_node(request, pk, nk):
+    node = Node.objects.get(id=nk)
+    datas = Data.objects.filter(node=node)
+    return render(request, 'datacaptureapp/EditNode.html', {'datas': datas})
 
 
 @login_required()

@@ -1,0 +1,12 @@
+{% extends "datacaptureapp/base.html" %}
+
+{% block content %}
+
+
+    {% for data in datas %}
+        {{ data.attribute.name }}
+    {% endfor %}
+
+
+{% endblock %}
+

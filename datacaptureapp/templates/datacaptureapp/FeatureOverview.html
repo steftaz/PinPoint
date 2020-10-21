@@ -77,19 +77,13 @@
     </div>
     <form method="POST" >
         {% csrf_token %}
-        <input class="form-control" type="hidden" id="edit_node" name="edit_node">
-    </form>
-    <form method="POST" >
-        {% csrf_token %}
         <input class="form-control" type="hidden" id="remove_node" name="remove_node">
     </form>
-
     <script>
         function edit_node(id) {
-            let elem = document.getElementById("edit_node");
-            elem.value = id;
-            elem.form.submit();
+            location.href = "edit/"+id;
         }
+
         function remove_node(id) {
             let elem = document.getElementById("remove_node");
             elem.value = id;
