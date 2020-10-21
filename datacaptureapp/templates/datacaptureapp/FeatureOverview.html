@@ -1,18 +1,49 @@
 {% extends "datacaptureapp/base.html" %}
 
 {% block content %}
-    <BR>
-    <h1 class="text-center display-4">Feature overview</h1>
-<hr/>
-<div class="container">
-<div class="row justify-content-center">
-        <button class="text-center btn btn-info btn-lg" onclick="location.href='../'" type="button"> Back to Map</button>
-                    <form method="POST" >
-                        {% csrf_token %}
-                        <button class=" btn btn-outline-danger btn-lg"  type="submit"> Export Data</button>
-                    </form>
+ <h3 id="helpIcon" tabindex="0" class="pull-right" data-toggle="popover" style="margin-left:5px"
+        data-placement="left" data-trigger=focus" aria-hidden=true" data-html="true"
+        title="Data overview"
+        data-content="<b> Data overview</b> <br>
+        All the points you have collected so far are visible in the table below. Click 'Back to Map' to go back to the project where all the points are visible on a map.
+        <br>
+        <br>
+        <b> Export Data </b> <br>
+        Click the 'Export Data' button to export your data from this project. You can define the type of data by clicking the arrow down and choosing your data type.
+            ">
+        <span class="fa fa-question-circle" style="color:grey; margin-right:10px"></span>
+    </h3>
+    <h1 class="text-center display-4">Data overview</h1>
+    <hr/>
+    <div class="container">
+        <div class="row justify-content-center">
+            <button class="text-center btn btn-info btn-lg" onclick="location.href='../'" type="button" style="margin-right:10px"> Back to Map</button>
+            <form method="POST" >
+                {% csrf_token %}
+                <div class="dropdown">
+                    <button class=" btn btn-outline-danger btn-lg dropdown-toggle" data-toggle="dropdown" style="margin-right:5px">
+                        Export Data</button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <div class="dropdown-header">Choose data type</div>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#" onclick="set_data_type('GeoJSON')">GeoJSON</a>
+                        <a class="dropdown-item" href="#" onclick="set_data_type('CSV')">CSV</a>
+                    </div>
+                </div>
+                <input class="form-control" type="hidden" id="data_type" name="data_type">
+            </form>
+        </div>
     </div>
-</div>
+
+
+
+    <script>
+        function set_data_type(type) {
+            elem = document.getElementById("data_type");
+            elem.value = type;
+            elem.form.submit();
+        }
+    </script>
 
     <BR>
     <div class="row justify-content-center">
@@ -28,13 +59,13 @@
                 </tr>
                 </thead>
                 <tbody>
-                    {% for value in overview.values %}
-                        <tr>
+                {% for value in overview.values %}
+                    <tr>
                         {% for data in value.values %}
                             <td>{{ data }}</td>
                         {% endfor %}
-                        </tr>
-                    {% endfor %}
+                    </tr>
+                {% endfor %}
                 </tbody>
             </table>
         </div>

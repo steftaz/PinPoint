@@ -68,6 +68,8 @@ TEMPLATES = [
     },
 ]
 
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
+
 AUTH_USER_MODEL = 'account.Account'
 
 WSGI_APPLICATION = 'gisproject.wsgi.application'
