@@ -1,7 +1,15 @@
 {% extends "datacaptureapp/base.html" %}
 
 {% block content %}
-  <BR>
+    <h3 id="helpIcon" tabindex="0" class="pull-right" data-toggle="popover" style="margin-left:5px"
+        data-placement="left" data-trigger=focus" aria-hidden=true" data-html="true"
+        title="Adding Data"
+        data-content="<b> Add a data point</b> <br>
+        Fill in the form you have defined by and click 'Store data point' to save this point. The location of this point will automatically be stored together with its features.
+        <br>
+   ">
+        <span class="fa fa-question-circle" style="color:grey; margin-right:10px"></span>
+    </h3>
     <h1 class="text-center display-4">Add Data</h1>
 <hr/>
 	<BR>
@@ -10,7 +18,6 @@
 
         <div class="container center_div">
             <form method="POST" id="storeDataPoint">
-          <i tabindex="0" class="fa fa-question-circle" data-container="body" data-toggle="popover"  data-placement="right" data-trigger=focus" data-content="Add a new data point to the project by filling in the attribute properties" aria-hidden=true"></i>
 
                 <div class="form-group">
                     {% csrf_token %}
