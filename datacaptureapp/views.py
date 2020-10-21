@@ -81,17 +81,25 @@ def addnode(request, pk):
 @login_required()
 def nodes(request, pk):
     if request.method == 'POST':
-        data_type = request.POST.get('data_type')
-        if data_type == 'CSV':
-            response = HttpResponse(content_type='text/csv')
-            response['Content-Disposition'] = 'attachment; filename="{}.csv"'.format(Project.objects.filter(id=pk).first().name)
-            generate_csv(response, pk)
-        elif data_type == 'GeoJSON':
-            geojson = generate_geojson(pk)
-            response = HttpResponse(content_type='application/json')
-            response['Content-Disposition'] = 'attachment; filename="{}.geojson"'.format(json.loads(geojson)['name'])
-            response.write(geojson)
-        return response
+        post = request.POST
+        if 'data_type' in post:
+            data_type = request.POST.get('data_type')
+            if data_type == 'CSV':
+                response = HttpResponse(content_type='text/csv')
+                response['Content-Disposition'] = 'attachment; filename="{}.csv"'.format(Project.objects.filter(id=pk).first().name)
+                generate_csv(response, pk)
+            elif data_type == 'GeoJSON':
+                geojson = generate_geojson(pk)
+                response = HttpResponse(content_type='application/json')
+                response['Content-Disposition'] = 'attachment; filename="{}.geojson"'.format(json.loads(geojson)['name'])
+                response.write(geojson)
+            return response
+        elif 'remove_node' in post:
+            Node.objects.get(id=post['remove_node']).delete()
+        elif 'edit_node' in post:
+            datas = Data.objects.filter(node=Node.objects.get(id=post['edit_node']))
+            print(datas)
+            pass
     attributes = Attribute.objects.filter(project__id=pk)
     data = Data.objects.filter(attribute__in=attributes)
     requested_nodes = Node.objects.filter(project_id=pk)
