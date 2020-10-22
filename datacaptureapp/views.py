@@ -111,12 +111,14 @@ def nodes(request, pk):
     data = Data.objects.filter(attribute__in=attributes)
     requested_nodes = Node.objects.filter(project_id=pk)
     overview = {}
+    images = {}
     for node in requested_nodes:
         overview[node.pk] = {'latitude': node.latitude, 'longitude': node.longitude}
         for data_object in data:
             if data_object.node == node:
                 overview[node.pk][data_object.attribute.name] = data_object.value
-    return render(request, 'datacaptureapp/FeatureOverview.html', {'overview': overview, 'attributes': attributes})
+        images[node.pk] = node.picture
+    return render(request, 'datacaptureapp/FeatureOverview.html', {'overview': overview, 'images': images, 'attributes': attributes})
 
 
 @login_required()

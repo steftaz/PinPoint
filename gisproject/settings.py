@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'datacaptureapp.apps.DatacaptureappConfig',
-    'account.apps.AccountConfig'
+    'account.apps.AccountConfig',
+    'datacaptureapp.templatetags.tags'
 ]
 
 MIDDLEWARE = [
