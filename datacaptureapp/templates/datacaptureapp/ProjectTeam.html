@@ -13,6 +13,12 @@
     <h1 class="text-center" style="font-size:min(5vw, 50px);font-family:'Calibri'">Project Team</h1>
 <hr/>
 
+    <div class="custom-control custom-switch">
+  <input type="checkbox" class="custom-control-input" id="customSwitch1">
+  <label class="custom-control-label" for="customSwitch1">Toggle this switch element</label>
+</div>
+
+
     <div>
         {% if messages %}
             <ul class="messages">
@@ -63,6 +69,8 @@
 
 
     <script>
+
+    // When someone tries to add a member (submit the form)
         $("#addMember").submit(function (e) {
 
             e.preventDefault(); // avoid to execute the actual submit of the form.
