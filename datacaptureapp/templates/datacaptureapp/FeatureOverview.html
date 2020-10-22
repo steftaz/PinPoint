@@ -1,7 +1,8 @@
 {% extends "datacaptureapp/base.html" %}
 
 {% block content %}
- <h3 id="helpIcon" tabindex="0" class="pull-right" data-toggle="popover" style="margin-left:5px"
+
+    <h3 id="helpIcon" tabindex="0" class="pull-right" data-toggle="popover" style="margin-left:5px"
         data-placement="left" data-trigger=focus" aria-hidden=true" data-html="true"
         title="Data overview"
         data-content="<b> Data overview</b> <br>
@@ -36,17 +37,15 @@
         </div>
     </div>
 
-
-
     <script>
         function set_data_type(type) {
-            elem = document.getElementById("data_type");
+            let elem = document.getElementById("data_type");
             elem.value = type;
             elem.form.submit();
         }
     </script>
 
-    <BR>
+    <br>
     <div class="row justify-content-center">
         <div class="col-auto">
             <table class="table table-responsive">
@@ -60,16 +59,37 @@
                 </tr>
                 </thead>
                 <tbody>
-                {% for value in overview.values %}
+                {% for key, value in overview.items %}
                     <tr>
                         {% for data in value.values %}
                             <td>{{ data }}</td>
                         {% endfor %}
+                        <td style="border:none;"><a onclick="edit_node({{ key }})"><button class="btn btn-outline-secondary btn-sm" type="button">
+                            Edit
+                        </button></a></td>
+                        <td style="border:none;"><a onclick="remove_node({{ key }})"><button class="close" aria-label="Close" style="color: red; opacity: 1;" type="button">
+                            <span aria-hidden="true">&times;</span>
+                        </button></a></td>
                     </tr>
                 {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
+    <form method="POST" >
+        {% csrf_token %}
+        <input class="form-control" type="hidden" id="remove_node" name="remove_node">
+    </form>
+    <script>
+        function edit_node(id) {
+            location.href = "edit/"+id;
+        }
+
+        function remove_node(id) {
+            let elem = document.getElementById("remove_node");
+            elem.value = id;
+            elem.form.submit();
+        }
+    </script>
 
 {% endblock %}

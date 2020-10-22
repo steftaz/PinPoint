@@ -17,8 +17,8 @@
                 <input type="password" class="form-control" id="ProjectDescription" placeholder="Enter password">
             </div>
 
-      <button  type="submit" onclick="location.href='../newprofile'" class="btn btn-info">Register</button>
-      <button  type="submit" onclick="location.href='../profile'" class="btn btn-info">Sign in</button>
+            <button  type="submit" onclick="location.href='{% url 'new-profile' %}'" class="btn btn-info">Register</button>
+            <button  type="submit" onclick="location.href='{% url 'profile' %}'" class="btn btn-info">Sign in</button>
 
 
         </div>

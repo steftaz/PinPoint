@@ -62,36 +62,43 @@ def addnode(request, pk):
             node = node_form.save(commit=False)
             node.project = requested_project
             node.save()
-        for attribute in attributes:
-            data_query_dict = QueryDict('value=' + request.POST.get(attribute.name))
-            data_form = CreateDataForm(data_query_dict)
-            if data_form.is_valid():
+            for attribute in attributes:
+                data_query_dict = QueryDict('value=' + request.POST.get(attribute.name))
+                data_form = CreateDataForm(data_query_dict)
+                if not data_form.is_valid():
+                    data_form = CreateDataForm(QueryDict("value=Null"))
                 data = data_form.save(commit=False)
                 data.node = node
                 data.attribute = attribute
                 data.save()
-        return redirect('project', pk)
-    form = CreateDataForm()
-    del form.fields['value']
+            return redirect('project', pk)
+    datas = []
     for attribute in attributes:
-        form.fields[attribute.name] = forms.DecimalField() if attribute.type == "number" else forms.CharField()
-    return render(request, 'datacaptureapp/AddFeature.html', {'form': form, 'project_id': pk})
+        data = CreateDataForm(QueryDict('value=Null'))
+        data = data.save(commit=False)
+        data.attribute = attribute
+        datas.append(data)
+    return render(request, 'datacaptureapp/AddFeature.html', {'datas': datas, 'project_id': pk})
 
 
 @login_required()
 def nodes(request, pk):
     if request.method == 'POST':
-        data_type = request.POST.get('data_type')
-        if data_type == 'CSV':
-            response = HttpResponse(content_type='text/csv')
-            response['Content-Disposition'] = 'attachment; filename="{}.csv"'.format(Project.objects.filter(id=pk).first().name)
-            generate_csv(response, pk)
-        elif data_type == 'GeoJSON':
-            geojson = generate_geojson(pk)
-            response = HttpResponse(content_type='application/json')
-            response['Content-Disposition'] = 'attachment; filename="{}.geojson"'.format(json.loads(geojson)['name'])
-            response.write(geojson)
-        return response
+        post = request.POST
+        if 'data_type' in post:
+            data_type = request.POST.get('data_type')
+            if data_type == 'CSV':
+                response = HttpResponse(content_type='text/csv')
+                response['Content-Disposition'] = 'attachment; filename="{}.csv"'.format(Project.objects.filter(id=pk).first().name)
+                generate_csv(response, pk)
+            elif data_type == 'GeoJSON':
+                geojson = generate_geojson(pk)
+                response = HttpResponse(content_type='application/json')
+                response['Content-Disposition'] = 'attachment; filename="{}.geojson"'.format(json.loads(geojson)['name'])
+                response.write(geojson)
+            return response
+        elif 'remove_node' in post:
+            Node.objects.get(id=post['remove_node']).delete()
     attributes = Attribute.objects.filter(project__id=pk)
     data = Data.objects.filter(attribute__in=attributes)
     requested_nodes = Node.objects.filter(project_id=pk)
@@ -102,6 +109,24 @@ def nodes(request, pk):
             if data_object.node == node:
                 overview[node.pk][data_object.attribute.name] = data_object.value
     return render(request, 'datacaptureapp/FeatureOverview.html', {'overview': overview, 'attributes': attributes})
+
+
+@login_required()
+def edit_node(request, pk, nk):
+    if request.method == 'POST':
+        post = request.POST
+        node = Node.objects.get(id=nk)
+        attributes = Attribute.objects.filter(project=Project.objects.get(id=pk))
+        for attribute in attributes:
+            value = post[attribute.name]
+            if value != '':
+                data = Data.objects.get(node=node, attribute=attribute)
+                data.value = value
+                data.save()
+        return redirect('nodes', pk)
+    node = Node.objects.get(id=nk)
+    datas = Data.objects.filter(node=node)
+    return render(request, 'datacaptureapp/EditNode.html', {'datas': datas})
 
 
 @login_required()
@@ -172,12 +197,15 @@ def profile(request):
 def newprofile(request):
     return render(request, 'datacaptureapp/NewProfile.html', {})
 
+
 @login_required()
 def editprofile(request):
     return render(request, 'datacaptureapp/EditProfile.html', {})
 
+
 def about(request):
     return render(request, 'datacaptureapp/About.html', {})
+
 
 def faq(request):
     return render(request, 'datacaptureapp/FAQ.html', {})
