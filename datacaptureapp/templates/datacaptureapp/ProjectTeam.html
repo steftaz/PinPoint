@@ -1,6 +1,18 @@
 {% extends "datacaptureapp/base.html" %}
 
 {% block content %}
+    <h3 id="helpIcon" tabindex="0" class="pull-right" data-toggle="popover" style="margin-left:5px"
+        data-placement="left" data-trigger=focus" aria-hidden=true" data-html="true"
+        title="Project Team"
+        data-content="<b> Adding a project member</b> <br>
+        Type the email of the member you want to add in the corresponding form and press 'Add team member'. The member should now be visible in the table together with all other members.
+        <br>">
+        <span class="fa fa-question-circle" style="color:grey; margin-right:10px"></span>
+    </h3>
+<br>
+    <h1 class="text-center" style="font-size:min(5vw, 50px);font-family:'Calibri'">Project Team</h1>
+<hr/>
+
     <div>
         {% if messages %}
             <ul class="messages">
@@ -14,7 +26,7 @@
 
 
 
-    <div class="container pt-5">
+    <div class="container pt-5 text-center">
         <div id="div_messages">
 
         </div>
@@ -23,7 +35,7 @@
 
             <div class="input-group mb-3">
                 {{ form }}
-                <div class="input-group-append">
+                <div class="input-group">
                     <button class="text-center btn btn-info" type="submit"><i class="fa fa-plus"> </i> Add team member
                     </button>
                 </div>

@@ -56,29 +56,38 @@ def addnode(request, pk):
     if request.method == "POST":
         latitude_formatted = "{:.8f}".format(Decimal(request.POST.get('latitude')))
         longitude_formatted = "{:.8f}".format(Decimal(request.POST.get('longitude')))
-        node_query_dict = QueryDict('latitude=' + latitude_formatted + '&' + 'longitude=' + longitude_formatted)
-        node_form = CreateNodeForm(node_query_dict)
+        request.POST._mutable = True
+        request.POST['latitude'] = latitude_formatted
+        request.POST['longitude'] = longitude_formatted
+        request.POST._mutable = False
+        node_form = CreateNodeForm(request.POST, request.FILES)
+
         if node_form.is_valid():
             node = node_form.save(commit=False)
             node.project = requested_project
             node.save()
-            for attribute in attributes:
-                data_query_dict = QueryDict('value=' + request.POST.get(attribute.name))
-                data_form = CreateDataForm(data_query_dict)
-                if not data_form.is_valid():
-                    data_form = CreateDataForm(QueryDict("value=Null"))
-                data = data_form.save(commit=False)
-                data.node = node
-                data.attribute = attribute
-                data.save()
-            return redirect('project', pk)
+
+        for attribute in attributes:
+            data_query_dict = QueryDict('value=' + request.POST.get(attribute.name))
+            data_form = CreateDataForm(data_query_dict)
+            if not data_form.is_valid():
+                data_form = CreateDataForm(QueryDict("value=Null"))
+            data = data_form.save(commit=False)
+            data.node = node
+            data.attribute = attribute
+            data.save()
+        return redirect('project', pk)
+
+    node_form = CreateNodeForm()
+    print(node_form)
     datas = []
     for attribute in attributes:
         data = CreateDataForm(QueryDict('value=Null'))
         data = data.save(commit=False)
         data.attribute = attribute
         datas.append(data)
-    return render(request, 'datacaptureapp/AddFeature.html', {'datas': datas, 'project_id': pk})
+    return render(request, 'datacaptureapp/AddFeature.html', {'node_form': node_form, 'datas': datas, 'project_id': pk})
+
 
 
 @login_required()
@@ -144,7 +153,6 @@ def add_attribute(request, pk):
         return render(request, 'datacaptureapp/FormCreation.html', {'form': form})
 
 
-
 @login_required()
 def messagesToList(request):
     django_messages = []
@@ -155,6 +163,7 @@ def messagesToList(request):
             "extra_tags": message.tags,
         })
     return django_messages
+
 
 @login_required()
 def team(request, pk):
@@ -167,7 +176,8 @@ def team(request, pk):
                 account = Account.objects.filter(email=form.cleaned_data.get('email')).first()
                 requested_project.user.add(account)
                 messages.success(request, 'Successfully added the user to this project')
-                return JsonResponse({"messages": messagesToList(messages, request), 'email': account.email, 'username': account.username})
+                return JsonResponse({"messages": messagesToList(messages, request), 'email': account.email,
+                                     'username': account.username})
             else:
                 messages.error(request, 'Adding team member failed: no user found with that email')
                 return JsonResponse({"messages": messagesToList(messages, request)})
