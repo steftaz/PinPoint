@@ -40,11 +40,18 @@ def newproject(request):
 
 @login_required()
 def project(request, pk=0):
+    requested_project = Project.objects.filter(id=pk).first()
     if pk == 0:
         return render(request, 'datacaptureapp/home.html')
+    if request.POST:
+        print(request.POST)
+        form = ChangePublicPrivateForm(request.POST)
+        if form.is_valid():
+            requested_project.is_public = request.POST.get('is_public')
+            requested_project.save()
+            return JsonResponse({'is_public': requested_project.is_public})
     geojson = generate_geojson(pk)
-    requested_project = Project.objects.filter(id=pk).first()
-    owner = requested_project.user.all().first()
+    owner = requested_project.user.all().first() #TODO there are more users now, we do not specify the owner
     return render(request, 'datacaptureapp/Project.html',
                   {'project': requested_project, 'owner': owner, 'geojson': geojson})
 

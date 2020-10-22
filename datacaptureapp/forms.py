@@ -33,6 +33,7 @@ class CreateDataForm(forms.ModelForm):
 
 class CreateNodeForm(forms.ModelForm):
     picture = forms.ImageField(label='', required=False)
+
     class Meta:
         model = Node
         fields = ('latitude', 'longitude', 'picture')
@@ -58,3 +59,7 @@ class AddMemberForm(forms.Form):
     email = forms.CharField(label='', widget=forms.TextInput(
         attrs={'name': "email", 'type': 'text', 'class': 'form-control', 'placeholder': 'e-mail',
                'aria-label': 'email', 'aria-describedby': 'basic-addon1'}))
+
+
+class ChangePublicPrivateForm(forms.Form):
+    is_public = forms.BooleanField()

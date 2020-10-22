@@ -9,34 +9,25 @@
         <br>">
         <span class="fa fa-question-circle" style="color:grey; margin-right:10px"></span>
     </h3>
-<br>
+    <br>
     <h1 class="text-center" style="font-size:min(5vw, 50px);font-family:'Calibri'">Project Team</h1>
-<hr/>
+    <hr/>
 
-    <div class="custom-control custom-switch">
-  <input type="checkbox" class="custom-control-input" id="customSwitch1">
-  <label class="custom-control-label" for="customSwitch1">Toggle this switch element</label>
-</div>
-
-
-    <div>
-        {% if messages %}
-            <ul class="messages">
-                {% for message in messages %}
-                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-
+    <!-- Public private toggle -->
+    <div id="is-public" style="display: none;">{{ project.is_public }}</div>
+    <div class="container pt-5 text-left">
+        <div class="custom-control custom-switch">
+            <input change-pp-url="{% url 'project' project.id %}" type="checkbox" class="custom-control-input" id="public-private-toggle">
+            <label class="custom-control-label" for="public-private-toggle" id="toggle-label"></label>
+        </div>
     </div>
 
-
-
     <div class="container pt-5 text-center">
-        <div id="div_messages">
+        <!-- div where messages are inserted -->
+        <div id="div_messages"></div>
 
-        </div>
-        <form  method="POST" id="addMember" data-url="{% url 'team' project.id %}">
+        <!-- Adding team members form -->
+        <form method="POST" id="addMember" data-url="{% url 'team' project.id %}">
             {% csrf_token %}
 
             <div class="input-group mb-3">
@@ -48,29 +39,67 @@
             </div>
         </form>
     </div>
+
+    <!-- Team member list -->
+
     <div class="container py-5">
-            <table class="table py-3" id="team-members">
-                <thead>
+        <table class="table py-3" id="team-members">
+            <thead>
+            <tr>
+                <th scope="col">e-mail</th>
+                <th scope="col">name</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for member in team %}
                 <tr>
-                    <th scope="col">e-mail</th>
-                    <th scope="col">name</th>
+                    <td>{{ member.email }}</td>
+                    <td>{{ member.username }}</td>
                 </tr>
-                </thead>
-                <tbody>
-                {% for member in team %}
-                    <tr>
-                        <td>{{ member.email }}</td>
-                        <td>{{ member.username }}</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+            {% endfor %}
+            </tbody>
+        </table>
     </div>
 
 
     <script>
+        ppToggle = $("#public-private-toggle");
+        toggleLabel = $("#toggle-label");
 
-    // When someone tries to add a member (submit the form)
+        if ($("#is-public").html() == 'True') {
+            toggleLabel.html("Project is <b>public</b>")
+        } else {
+            toggleLabel.html("Project is <b>private</b>");
+        }
+
+        ppToggle.on('change', function () {
+            const url = $(this).attr('change-pp-url');
+            const is_public = ppToggle.is(":checked") ? 1 : 0;
+            const csrf_token = '{{csrf_token}}';
+            console.log(is_public)
+                $.ajax({
+                    type: 'POST',
+                    headers: {"X-CSRFToken": csrf_token},
+                    url: url,
+                    data: {'is_public': is_public},
+                    success: function (response) {
+                        console.log("succes");
+                        if(response.is_public) {
+                            toggleLabel.html("Project is <b>public</b>");
+                        }  else {
+                            toggleLabel.html("Project is <b>private</b>");
+                        }
+                    }
+
+                })
+            }
+        );
+
+
+
+
+
+        // When someone tries to add a member (submit the form)
         $("#addMember").submit(function (e) {
 
             e.preventDefault(); // avoid to execute the actual submit of the form.
@@ -94,15 +123,15 @@
 
         });
 
-        function update_messages(messages){
+        function update_messages(messages) {
             $("#div_messages").html("");
             $.each(messages, function (i, m) {
                 switch (m.extra_tags) {
                     case 'success':
-                        $("#div_messages").append("<div class='alert alert-success' role='alert'>"+m.message+"</div>");
+                        $("#div_messages").append("<div class='alert alert-success' role='alert'>" + m.message + "</div>");
                         break;
                     case 'error':
-                        $("#div_messages").append("<div class='alert alert-danger' role='alert'>"+m.message+"</div>");
+                        $("#div_messages").append("<div class='alert alert-danger' role='alert'>" + m.message + "</div>");
 
                 }
 
