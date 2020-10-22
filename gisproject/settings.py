@@ -24,7 +24,7 @@ SECRET_KEY = 'o28_+gdwi98zv@&i6urdpm2fcd!2582@az^l%wdxewt=gb1!w2'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '192.168.56.1', 'steftaz.pythonanywhere.com']
+ALLOWED_HOSTS = ['127.0.0.1', '192.168.56.1', 'steftaz.pythonanywhere.com', '192.168.0.103']
 STATIC_URL = '/static/'
 
 # Application definition
@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'datacaptureapp.apps.DatacaptureappConfig',
-    'account.apps.AccountConfig'
+    'account.apps.AccountConfig',
+    'sslserver'
 ]
 
 MIDDLEWARE = [
