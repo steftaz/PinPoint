@@ -175,11 +175,11 @@ def team(request, pk):
                 account = Account.objects.filter(email=form.cleaned_data.get('email')).first()
                 requested_project.user.add(account)
                 messages.success(request, 'Successfully added the user to this project')
-                return JsonResponse({"messages": messagesToList(messages, request), 'email': account.email,
+                return JsonResponse({"messages": messagesToList(request), 'email': account.email,
                                      'username': account.username})
             else:
                 messages.error(request, 'Adding team member failed: no user found with that email')
-                return JsonResponse({"messages": messagesToList(messages, request)})
+                return JsonResponse({"messages": messagesToList(request)})
 
     else:
         form = AddMemberForm()
