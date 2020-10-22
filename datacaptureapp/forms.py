@@ -32,7 +32,7 @@ class CreateDataForm(forms.ModelForm):
 
 
 class CreateNodeForm(forms.ModelForm):
-    picture = forms.ImageField(label='')
+    picture = forms.ImageField(label='', required=False)
     class Meta:
         model = Node
         fields = ('latitude', 'longitude', 'picture')

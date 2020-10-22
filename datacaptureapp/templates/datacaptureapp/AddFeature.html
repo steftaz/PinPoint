@@ -9,10 +9,10 @@
         <br>">
         <span class="fa fa-question-circle" style="color:grey; margin-right:10px"></span>
     </h3>
-<br>
+    <br>
     <h1 class="text-center" style="font-size:min(5vw, 50px); font-family:'Calibri'">Add Data</h1>
-<hr/>
-	<BR>
+    <hr/>
+    <br>
 
     <div class="form-group">
 
@@ -23,21 +23,18 @@
 
                 <div class="form-group">
                     {% csrf_token %}
+                    <div class="container center_div">
+                        {% for data in datas %}
+                            <br/>
 
-                    {% for data in datas %}
-                        <br/>
-                        <div class="container center_div">
                             <label for="name">{{ data.attribute.name }}</label>
                             <input type="{{ data.attribute.type }}" name="{{ data.attribute.name }}"
                                    class="form-control"
                                    placeholder="{{ data.attribute.name }}" id="{{ data.attribute.name }} required ">
-                        </div>
-                    {% endfor %}
-                    <BR>
-                    <BR>
-                    <div class="container center_div">
+                        {% endfor %}
+                        <br>
+                        <br>
                         <div class="custom-file">
-
                             {{ node_form }}
                             <button type="button" id="picture-button" class="btn btn-dark">
                                 <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-file-image"
@@ -50,22 +47,21 @@
                             </button>
                             <span id="chosen-file">No picture chosen</span>
                         </div>
+                        <br>
+                        <br>
+                        <button type="button" onclick="onSubmit()" class="btn btn-info">Store data point</button>
+                        <a href="../../">
+                            <button type="button" class="btn btn-outline-danger">Return to project</button>
+                        </a>
                     </div>
-
-
                 </div>
-                <br>
-                <button type="button" onclick="onSubmit()" class="btn btn-info">Store data point</button>
-                <a href="../../">
-                    <button type="button" class="btn btn-outline-danger">Return to project</button>
-                </a>
             </form>
 
         </div>
     </div>
 
     <script>
-        $('#id_picture').attr({'capture': 'environment', 'hidden': 'hidden'});
+        $('#id_picture').attr({'hidden': 'hidden'});
         const pictureInput = document.getElementById("id_picture");
         const pictureButton = document.getElementById("picture-button");
         const chosenFile = document.getElementById("chosen-file");

@@ -79,7 +79,6 @@ def addnode(request, pk):
         return redirect('project', pk)
 
     node_form = CreateNodeForm()
-    print(node_form)
     datas = []
     for attribute in attributes:
         data = CreateDataForm(QueryDict('value=Null'))
