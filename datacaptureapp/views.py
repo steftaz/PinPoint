@@ -44,11 +44,9 @@ def project(request, pk=0):
     if pk == 0:
         return render(request, 'datacaptureapp/home.html')
     if request.POST:
-        print(request.POST)
-        form = ChangePublicPrivateForm(request.POST)
+        form = ChangePublicPrivateForm(request.POST, instance=requested_project)
         if form.is_valid():
-            requested_project.is_public = request.POST.get('is_public')
-            requested_project.save()
+            form.save()
             return JsonResponse({'is_public': requested_project.is_public})
     geojson = generate_geojson(pk)
     owner = requested_project.user.all().first() #TODO there are more users now, we do not specify the owner

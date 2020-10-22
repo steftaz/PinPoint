@@ -61,5 +61,7 @@ class AddMemberForm(forms.Form):
                'aria-label': 'email', 'aria-describedby': 'basic-addon1'}))
 
 
-class ChangePublicPrivateForm(forms.Form):
-    is_public = forms.BooleanField()
+class ChangePublicPrivateForm(forms.ModelForm):
+    class Meta:
+        model = Project
+        fields = ['is_public']
