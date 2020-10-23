@@ -45,8 +45,23 @@ def project(request, pk=0):
     geojson = generate_geojson(pk)
     requested_project = Project.objects.filter(id=pk).first()
     owner = requested_project.user.all().first()
+    attributes = Attribute.objects.filter(project__id=pk)
+    data = Data.objects.filter(attribute__in=attributes)
+    requested_nodes = Node.objects.filter(project_id=pk)
+    overview = get_node_overview(data, requested_nodes)
+    print(overview)
     return render(request, 'datacaptureapp/Project.html',
-                  {'project': requested_project, 'owner': owner, 'geojson': geojson})
+                  {'project': requested_project, 'owner': owner, 'geojson': geojson, 'overview': overview})
+
+
+def get_node_overview(data, requested_nodes):
+    overview = {}
+    for node in requested_nodes:
+        overview[node.pk] = {'latitude': node.latitude, 'longitude': node.longitude}
+        for data_object in data:
+            if data_object.node == node:
+                overview[node.pk][data_object.attribute.name] = data_object.value
+    return overview
 
 
 @login_required()
@@ -61,7 +76,6 @@ def addnode(request, pk):
         request.POST['longitude'] = longitude_formatted
         request.POST._mutable = False
         node_form = CreateNodeForm(request.POST, request.FILES)
-        print(request.FILES)
 
         if node_form.is_valid():
             node = node_form.save(commit=False)
@@ -111,13 +125,9 @@ def nodes(request, pk):
     attributes = Attribute.objects.filter(project__id=pk)
     data = Data.objects.filter(attribute__in=attributes)
     requested_nodes = Node.objects.filter(project_id=pk)
-    overview = {}
+    overview = get_node_overview(data, requested_nodes)
     images = {}
     for node in requested_nodes:
-        overview[node.pk] = {'latitude': node.latitude, 'longitude': node.longitude}
-        for data_object in data:
-            if data_object.node == node:
-                overview[node.pk][data_object.attribute.name] = data_object.value
         images[node.pk] = node.picture
     return render(request, 'datacaptureapp/FeatureOverview.html', {'overview': overview, 'images': images, 'attributes': attributes})
 
