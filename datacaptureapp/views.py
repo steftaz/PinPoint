@@ -41,17 +41,30 @@ def newproject(request):
 @login_required()
 def project(request, pk=0):
     requested_project = Project.objects.filter(id=pk).first()
-    if pk == 0:
-        return render(request, 'datacaptureapp/home.html')
+    if not requested_project:
+        messages.error(request, 'The project does not exist')
+        return JsonResponse({"messages": messagesToList(request)})
+    else:
+        if requested_project.is_public or requested_project.user.filter(email=request.user.email).first():
+            geojson = generate_geojson(pk)
+            owner = requested_project.user.all().first()  # TODO there are more users now, we do not specify the owner
+            return render(request, 'datacaptureapp/Project.html',
+                          {'project': requested_project, 'owner': owner, 'geojson': geojson})
+        else:
+            if request.headers.get('search-by-id'):
+                messages.error(request, 'This project is private. Ask the project owner to add you to this project.')
+                return JsonResponse({"messages": messagesToList(request)})
+            else:
+                return redirect('projects')
+
+    # POST request to change private/public
     if request.POST:
         form = ChangePublicPrivateForm(request.POST, instance=requested_project)
         if form.is_valid():
             form.save()
             return JsonResponse({'is_public': requested_project.is_public})
-    geojson = generate_geojson(pk)
-    owner = requested_project.user.all().first() #TODO there are more users now, we do not specify the owner
-    return render(request, 'datacaptureapp/Project.html',
-                  {'project': requested_project, 'owner': owner, 'geojson': geojson})
+
+
 
 
 @login_required()

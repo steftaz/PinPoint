@@ -19,12 +19,21 @@
             <hr/>
             <BR>
                 <div class ="text-center">
+                    <div id="error-messages">
+                        {% if messages %}
+                            <ul>
+                                {% for message in messages %}
+                                    <li>{{ message }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </div>
                     <div class="btn-group-vertical ">
                         <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#gotoproject"><i class="fa fa-arrow-right" aria-hidden="true"></i> Go to Existing project  </button>
                         <button onclick="location.href='{%  url 'new-project' %}'" type="button" class="btn btn-light btn-lg" ><i class="fa fa-plus"> </i> Create new Project</button>
                     </div>
                 </div>
-
+<!-- Go to project by ID -->
             <div class="modal fade" id="gotoproject" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -34,9 +43,10 @@
                         </div>
                         <div class="modal-body">
 
-                            <!-- Go to project by ID -->
+                            <!-- (error) messages when searching by ID -->
+                            <div id="messages-search-id">
 
-                            {#        <form id="getProjectByID">#}
+                            </div>
                             <div class="form-group">
                                 <label for="project_id" class="col-form-label">Enter Project ID</label>
                                 <input type="number" step="1" class="form-control" name="project_id" id="project_id">
@@ -44,7 +54,7 @@
                             <div class="modal-footer">
                                 <button onclick="goToProjectById()" class="btn btn-info" id="goToProjectById">Submit</button>
                             </div>
-                            {#</form>#}
+
                         </div>
                     </div>
                 </div>
@@ -62,10 +72,24 @@
         </div>
     </div>
     <script>
+
         function goToProjectById() {
-            var id = document.getElementById('project_id').value;
-            location.href= ("/projects/" + id + "/");
+            const id = $('#project_id').val();
+            const url = '/projects/' + id + "/";
+            $.ajax({
+                url: url,
+                type: 'GET',
+                headers: {'search-by-id': true},
+                success: function (response) {
+                    $("#messages-search-id").html("");
+                    $.each(response, function (i, m) {
+                        $("#messages-search-id").append("<div class='alert alert-danger' role='alert'>" + m[0].message + "</div>");
+                    });
+                }
+            });
         }
+
+
     </script>
 
 {% endblock %}
