@@ -68,12 +68,14 @@
                             <td>{{ data|default:"Null" }}</td>
                         {% endfor %}
                         {% with image=images|get:key %}
-                            {% if image %}
-                                <td>
-                                    <a data-toggle="modal" data-target="#picture{{ key }}" class="btn btn-primary btn-sm" aria-label="Close" type="button">
+                            <td>
+
+
+                                {% if image %}
+                                    <a data-toggle="modal" data-target="#picture{{ key }}" class="btn btn-primary btn-sm" aria-label="View picture" type="button">
                                         View
                                     </a>
-                                    <div class="modal fade" id="picture{{ key }}" tabindex="-1" role="dialog" aria-labelledby="deleteNode{{ key }}" aria-hidden="true">
+                                    <div class="modal fade" id="picture{{ key }}" tabindex="-1" role="dialog" aria-labelledby="picture of {{ key }}" aria-hidden="true">
                                         <div class="modal-dialog" role="document">
                                             <div class="modal-content">
                                                 <div class="modal-header">
@@ -84,17 +86,15 @@
                                                 </div>
                                                 <div class="modal-body">
                                                     <img src="/media/{{ image }}" alt="Picture" width="100%" height="auto">
-                                                    {# TODO {{ MEDIA_URL }} doesn't work #}
+                                                    {# TODO {{ MEDIA_URL }} doesn't work ^ #}
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </td>
-                            {% else %}
-                                <td>
+                                {% else %}
                                     Null
-                                </td>
-                            {% endif %}
+                                {% endif %}
+                            </td>
                         {% endwith %}
                         <td style="border:none;"><a onclick="edit_node({{ key }})" class="btn btn-outline-secondary btn-sm" type="button">
                             Edit

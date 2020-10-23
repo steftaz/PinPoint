@@ -39,7 +39,6 @@ class CreateNodeForm(forms.ModelForm):
         widgets = {
             'latitude': forms.HiddenInput(attrs={'class': 'form-control', 'id': 'latitude', 'name': 'latitude'}),
             'longitude': forms.HiddenInput(attrs={'class': 'form-control', 'id': 'longitude', 'name': 'longitude'})
-
         }
 
 

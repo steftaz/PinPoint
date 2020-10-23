@@ -15,10 +15,17 @@
     <hr/>
     <div class="form-group">
         <div class="container center_div">
-            <form method="POST" id="storeDataPoint">
+            <form method="POST" id="storeDataPoint" enctype="multipart/form-data">
                 <div class="form-group">
                     <div class="container center_div">
                         {% csrf_token %}
+                        <label for="name">Latitude</label>
+                        <input type="number" name="latitude" class="form-control"
+                               placeholder="{{ node.latitude }}" id="latitude">
+                        <br>
+                        <label for="name">Longitude</label>
+                        <input type="number" name="longitude" class="form-control"
+                               placeholder="{{ node.longitude }}" id="longitude">
                         {% for data in datas %}
                             <br>
                             <label for="name">{{ data.attribute.name }}</label>
@@ -26,13 +33,47 @@
                                    placeholder="{{ data.value }}" id="{{ data.attribute.name }}">
                         {% endfor %}
                         <br>
+                        <div class="custom-file">
+                            <input type="file" name="picture" accept="image/*" id="id_picture" hidden="hidden">
+                            <button type="button" id="picture-button" class="btn btn-dark">
+                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-file-image"
+                                     fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                          d="M4 0h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v10l2.224-2.224a.5.5 0 0 1 .61-.075L8 11l2.157-3.02a.5.5 0 0 1 .76-.063L13 10V2a1 1 0 0 0-1-1H4z"></path>
+                                    <path fill-rule="evenodd" d="M6.502 7a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"></path>
+                                </svg>
+                                Picture
+                            </button>
+                            <span id="chosen-file">{{ node.picture|default:"No picture chosen" }}</span>
+                        </div>
+                        <br>
+                        <br>
                         <button type="submit" class="btn btn-info">Store data point</button>
-                        <button class="btn btn-outline-danger" onclick="location.href.replace('..../')">Return to overview</button>
+                        <a href="../../" class="btn btn-outline-danger">Return to overview</a>
                     </div>
                 </div>
             </form>
         </div>
     </div>
+
+    <script>
+        $('#id_picture').attr({'hidden': 'hidden'});
+        const pictureInput = document.getElementById("id_picture");
+        const pictureButton = document.getElementById("picture-button");
+        const chosenFile = document.getElementById("chosen-file");
+
+        pictureButton.addEventListener("click", function () {
+            pictureInput.click();
+        });
+
+        pictureInput.addEventListener("change", function () {
+            if (pictureInput.value) {
+                chosenFile.innerHTML = pictureInput.value.match(/[\/\\]([\w\d\s\.\-\(\)]+)$/)[1];
+            } else {
+                chosenFile.innerHTML = "No picture chosen";
+            }
+        });
+    </script>
 
 {% endblock %}
 

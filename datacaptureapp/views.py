@@ -61,6 +61,7 @@ def addnode(request, pk):
         request.POST['longitude'] = longitude_formatted
         request.POST._mutable = False
         node_form = CreateNodeForm(request.POST, request.FILES)
+        print(request.FILES)
 
         if node_form.is_valid():
             node = node_form.save(commit=False)
@@ -126,6 +127,13 @@ def edit_node(request, pk, nk):
     if request.method == 'POST':
         post = request.POST
         node = Node.objects.get(id=nk)
+        for coor in ['longitude', 'latitude']:
+            value = post[coor]
+            if value != '':
+                node.coor = value
+        if 'picture' in request.FILES:
+            node.picture = request.FILES['picture']
+        node.save()
         attributes = Attribute.objects.filter(project=Project.objects.get(id=pk))
         for attribute in attributes:
             value = post[attribute.name]
@@ -136,7 +144,7 @@ def edit_node(request, pk, nk):
         return redirect('nodes', pk)
     node = Node.objects.get(id=nk)
     datas = Data.objects.filter(node=node)
-    return render(request, 'datacaptureapp/EditNode.html', {'datas': datas})
+    return render(request, 'datacaptureapp/EditNode.html', {'node': node, 'datas': datas})
 
 
 @login_required()
