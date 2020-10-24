@@ -1,10 +1,14 @@
 {% extends "datacaptureapp/base.html" %}
 
+<!--
+    This code displays the information about the current user.
+ !-->
+
+
 {% block content %}
     <br>
     <h1 class="text-center" style="font-size:min(5vw, 50px);font-family:'Calibri'">{{ user.username }}'s profile</h1>
     <hr/>
-
 
     <div class="container">
         <br>
@@ -40,7 +44,6 @@
     <div class="text-center">
         <a href='{% url 'edit-profile' %}' type="button" class="btn btn-info">Edit profile</a>
         <a href='{% url 'projects' %}' type="button" class="btn btn-info" data-dismiss="modal">Work on a project</a>
-
     </div>
 
 {% endblock %}

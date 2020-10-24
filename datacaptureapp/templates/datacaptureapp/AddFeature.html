@@ -1,5 +1,10 @@
 {% extends "datacaptureapp/base.html" %}
 
+<!--
+    This is the html page for adding a data point to your project. It displays a form with all the predifined attributes and stores the added data in the database.
+ !-->
+
+
 {% block content %}
     <h3 id="helpIcon" tabindex="0" class="pull-right" data-toggle="popover" style="margin-left:5px"
         data-placement="left" data-trigger=focus" aria-hidden=true" data-html="true"
@@ -15,18 +20,13 @@
     <br>
 
     <div class="form-group">
-
-
         <div class="container center_div">
             <form method="POST" id="storeDataPoint" enctype="multipart/form-data">
-
-
                 <div class="form-group">
                     {% csrf_token %}
                     <div class="container center_div">
                         {% for data in datas %}
                             <br/>
-
                             <label for="name">{{ data.attribute.name }}</label>
                             <input type="{{ data.attribute.type }}" name="{{ data.attribute.name }}"
                                    class="form-control"
@@ -56,7 +56,6 @@
                     </div>
                 </div>
             </form>
-
         </div>
     </div>
 
@@ -77,10 +76,6 @@
                 chosenFile.innerHTML = "No picture chosen";
             }
         });
-
-
-
-
 
         function onSubmit() {
             var iLat = document.getElementById('latitude');
@@ -114,8 +109,6 @@
         function getLocation_error(err) {
             console.warn('ERROR(' + err.code + '): ' + err.message);
         }
-
-
     </script>
 
 {% endblock %}

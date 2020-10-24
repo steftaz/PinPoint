@@ -1,6 +1,10 @@
 {% extends "datacaptureapp/base.html" %}
 {% load tags %}
 
+<!--
+    This page gets all the previous recorded data from the database and displays them in a nice table to the user.
+ !-->
+
 
 {% block content %}
 
@@ -39,14 +43,6 @@
         </div>
     </div>
 
-    <script>
-        function set_data_type(type) {
-            let elem = document.getElementById("data_type");
-            elem.value = type;
-            elem.form.submit();
-        }
-    </script>
-
     <br>
     <div class="row justify-content-center">
         <div class="col-auto">
@@ -69,8 +65,6 @@
                         {% endfor %}
                         {% with image=images|get:key %}
                             <td>
-
-
                                 {% if image %}
                                     <a data-toggle="modal" data-target="#picture{{ key }}" class="btn btn-primary btn-sm" aria-label="View picture" type="button">
                                         View
@@ -132,7 +126,14 @@
     <form method="POST" >
         {% csrf_token %}
         <input class="form-control" type="hidden" id="remove_node" name="remove_node">
+    </form>
         <script>
+             function set_data_type(type) {
+                let elem = document.getElementById("data_type");
+                elem.value = type;
+                elem.form.submit();
+            }
+
             function edit_node(id) {
                 location.href = id+"/edit/";
             }

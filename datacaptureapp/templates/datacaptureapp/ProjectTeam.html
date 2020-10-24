@@ -1,5 +1,9 @@
 {% extends "datacaptureapp/base.html" %}
 
+<!--
+    This code displays the current member of the project team and allows users to add a new member by email.
+ !-->
+
 {% block content %}
     <h3 id="helpIcon" tabindex="0" class="pull-right" data-toggle="popover" style="margin-left:5px"
         data-placement="left" data-trigger=focus" aria-hidden=true" data-html="true"
@@ -9,22 +13,18 @@
         <br>">
         <span class="fa fa-question-circle" style="color:grey; margin-right:10px"></span>
     </h3>
-<br>
+    <br>
     <h1 class="text-center" style="font-size:min(5vw, 50px);font-family:'Calibri'">Project Team</h1>
-<hr/>
-
+    <hr/>
     <div>
         {% if messages %}
             <ul class="messages">
                 {% for message in messages %}
-                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                    <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
                 {% endfor %}
             </ul>
         {% endif %}
-
     </div>
-
-
 
     <div class="container pt-5 text-center">
         <div id="div_messages">
@@ -32,7 +32,6 @@
         </div>
         <form  method="POST" id="addMember" data-url="{% url 'team' project.id %}">
             {% csrf_token %}
-
             <div class="input-group mb-3">
                 {{ form }}
                 <div class="input-group">
@@ -43,24 +42,23 @@
         </form>
     </div>
     <div class="container py-5">
-            <table class="table py-3" id="team-members">
-                <thead>
+        <table class="table py-3" id="team-members">
+            <thead>
+            <tr>
+                <th scope="col">e-mail</th>
+                <th scope="col">name</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for member in team %}
                 <tr>
-                    <th scope="col">e-mail</th>
-                    <th scope="col">name</th>
+                    <td>{{ member.email }}</td>
+                    <td>{{ member.username }}</td>
                 </tr>
-                </thead>
-                <tbody>
-                {% for member in team %}
-                    <tr>
-                        <td>{{ member.email }}</td>
-                        <td>{{ member.username }}</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+            {% endfor %}
+            </tbody>
+        </table>
     </div>
-
 
     <script>
         $("#addMember").submit(function (e) {
