@@ -51,7 +51,7 @@ def project(request, pk=0):
     overview = get_node_overview(data, requested_nodes)
     print(overview)
     return render(request, 'datacaptureapp/Project.html',
-                  {'project': requested_project, 'owner': owner, 'geojson': geojson, 'overview': overview})
+                  {'project': requested_project, 'owner': owner, 'geojson': geojson, 'overview': overview, 'data': data, 'attributes': attributes, 'requested_nodes': requested_nodes})
 
 
 def get_node_overview(data, requested_nodes):

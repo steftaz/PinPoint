@@ -130,10 +130,16 @@
             }
         }
 
-        L.geoJSON(JSON.parse(JSON.parse(document.getElementById('geojson_map').textContent)), {
-            onEachFeature: onEachFeature
-        }).addTo(map).bindPopup('{{ data.attribute.name}}:  '+'{{ data.value }}');
-
+        {% for nodes in requested_nodes %}
+        {% for attribute in attributes %}
+        {% for key, value in overview.items %}
+        {% for data in value.values %}
+         var marker = L.marker([{{ value.latitude}}, {{ value.longitude}}]).addTo(map);
+         marker.bindPopup('{{ attribute.name }}:  '+'{{ data }}').openPopup();
+        {% endfor %}
+        {% endfor %}
+        {% endfor %}
+        {% endfor %}
 
         map.locate({setView: true, maxZoom: 16});
 
