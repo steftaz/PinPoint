@@ -1,8 +1,10 @@
 {% extends "datacaptureapp/base.html" %}
 
+<!--
+    This code displays an overview of the project data by displaying a Leaflet map which shows all the previously recorded points an some general data about the project.
+ !-->
+
 {% block content %}
-
-
 
     <h3 id="helpIcon" tabindex="0" class="pull-right" data-toggle="popover" style="margin-left:5px"
         data-placement="left" data-trigger=focus" aria-hidden=true" data-html="true"
@@ -24,85 +26,76 @@
             ">
         <span class="fa fa-question-circle" style="color:grey; margin-right:10px"></span>
     </h3>
-<br>
-<h1 class="text-center" style="font-size:min(5vw, 50px);font-family:'Calibri'">{{project.name}}</h1>
-	<hr/>
+    <br>
+    <h1 class="text-center" style="font-size:min(5vw, 50px);font-family:'Calibri'">{{project.name}}</h1>
+    <hr/>
 
-
-<div class="container">
-    <div class="row-justify-content-center">
-        <div class="col lg auto">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
-   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
-   crossorigin=""/>
- <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
-   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
-   crossorigin=""></script>
-
-<div id="map" style="height:450px"></div>
-<br>
-        {{ geojson|json_script:"geojson_map" }}
+    <div class="container">
+        <div class="row-justify-content-center">
+            <div class="col lg auto">
+                <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+                   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+                   crossorigin=""/>
+                 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+                   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+                   crossorigin=""></script>
+                 <div id="map" style="height:450px"></div>
+                <br>
+                {{ geojson|json_script:"geojson_map" }}
+            </div>
+            <div class ="text-center">
+                {#        <button onclick="location.href='../add_attribute'" class="text-center btn btn-primary btn-lg"  type="button"><i class="fa fa-plus"> </i> Add Feature</button>#}
+                {#        <br>#}
+                        <button onclick="location.href='nodes/new'" class="text-center btn btn-info btn-lg"  type="button"><i class="fa fa-plus"> </i> Record data point</button>
+                                    <button onclick="location.href='nodes'" class="text-center btn btn-info btn-lg"  type="button"> Data overview</button>
+                                                <button onclick="location.href='team'" class="text-center btn btn-info btn-lg"  type="button"><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-people" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1h8zm-7.978-1h7.956a.274.274 0 0 0 .014-.002l.008-.002c-.002-.264-.167-1.03-.76-1.72C13.688 10.629 12.718 10 11 10c-1.717 0-2.687.63-3.24 1.276-.593.69-.759 1.457-.76 1.72a1.05 1.05 0 0 0 .022.004zM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM6.936 9.28a5.88 5.88 0 0 0-1.23-.247A7.35 7.35 0 0 0 5 9c-4 0-5 3-5 4 0 .667.333 1 1 1h4.216A2.238 2.238 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816zM4.92 10c-1.668.02-2.615.64-3.16 1.276C1.163 11.97 1 12.739 1 13h3c0-1.045.323-2.086.92-3zM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0zm3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/>
+                </svg>Project team </button>
+            </div>
         </div>
-
-                            <div class ="text-center">
-
-{#        <button onclick="location.href='../add_attribute'" class="text-center btn btn-primary btn-lg"  type="button"><i class="fa fa-plus"> </i> Add Feature</button>#}
-{#        <br>#}
-        <button onclick="location.href='nodes/new'" class="text-center btn btn-info btn-lg"  type="button"><i class="fa fa-plus"> </i> Record data point</button>
-                    <button onclick="location.href='nodes'" class="text-center btn btn-info btn-lg"  type="button"> Data overview</button>
-                                <button onclick="location.href='team'" class="text-center btn btn-info btn-lg"  type="button"><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-people" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-  <path fill-rule="evenodd" d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1h8zm-7.978-1h7.956a.274.274 0 0 0 .014-.002l.008-.002c-.002-.264-.167-1.03-.76-1.72C13.688 10.629 12.718 10 11 10c-1.717 0-2.687.63-3.24 1.276-.593.69-.759 1.457-.76 1.72a1.05 1.05 0 0 0 .022.004zM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM6.936 9.28a5.88 5.88 0 0 0-1.23-.247A7.35 7.35 0 0 0 5 9c-4 0-5 3-5 4 0 .667.333 1 1 1h4.216A2.238 2.238 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816zM4.92 10c-1.668.02-2.615.64-3.16 1.276C1.163 11.97 1 12.739 1 13h3c0-1.045.323-2.086.92-3zM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0zm3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/>
-</svg>Project team </button>
-
-
-
-
-        </div>
-</div>
-</div>
-
-
- <div class="container">
-  <div class="row sm">
-    <div class="col sm auto">
-        <br>
-	<h1 class="text-center" style="font-size:min(5vw, 50px);font-family:'Calibri'"> About </h1>
     </div>
-  </div>
+
+
+    <div class="container">
+        <div class="row sm">
+            <div class="col sm auto">
+                <br>
+                <h1 class="text-center" style="font-size:min(5vw, 50px);font-family:'Calibri'"> About </h1>
+            </div>
+        </div>
       <div class="row-justify-content-center">
-    <div class="col sm auto">
-        <table class="table table-center table-unbordered  text-muted">
-  <tbody>
-    <tr>
-      <th scope="row">ID</th>
-      <td>{{project.id}}</td>
-    </tr>
-    <tr>
-      <th scope="row">Name</th>
-      <td>{{project.name}}</td>
+        <div class="col sm auto">
+            <table class="table table-center table-unbordered  text-muted">
+                <tbody>
+                    <tr>
+                      <th scope="row">ID</th>
+                      <td>{{project.id}}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Name</th>
+                      <td>{{project.name}}</td>
 
-    </tr>
-    <tr>
-      <th scope="row">Description</th>
-      <td> {{project.description}}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Description</th>
+                      <td> {{project.description}}</td>
 
-    </tr>
-  <tr>
-      <th scope="row">Creation date</th>
-      <td>8-10-2020</td>
-    </tr>
-  <tr>
-      <th scope="row">Owner</th>
-      <td>{{owner.username}}</td>
-    </tr>
-  </tbody>
-</table>
+                    </tr>
+                  <tr>
+                      <th scope="row">Creation date</th>
+                      <td>8-10-2020</td>
+                    </tr>
+                  <tr>
+                      <th scope="row">Owner</th>
+                      <td>{{owner.username}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+      </div>
     </div>
-</div>
-    </div>
 
-
-    <script>
+<script>
         // LEAFLET script:
 
         var map = L.map('map').fitWorld();
@@ -129,8 +122,6 @@
             alert(e.message);
         }
 
-
-
         map.on('locationfound', onLocationFound);
 
         function onEachFeature(feature, layer) {
@@ -145,8 +136,6 @@
 
 
         map.locate({setView: true, maxZoom: 16});
-
-
 
 
         //Location to put in DB script:
@@ -165,6 +154,6 @@
             x.innerHTML = "Latitude: " + position.coords.latitude +
                 "<br>Longitude: " + position.coords.longitude;
         }
-    </script>
+</script>
 
 {% endblock %}
