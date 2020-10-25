@@ -1,8 +1,9 @@
 from django.http import QueryDict, HttpResponse, JsonResponse
 from django.core import serializers
-from django.http import FileResponse, QueryDict, HttpResponse, JsonResponse
+from django.http import FileResponse, QueryDict, HttpResponse, JsonResponse, HttpResponseServerError
 from django.shortcuts import render, redirect
 from django.urls import reverse
+from excel_response import ExcelResponse
 
 from datacaptureapp.forms import *
 from datacaptureapp.models import *
@@ -103,22 +104,29 @@ def addnode(request, pk):
     return render(request, 'datacaptureapp/AddFeature.html', {'node_form': node_form, 'datas': datas, 'project_id': pk})
 
 
-
 @login_required()
 def nodes(request, pk):
     if request.method == 'POST':
         post = request.POST
         if 'data_type' in post:
             data_type = request.POST.get('data_type')
+            project = Project.objects.get(id=pk)
             if data_type == 'CSV':
                 response = HttpResponse(content_type='text/csv')
-                response['Content-Disposition'] = 'attachment; filename="{}.csv"'.format(Project.objects.filter(id=pk).first().name)
-                generate_csv(response, pk)
+                response['Content-Disposition'] = 'attachment; filename="{}.csv"'.format(project.name)
+                generate_csv(response, project)
             elif data_type == 'GeoJSON':
-                geojson = generate_geojson(pk)
+                geojson = generate_geojson(project)
                 response = HttpResponse(content_type='application/json')
-                response['Content-Disposition'] = 'attachment; filename="{}.geojson"'.format(json.loads(geojson)['name'])
+                response['Content-Disposition'] = 'attachment; filename="{}.geojson"'.format(project.name)
                 response.write(geojson)
+            elif data_type == 'Excel':
+                response = HttpResponse(content_type='application/vnd.ms-excel')
+                response['Content-Disposition'] = "attachment; filename={}.xlsx".format(project.name)
+                output = generate_xls(project)
+                response.write(output)
+            else:
+                response = HttpResponseServerError('<h1>Something went wrong</h1>')
             return response
         elif 'remove_node' in post:
             Node.objects.get(id=post['remove_node']).delete()
@@ -129,7 +137,8 @@ def nodes(request, pk):
     images = {}
     for node in requested_nodes:
         images[node.pk] = node.picture
-    return render(request, 'datacaptureapp/FeatureOverview.html', {'overview': overview, 'images': images, 'attributes': attributes})
+    return render(request, 'datacaptureapp/FeatureOverview.html',
+                  {'overview': overview, 'images': images, 'attributes': attributes})
 
 
 @login_required()

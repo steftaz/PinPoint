@@ -1,10 +1,14 @@
 import csv
+import io
 import json
+from PIL import Image
+
+from xlsxwriter import Workbook
+
 from datacaptureapp.models import *
 
 
-def generate_geojson(project_id):
-    project = Project.objects.filter(id=project_id).first()
+def generate_geojson(project):
     nodes = Node.objects.filter(project=project)
     json_node_list = []
     for node in nodes:
@@ -25,8 +29,7 @@ def generate_geojson(project_id):
     return json.dumps(json_project)
 
 
-def generate_csv(response, id):
-    project = Project.objects.filter(id=id).first()
+def generate_csv(response, project):
     attributes = Attribute.objects.filter(project=project)
     nodes = Node.objects.filter(project=project)
     field_names = ['latitude', 'longitude'] + [attribute.name for attribute in attributes]
@@ -34,3 +37,32 @@ def generate_csv(response, id):
     writer.writerow(field_names)
     for node in nodes:
         writer.writerow([node.latitude, node.longitude] + [data.value for data in Data.objects.filter(node=node)])
+
+
+def generate_xls(project):
+    attributes = Attribute.objects.filter(project=project)
+    nodes = Node.objects.filter(project=project)
+    output = io.BytesIO()
+    workbook = Workbook(output)
+    worksheet = workbook.add_worksheet()
+    row = 0
+    col = 0
+    for x in ['latitude', 'longitude'] + [attribute.name for attribute in attributes] + ['picture']:
+        worksheet.write(row, col, x)
+        col += 1
+    for node in nodes:
+        row += 1
+        col = 0
+        for x in [node.latitude, node.longitude] + [data.value.format() for data in Data.objects.filter(node=node)]:
+            worksheet.write(row, col, x)
+            col += 1
+        if node.picture.name != "":
+            path = "media/{}".format(node.picture.name)
+            width, height = Image.open(path).size
+            scale = 64 / width
+            worksheet.insert_image(row, col, path, {'x_scale': scale, 'y_scale': scale})
+            worksheet.set_row(row, height * scale)
+        else:
+            worksheet.write(row, col, "Null")
+    workbook.close()
+    return output.getvalue()
