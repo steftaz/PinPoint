@@ -133,7 +133,6 @@ def addnode(request, pk):
         raise PermissionDenied
 
 
-
 @login_required()
 def nodes(request, pk):
     requested_project = get_object_or_404(Project, pk=pk)
@@ -257,6 +256,18 @@ def team(request, pk):
 
 def formcreation(request):
     return render(request, 'datacaptureapp/FormCreation.html', {})
+
+
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        print(user, username, password)
+        if user is not None:
+            login(request, user)
+            return redirect("/projects/")
+    return render(request, 'datacaptureapp/Login.html')
 
 
 @login_required()
