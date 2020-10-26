@@ -134,10 +134,9 @@
             }
         }
 
-        {% for nodes in requested_nodes %}
-        {% for attribute in attributes %}
+
         {% for key, value in overview.items %}
-        {% for data in value.values %}
+
          var marker = L.marker([{{ value.latitude}}, {{ value.longitude}}]).addTo(map);
 
          marker.bindPopup('<table border="1.5px" >'+
@@ -160,9 +159,6 @@
          '</table>').openPopup();
 
 
-        {% endfor %}
-        {% endfor %}
-        {% endfor %}
         {% endfor %}
 
         map.locate({setView: true, maxZoom: 16});
