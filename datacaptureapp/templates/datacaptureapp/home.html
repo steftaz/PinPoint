@@ -1,8 +1,13 @@
 {% extends "datacaptureapp/base.html" %}
 
+<!--
+    This code displays the home page of the GeoApp displaying all the projects the current user is a part of.
+ !-->
+
+
 {% block content %}
     <div class="home">
-        <a href="#"><h3 id="helpIcon" tabindex="0" class="pull-right" data-toggle="popover" style="margin-left:5px; margin-top:2px"
+        <h3 id="helpIcon" tabindex="0" class="pull-right" data-toggle="popover" style="margin-left:5px; margin-top:2px"
             data-placement="left" data-trigger=focus" aria-hidden=true" data-html="true"
             title="Home Page"
             data-content="<b> Open project </b> <br>
@@ -11,19 +16,20 @@
             <b> Create project </b> <br>
             To create a new project click the button 'Create new Project'. You will be redirected to a page where you can define the specifications.">
             <span class="fa fa-question-circle" style="color:grey; margin-right:10px"></span>
-        </h3></a>
-    <br/>
+        </h3>
+        <br/>
         <div class="container">
-        <div class="col-md-12">
-            <h1 class="text-center" style="font-size:min(5vw, 50px); font-family:'Calibri'" >Choose your project below</h1>
-            <hr/>
-            <BR>
+            <div class="col-md-12">
+                <h1 class="text-center" style="font-size:min(5vw, 50px); font-family:'Calibri'" >Choose your project below</h1>
+                <hr/>
+                <BR>
                 <div class ="text-center">
                     <div class="btn-group-vertical ">
                         <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#gotoproject"><i class="fa fa-arrow-right" aria-hidden="true"></i> Go to Existing project  </button>
                         <button onclick="location.href='{%  url 'new-project' %}'" type="button" class="btn btn-light btn-lg" ><i class="fa fa-plus"> </i> Create new Project</button>
                     </div>
                 </div>
+
 <!-- Go to project by ID -->
             <div class="modal fade" id="gotoproject" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
@@ -38,27 +44,26 @@
                             <div id="messages-search-id">
 
                             </div>
-                            <div class="form-group">
-                                <label for="project_id" class="col-form-label">Enter Project ID</label>
-                                <input type="number" step="1" class="form-control" name="project_id" id="project_id">
+                                <div class="form-group">
+                                    <label for="project_id" class="col-form-label">Enter Project ID</label>
+                                    <input type="number" step="1" class="form-control" name="project_id" id="project_id">
+                                </div>
+                                <div class="modal-footer">
+                                    <button onclick="goToProjectById()" class="btn btn-info" id="goToProjectById">Submit</button>
+                                </div>
+                                {#</form>#}
                             </div>
-                            <div class="modal-footer">
-                                <button onclick="goToProjectById()" class="btn btn-info" id="goToProjectById">Submit</button>
-                            </div>
-
                         </div>
                     </div>
+                 </div>
+                <br>
+                <h1 class="text-center" style="font-size:min(5vw, 50px);font-family:'Calibri'">{{ user.username }}'s projects </h1>
+                <hr/>
+                <div class="text-center"  style="font-size:min(5vw, 50px);">
+                    {% for project in  projects %}
+                        <a class="btn btn-info btn-lg" role="button" href="{% url 'project' project.id %}" style="margin-top:15px; margin-left:5px"> <i class="fa fa-folder" aria-hidden="true"></i> {{ project.name }}</a>
+                    {% endfor %}
                 </div>
-            </div>
-            <br>
-                    <h1 class="text-center" style="font-size:min(5vw, 50px);font-family:'Calibri'">{{ user.username }}'s projects </h1>
-                    <hr/>
-                    <div class="text-center"  style="font-size:min(5vw, 50px);">
-                        {% for project in  projects %}
-                            <a class="btn btn-info btn-lg" role="button" href="{% url 'project' project.id %}" style="margin-top:15px; margin-left:5px"> <i class="fa fa-folder" aria-hidden="true"></i> {{ project.name }}</a>
-                        {% endfor %}
-
-                    </div>
             </div>
         </div>
     </div>

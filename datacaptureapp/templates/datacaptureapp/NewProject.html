@@ -1,5 +1,10 @@
 {% extends "datacaptureapp/base.html" %}
 
+<!--
+    This code shows a form where the user can specify the name and description of a new project which will then be created in the database.
+ !-->
+
+
 {% block content %}
      <h3 id="helpIcon" tabindex="0" class="pull-right" data-toggle="popover" style="margin-left:5px"
         data-placement="left" data-trigger=focus" aria-hidden=true" data-html="true"
@@ -9,24 +14,23 @@
             ">
         <span class="fa fa-question-circle" style="color:grey; margin-right:10px"></span>
     </h3>
-<br>
-        <h1 class="text-center" style="font-size:min(5vw, 50px);font-family:'Calibri'">New Project</h1>
-<hr/>
+    <br>
+    <h1 class="text-center" style="font-size:min(5vw, 50px);font-family:'Calibri'">New Project</h1>
+    <hr/>
 	<br>
 	<form method="POST">
-  <div class="form-group">
-      {% csrf_token %}
-      <div class="container center_div">
-        <label for="name">Project Name</label>
-        {{ form.name }}
-      <div class="form-group">
-        <label for="Description">Description</label>
-        {{ form.description }}
-      </div>
-        <button  type="submit" class="btn btn-info"> Create Project <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-caret-right-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg"></svg> </button>
-  </div>
-  </div>
-</form>
-
+        <div class="form-group">
+          {% csrf_token %}
+          <div class="container center_div">
+            <label for="name">Project Name</label>
+            {{ form.name }}
+              <div class="form-group">
+                <label for="Description">Description</label>
+                {{ form.description }}
+              </div>
+            <button  type="submit" class="btn btn-info"> Create Project <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-caret-right-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg"></svg> </button>
+          </div>
+         </div>
+    </form>
 
 {% endblock %}

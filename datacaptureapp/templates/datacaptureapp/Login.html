@@ -1,12 +1,16 @@
 {% extends "datacaptureapp/base.html" %}
 
+<!--
+    This code is for the login page of the GeoApp.
+ !-->
+
+
 {% block content %}
 
-  <BR>
+    <br>
     <h1 class="text-center" style="font-size:min(5vw, 50px);font-family:'Calibri'">Sign in</h1>
-<hr/>
-	<BR>
-
+    <hr/>
+    <br>
     <div class="form-group">
         <div class="container center_div">
             <label for="username">Username</label>
@@ -16,14 +20,10 @@
                 <label for="password">Password</label>
                 <input type="password" class="form-control" id="ProjectDescription" placeholder="Enter password">
             </div>
-
             <button  type="submit" onclick="location.href='{% url 'new-profile' %}'" class="btn btn-info">Register</button>
             <button  type="submit" onclick="location.href='{% url 'profile' %}'" class="btn btn-info">Sign in</button>
-
-
         </div>
     </div>
-
 
 {% endblock %}
 

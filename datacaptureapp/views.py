@@ -51,7 +51,6 @@ def project(request, pk=0):
     else:
         if requested_project.is_public or requested_project.user.filter(email=request.user.email).first():
             # POST request to change private/public
-            print('yes')
             if request.POST:
                 form = ChangePublicPrivateForm(request.POST, instance=requested_project)
                 if form.is_valid():
@@ -63,9 +62,14 @@ def project(request, pk=0):
                 else:
                     geojson = generate_geojson(pk)
                     owner = requested_project.user.all().first()  # TODO there are more users now, we do not specify the owner
-                    print('render')
+                    attributes = Attribute.objects.filter(project__id=pk)
+                    data = Data.objects.filter(attribute__in=attributes)
+                    requested_nodes = Node.objects.filter(project_id=pk)
+                    overview = get_node_overview(data, requested_nodes)
                     return render(request, 'datacaptureapp/Project.html',
-                                  {'project': requested_project, 'owner': owner, 'geojson': geojson})
+                                  {'project': requested_project, 'owner': owner, 'geojson': geojson,
+                                   'overview': overview, 'data': data, 'attributes': attributes,
+                                   'requested_nodes': requested_nodes})
         else:
             if request.headers.get('search-by-id'):
                 messages.error(request, 'This project is private. Ask the project owner to add you to this project.')
@@ -75,6 +79,14 @@ def project(request, pk=0):
 
 
 
+def get_node_overview(data, requested_nodes):
+    overview = {}
+    for node in requested_nodes:
+        overview[node.pk] = {'latitude': node.latitude, 'longitude': node.longitude}
+        for data_object in data:
+            if data_object.node == node:
+                overview[node.pk][data_object.attribute.name] = data_object.value
+    return overview
 
 
 
@@ -146,15 +158,15 @@ def nodes(request, pk):
             attributes = Attribute.objects.filter(project__id=pk)
             data = Data.objects.filter(attribute__in=attributes)
             requested_nodes = Node.objects.filter(project_id=pk)
-            overview = {}
+            overview = get_node_overview(data, requested_nodes)
+            images = {}
             for node in requested_nodes:
-                overview[node.pk] = {'latitude': node.latitude, 'longitude': node.longitude}
-                for data_object in data:
-                    if data_object.node == node:
-                        overview[node.pk][data_object.attribute.name] = data_object.value
-            return render(request, 'datacaptureapp/FeatureOverview.html', {'overview': overview, 'attributes': attributes})
+                images[node.pk] = node.picture
+            return render(request, 'datacaptureapp/FeatureOverview.html',
+                          {'overview': overview, 'images': images, 'attributes': attributes})
     else:
         raise PermissionDenied
+
 
 
 @login_required()
@@ -164,6 +176,13 @@ def edit_node(request, pk, nk):
     if requested_project.is_public or requested_project.user.filter(email=request.user.email).first():
         if request.method == 'POST':
             post = request.POST
+            for coor in ['longitude', 'latitude']:
+                value = post[coor]
+                if value != '':
+                    node.coor = value
+            if 'picture' in request.FILES:
+                node.picture = request.FILES['picture']
+            node.save()
             attributes = Attribute.objects.filter(project=Project.objects.get(id=pk))
             for attribute in attributes:
                 value = post[attribute.name]
@@ -174,9 +193,10 @@ def edit_node(request, pk, nk):
             return redirect('nodes', pk)
         node = Node.objects.get(id=nk)
         datas = Data.objects.filter(node=node)
-        return render(request, 'datacaptureapp/EditNode.html', {'datas': datas})
+        return render(request, 'datacaptureapp/EditNode.html', {'node': node, 'datas': datas})
     else:
         raise PermissionDenied
+
 
 
 @login_required()
@@ -242,7 +262,7 @@ def formcreation(request):
 @login_required()
 def logout_view(request):
     logout(request)
-    return redirect("/login/")
+    return redirect("login")
 
 
 @login_required()

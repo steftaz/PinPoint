@@ -1,5 +1,9 @@
 {% extends "datacaptureapp/base.html" %}
 
+<!--
+    This code is for creating a new profile for the GeoApp.
+ !-->
+
 {% block content %}
 
     <br>
@@ -7,25 +11,22 @@
     <br>
 
     <div class="form-group">
-    <div class="container center_div">
-        <label for="username">Username</label>
-        <input type="username" class="form-control" id="UserName" aria-describedby="emailHelp" placeholder="Create username">
-        <div class="form-group">
-            <br>
-            <label for="email">Email</label>
-            <input type="email" class="form-control" id="Email" placeholder="Enter email address">
+        <div class="container center_div">
+            <label for="username">Username</label>
+            <input type="username" class="form-control" id="UserName" aria-describedby="emailHelp" placeholder="Create username">
             <div class="form-group">
                 <br>
-                <label for="password">Password</label>
-                <input type="password" class="form-control" id="Password" placeholder="Create password">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" id="Email" placeholder="Enter email address">
+                <div class="form-group">
+                    <br>
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control" id="Password" placeholder="Create password">
+                </div>
+                <button  type="submit" onclick="location.href='../login'" class="btn btn-primary">Create Account</button>
             </div>
-
-            <button  type="submit" onclick="location.href='../login'" class="btn btn-primary">Create Account</button>
-
-
         </div>
     </div>
-
 
 {% endblock %}
 

@@ -1,22 +1,24 @@
 {% extends "datacaptureapp/base.html" %}
 
+<!--
+    This code is for the login page of the GeoApp.
+ !-->
+
 {% block content %}
 
-     <BR>
+    <br>
     <h1 class="text-center" style="font-size:min(5vw, 50px);font-family:'Calibri'">Login</h1>
-<hr/>
-	<BR>
+    <hr/>
+	<br>
 
     <div class="container center_div">
-
         <form method="post" class="from-group">
             {%  csrf_token %}
             {{ form }}
             <BR>
             <button type="submit" class="btn btn-info" >Login</button>
-        {#    <a>Don't have an account? Create one <a href="/register"> here </a> </a>#}
+             {#    <a>Don't have an account? Create one <a href="/register"> here </a> </a>#}
         </form>
     </div>
-
 
 {% endblock %}

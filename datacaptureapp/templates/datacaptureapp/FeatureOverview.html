@@ -1,4 +1,10 @@
 {% extends "datacaptureapp/base.html" %}
+{% load tags %}
+
+<!--
+    This page gets all the previous recorded data from the database and displays them in a nice table to the user.
+ !-->
+
 
 {% block content %}
 
@@ -14,7 +20,7 @@
             ">
         <span class="fa fa-question-circle" style="color:grey; margin-right:10px"></span>
     </h3>
-<br>
+    <br>
     <h1 class="text-center" style="font-size:min(5vw, 50px); font-family:'Calibri'">Data overview</h1>
     <hr/>
     <div class="container">
@@ -37,33 +43,53 @@
         </div>
     </div>
 
-    <script>
-        function set_data_type(type) {
-            let elem = document.getElementById("data_type");
-            elem.value = type;
-            elem.form.submit();
-        }
-    </script>
-
     <br>
     <div class="row justify-content-center">
         <div class="col-auto">
             <table class="table table-responsive">
                 <thead>
                 <tr>
-                    <th scope="col">latitude</th>
-                    <th scope="col">longitude</th>
+                    <th scope="col">Latitude</th>
+                    <th scope="col">Longitude</th>
                     {% for attribute in attributes %}
                         <th scope="col"> {{ attribute.name }}</th>
                     {% endfor %}
+                    <th scope="col">Picture</th>
                 </tr>
                 </thead>
                 <tbody>
                 {% for key, value in overview.items %}
                     <tr>
                         {% for data in value.values %}
-                            <td>{{ data }}</td>
+                            <td>{{ data|default:"Null" }}</td>
                         {% endfor %}
+                        {% with image=images|get:key %}
+                            <td>
+                                {% if image %}
+                                    <a data-toggle="modal" data-target="#picture{{ key }}" class="btn btn-primary btn-sm" aria-label="View picture" type="button">
+                                        View
+                                    </a>
+                                    <div class="modal fade" id="picture{{ key }}" tabindex="-1" role="dialog" aria-labelledby="picture of {{ key }}" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Picture</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <img src="/media/{{ image }}" alt="Picture" width="100%" height="auto">
+                                                    {# TODO {{ MEDIA_URL }} doesn't work ^ #}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    Null
+                                {% endif %}
+                            </td>
+                        {% endwith %}
                         <td style="border:none;"><a onclick="edit_node({{ key }})" class="btn btn-outline-secondary btn-sm" type="button">
                             Edit
                         </a></td>
@@ -100,16 +126,23 @@
     <form method="POST" >
         {% csrf_token %}
         <input class="form-control" type="hidden" id="remove_node" name="remove_node">
-    <script>
-        function edit_node(id) {
-            location.href = id+"/edit/";
-        }
+    </form>
+        <script>
+             function set_data_type(type) {
+                let elem = document.getElementById("data_type");
+                elem.value = type;
+                elem.form.submit();
+            }
 
-        function remove_node(id) {
-            let elem = document.getElementById("remove_node");
-            elem.value = id;
-            elem.form.submit();
-        }
-    </script>
+            function edit_node(id) {
+                location.href = id+"/edit/";
+            }
+
+            function remove_node(id) {
+                let elem = document.getElementById("remove_node");
+                elem.value = id;
+                elem.form.submit();
+            }
+        </script>
 
 {% endblock %}
