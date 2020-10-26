@@ -27,13 +27,16 @@
         <span class="fa fa-question-circle" style="color:grey; margin-right:10px"></span>
     </h3>
     <br>
+
     <h1 class="text-center" style="font-size:min(5vw, 50px);font-family:'Calibri'">{{project.name}}</h1>
     <hr/>
+
 
     <div class="container">
         <div class="row-justify-content-center">
             <div class="col lg auto">
                 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+
                    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
                    crossorigin=""/>
                  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
@@ -56,12 +59,14 @@
     </div>
 
 
+
     <div class="container">
         <div class="row sm">
             <div class="col sm auto">
                 <br>
                 <h1 class="text-center" style="font-size:min(5vw, 50px);font-family:'Calibri'"> About </h1>
             </div>
+
         </div>
       <div class="row-justify-content-center">
         <div class="col sm auto">
@@ -81,10 +86,7 @@
                       <td> {{project.description}}</td>
 
                     </tr>
-                  <tr>
-                      <th scope="row">Creation date</th>
-                      <td>8-10-2020</td>
-                    </tr>
+
                   <tr>
                       <th scope="row">Owner</th>
                       <td>{{owner.username}}</td>
@@ -93,6 +95,7 @@
             </table>
         </div>
       </div>
+
     </div>
 
 <script>
@@ -122,6 +125,7 @@
             alert(e.message);
         }
 
+
         map.on('locationfound', onLocationFound);
 
         function onEachFeature(feature, layer) {
@@ -130,10 +134,22 @@
             }
         }
 
-        L.geoJSON(JSON.parse(JSON.parse(document.getElementById('geojson_map').textContent)), {
-            onEachFeature: onEachFeature
-        }).addTo(map).bindPopup('{{ data.attribute.name}}:  '+'{{ data.value }}');
+        {% for nodes in requested_nodes %}
+        {% for attribute in attributes %}
+        {% for key, value in overview.items %}
+        {% for data in value.values %}
+         var marker = L.marker([{{ value.latitude}}, {{ value.longitude}}]).addTo(map);
 
+         marker.bindPopup('{% for attribute in attributes %}\n'+
+                 '         <th scope="col"> {{ attribute.name }}: {{ data }}<br> </th>\n'+
+                 '         {% endfor %}').openPopup();
+
+
+
+        {% endfor %}
+        {% endfor %}
+        {% endfor %}
+        {% endfor %}
 
         map.locate({setView: true, maxZoom: 16});
 

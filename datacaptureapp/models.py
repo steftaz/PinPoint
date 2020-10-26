@@ -6,7 +6,8 @@ from account.models import Account
 class Project(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField()
-    user = models.ManyToManyField(Account)  # A project belongs to a single user
+    user = models.ManyToManyField(Account)
+    is_public = models.BooleanField(default=False)
 
 class Profile(models.Model):
     username = models.CharField(max_length=50)

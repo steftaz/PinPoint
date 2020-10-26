@@ -29,16 +29,21 @@
                         <button onclick="location.href='{%  url 'new-project' %}'" type="button" class="btn btn-light btn-lg" ><i class="fa fa-plus"> </i> Create new Project</button>
                     </div>
                 </div>
-                <div class="modal fade" id="gotoproject" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Project ID</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+
+<!-- Go to project by ID -->
+            <div class="modal fade" id="gotoproject" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Project ID</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        </div>
+                        <div class="modal-body">
+
+                            <!-- (error) messages when searching by ID -->
+                            <div id="messages-search-id">
+
                             </div>
-                            <div class="modal-body">
-                                <!-- Go to project by ID -->
-                                {#        <form id="getProjectByID">#}
                                 <div class="form-group">
                                     <label for="project_id" class="col-form-label">Enter Project ID</label>
                                     <input type="number" step="1" class="form-control" name="project_id" id="project_id">
@@ -63,10 +68,29 @@
         </div>
     </div>
     <script>
+
         function goToProjectById() {
-            var id = document.getElementById('project_id').value;
-            location.href= ("/projects/" + id + "/");
+            const id = $('#project_id').val();
+            const url = '/projects/' + id + "/";
+            $.ajax({
+                url: url,
+                type: 'GET',
+                headers: {'search-by-id': true},
+                success: function (response) {
+                    if (response.messages) {
+                        $("#messages-search-id").html("");
+                        $.each(response, function (i, m) {
+                            $("#messages-search-id").append("<div class='alert alert-danger' role='alert'>" + m[0].message + "</div>");
+                    });
+                    } else {
+                        location.href = response.url
+                    }
+
+                }
+            });
         }
+
+
     </script>
 
 {% endblock %}
