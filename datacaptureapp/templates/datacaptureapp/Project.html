@@ -135,7 +135,12 @@
         {% for key, value in overview.items %}
         {% for data in value.values %}
          var marker = L.marker([{{ value.latitude}}, {{ value.longitude}}]).addTo(map);
-         marker.bindPopup('{{ attribute.name }}:  '+'{{ data }}').openPopup();
+
+         marker.bindPopup('{% for attribute in attributes %}\n'+
+                 '         <th scope="col"> {{ attribute.name }}: {{ data }}<br> </th>\n'+
+                 '         {% endfor %}').openPopup();
+
+
         {% endfor %}
         {% endfor %}
         {% endfor %}
