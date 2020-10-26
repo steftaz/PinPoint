@@ -140,9 +140,24 @@
         {% for data in value.values %}
          var marker = L.marker([{{ value.latitude}}, {{ value.longitude}}]).addTo(map);
 
-         marker.bindPopup('{% for attribute in attributes %}\n'+
-                 '         <th scope="col"> {{ attribute.name }}: {{ data }}<br> </th>\n'+
-                 '         {% endfor %}').openPopup();
+         marker.bindPopup('<table border="1.5px" >'+
+         '<thead>'+
+             '<tr>'+
+             ' <th scope="col"><b>Latitude</b></th>\n' +
+             '                    <th scope="col"><b>Longitude </b></th>\n' +
+             '                    {% for attribute in attributes %}\n'+
+                 '                        <th scope="col"> <b>{{ attribute.name }}</b></th>\n'+
+                 '                    {% endfor %}'+
+         '</tr>'+
+         '</thead>'+
+         '<tbody>'+
+         '<tr>'+
+         '{% for data in value.values %}'+
+         '<td > <b>{{ data }}</b></td>'+
+             '{% endfor %}'+
+         '</tr>'+
+         '</tbody>'+
+         '</table>').openPopup();
 
 
 
