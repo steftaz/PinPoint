@@ -1,24 +1,21 @@
-from django.http import QueryDict, HttpResponse, JsonResponse
-from django.core import serializers
-from django.http import FileResponse, QueryDict, HttpResponse, JsonResponse, HttpResponseServerError
+from django.http import QueryDict, HttpResponse, JsonResponse, HttpResponseServerError
 from django.shortcuts import render, redirect
-from django.urls import reverse
-from excel_response import ExcelResponse
-
 from datacaptureapp.forms import *
-from datacaptureapp.models import *
 from account.models import Account as UserAccount
 from datacaptureapp.export_builder import *
-from django import forms
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import logout, login
 from django.contrib.auth.decorators import login_required
-
 from decimal import Decimal
 from django.contrib import messages
 
 
 @login_required()
-def projects(request):
+def home(request):
+    """
+    Renders the home page with all projects of the user and the user as context
+    :param request: The incoming request
+    :return: A render to the home page
+    """
     user = request.user
     projects = Project.objects.filter(user=user)
     return render(request, 'datacaptureapp/home.html', {'projects': projects, 'user': user})
@@ -26,6 +23,11 @@ def projects(request):
 
 @login_required()
 def newproject(request):
+    """
+
+    :param request: The incoming request
+    :return:
+    """
     if request.method == 'POST':
         user = request.user
         form = CreateProjectForm(request.POST)
@@ -41,21 +43,32 @@ def newproject(request):
 
 @login_required()
 def project(request, pk=0):
+    """
+
+    :param request: The incoming request
+    :param pk: The id of the project
+    :return:
+    """
     if pk == 0:
-        return render(request, 'datacaptureapp/home.html')
-    geojson = generate_geojson(pk)
-    requested_project = Project.objects.filter(id=pk).first()
+        return HttpResponseServerError()
+    requested_project = Project.objects.get(id=pk)
+    geojson = generate_geojson(requested_project)
     owner = requested_project.user.all().first()
     attributes = Attribute.objects.filter(project__id=pk)
     data = Data.objects.filter(attribute__in=attributes)
     requested_nodes = Node.objects.filter(project_id=pk)
     overview = get_node_overview(data, requested_nodes)
-    print(overview)
     return render(request, 'datacaptureapp/Project.html',
                   {'project': requested_project, 'owner': owner, 'geojson': geojson, 'overview': overview})
 
 
 def get_node_overview(data, requested_nodes):
+    """
+
+    :param data:
+    :param requested_nodes:
+    :return:
+    """
     overview = {}
     for node in requested_nodes:
         overview[node.pk] = {'latitude': node.latitude, 'longitude': node.longitude}
@@ -67,6 +80,12 @@ def get_node_overview(data, requested_nodes):
 
 @login_required()
 def addnode(request, pk):
+    """
+
+    :param request: The incoming request
+    :param pk: The id of the project
+    :return:
+    """
     requested_project = Project.objects.filter(id=pk).first()
     attributes = Attribute.objects.filter(project=requested_project)
     if request.method == "POST":
@@ -77,12 +96,10 @@ def addnode(request, pk):
         request.POST['longitude'] = longitude_formatted
         request.POST._mutable = False
         node_form = CreateNodeForm(request.POST, request.FILES)
-
         if node_form.is_valid():
             node = node_form.save(commit=False)
             node.project = requested_project
             node.save()
-
         for attribute in attributes:
             data_query_dict = QueryDict('value=' + request.POST.get(attribute.name))
             data_form = CreateDataForm(data_query_dict)
@@ -106,6 +123,12 @@ def addnode(request, pk):
 
 @login_required()
 def nodes(request, pk):
+    """
+
+    :param request: The incoming request
+    :param pk: The id of the project
+    :return:
+    """
     if request.method == 'POST':
         post = request.POST
         if 'data_type' in post:
@@ -143,6 +166,13 @@ def nodes(request, pk):
 
 @login_required()
 def edit_node(request, pk, nk):
+    """
+
+    :param request: The incoming request
+    :param pk: The id of the project
+    :param nk: The id of the node
+    :return:
+    """
     if request.method == 'POST':
         post = request.POST
         node = Node.objects.get(id=nk)
@@ -168,6 +198,12 @@ def edit_node(request, pk, nk):
 
 @login_required()
 def add_attribute(request, pk):
+    """
+
+    :param request: The incoming request
+    :param pk: The id of the project
+    :return:
+    """
     if request.method == 'POST':
         form = CreateAttributeForm(request.POST)
         if form.is_valid():
@@ -183,6 +219,11 @@ def add_attribute(request, pk):
 
 @login_required()
 def messagesToList(request):
+    """
+
+    :param request: The incoming request
+    :return:
+    """
     django_messages = []
     for message in messages.get_messages(request):
         django_messages.append({
@@ -195,6 +236,11 @@ def messagesToList(request):
 
 @login_required()
 def team(request, pk):
+    """
+
+    :param request: The incoming request
+    :return:
+    """
     requested_project = Project.objects.filter(pk=pk).first()
     team_members = requested_project.user.all()
     if request.POST:
@@ -216,34 +262,80 @@ def team(request, pk):
                       {'form': form, 'team': team_members, 'project': requested_project})
 
 
+@login_required()
 def formcreation(request):
+    """
+
+    :param request: The incoming request
+    :return:
+    """
     return render(request, 'datacaptureapp/FormCreation.html', {})
 
 
 @login_required()
+def projects(request):
+    """
+
+    :param request: The incoming request
+    :return:
+    """
+    return redirect('home')
+
+
+@login_required()
 def logout_view(request):
+    """
+
+    :param request: The incoming request
+    :return:
+    """
     logout(request)
     return redirect("login")
 
 
 @login_required()
 def profile(request):
+    """
+
+    :param request: The incoming request
+    :return:
+    """
     return render(request, 'datacaptureapp/Profile.html', {})
 
 
 @login_required()
 def newprofile(request):
+    """
+
+    :param request: The incoming request
+    :return:
+    """
     return render(request, 'datacaptureapp/NewProfile.html', {})
 
 
 @login_required()
 def editprofile(request):
+    """
+
+    :param request: The incoming request
+    :return:
+    """
     return render(request, 'datacaptureapp/EditProfile.html', {})
 
 
 def about(request):
+    """
+
+    :param request: The incoming request
+    :return:
+    """
     return render(request, 'datacaptureapp/About.html', {})
 
 
 def faq(request):
+    """
+
+    :param request: The incoming request
+    :return:
+    """
     return render(request, 'datacaptureapp/FAQ.html', {})
