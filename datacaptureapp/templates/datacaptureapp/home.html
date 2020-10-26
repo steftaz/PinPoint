@@ -19,15 +19,6 @@
             <hr/>
             <BR>
                 <div class ="text-center">
-                    <div id="error-messages">
-                        {% if messages %}
-                            <ul>
-                                {% for message in messages %}
-                                    <li>{{ message }}</li>
-                                {% endfor %}
-                            </ul>
-                        {% endif %}
-                    </div>
                     <div class="btn-group-vertical ">
                         <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#gotoproject"><i class="fa fa-arrow-right" aria-hidden="true"></i> Go to Existing project  </button>
                         <button onclick="location.href='{%  url 'new-project' %}'" type="button" class="btn btn-light btn-lg" ><i class="fa fa-plus"> </i> Create new Project</button>
@@ -81,10 +72,15 @@
                 type: 'GET',
                 headers: {'search-by-id': true},
                 success: function (response) {
-                    $("#messages-search-id").html("");
-                    $.each(response, function (i, m) {
-                        $("#messages-search-id").append("<div class='alert alert-danger' role='alert'>" + m[0].message + "</div>");
+                    if (response.messages) {
+                        $("#messages-search-id").html("");
+                        $.each(response, function (i, m) {
+                            $("#messages-search-id").append("<div class='alert alert-danger' role='alert'>" + m[0].message + "</div>");
                     });
+                    } else {
+                        location.href = response.url
+                    }
+
                 }
             });
         }
