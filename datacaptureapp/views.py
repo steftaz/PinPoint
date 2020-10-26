@@ -24,9 +24,11 @@ def home(request):
 @login_required()
 def newproject(request):
     """
-
+    Shows a page with a project form in it's context.
+    If a POST request is sent, it saves the new project to the database and
+    redirects to a page where new attributes can be added
     :param request: The incoming request
-    :return:
+    :return: A render to the new project page, or a redirect to the adding attributes page
     """
     if request.method == 'POST':
         user = request.user
@@ -36,9 +38,8 @@ def newproject(request):
             creator = UserAccount.objects.filter(email=user.email).first()
             new_project.user.add(creator)
             return redirect('attributes', new_project.id)
-    else:
-        form = CreateProjectForm
-        return render(request, "datacaptureapp/NewProject.html", {'form': form})
+    form = CreateProjectForm
+    return render(request, "datacaptureapp/NewProject.html", {'form': form})
 
 
 @login_required()
