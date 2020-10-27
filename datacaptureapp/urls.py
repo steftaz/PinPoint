@@ -19,9 +19,6 @@ urlpatterns = [
     path('profile/edit', views.editprofile, name='edit-profile'),
     path('logout/', views.logout_view, name='logout'),
     path('about/', views.about, name='about'),
-    path('FAQ/', views.faq, name='faq')
-]
-
-# if settings.DEBUG:
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path('FAQ/', views.faq, name='faq'),
+    ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
