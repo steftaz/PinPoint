@@ -1,0 +1,26 @@
+{% extends "datacaptureapp/base.html" %}
+
+<!--
+    This page is shown whenever a user tries to access a page that does not exist
+ !-->
+
+
+{% block content %}
+
+    <br>
+    <h1 class="text-center" style="font-size:50px;">Oh no!</h1>
+    <p class="text-center">You encountered an error, 404</p>
+    <hr/>
+    <br>
+    <div class ="text-center">
+        <img src="https://www.flaticon.com/svg/static/icons/svg/896/896008.svg" alt="Park icon by Freepik from www.flaticon.com" title="Park icon by Freepik from www.flaticon.com" height="200" width="auto">
+        <br>
+        <br>
+        The page you tried access doesn't seem to exist!
+        <br>
+        <br>
+        <br>
+        <a href="{% url 'home' %}" class="btn btn-outline-secondary btn-lg">Go back to home page</a>
+    </div>
+
+{% endblock %}

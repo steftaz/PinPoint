@@ -3,6 +3,7 @@
 
 <!--
     This page gets all the previous recorded data from the database and displays them in a nice table to the user.
+    Also gives the possibility to export the shown data
  !-->
 
 
@@ -36,6 +37,7 @@
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="#" onclick="set_data_type('GeoJSON')">GeoJSON</a>
                         <a class="dropdown-item" href="#" onclick="set_data_type('CSV')">CSV</a>
+                        <a class="dropdown-item" href="#" onclick="set_data_type('Excel')">Excel</a>
                     </div>
                 </div>
                 <input class="form-control" type="hidden" id="data_type" name="data_type">
@@ -144,5 +146,6 @@
                 elem.form.submit();
             }
         </script>
+    </form>
 
 {% endblock %}

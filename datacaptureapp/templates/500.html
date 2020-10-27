@@ -1,0 +1,27 @@
+{% extends "datacaptureapp/base.html" %}
+
+<!--
+    This page is shown whenever a user tries to access a page that does not exist
+ !-->
+
+
+{% block content %}
+
+    <br>
+    <h1 class="text-center" style="font-size:50px">Oh no!</h1>
+    <p class="text-center">You encountered an error, 500</p>
+    <hr/>
+    <br>
+    <div class ="text-center">
+        <img src="https://www.flaticon.com/svg/static/icons/svg/3214/3214373.svg" alt="Leak icon by Freepik from www.flaticon.com" title="Leak icon by Freepik from www.flaticon.com" height="200" width="auto">
+        <br>
+        <br>
+        Somethings seems to have gone wrong, sorry!
+        <br>
+        <br>
+        <br>
+        <a href="{% url 'home' %}" class="btn btn-outline-secondary btn-lg">Go back to home page</a>
+    </div>
+
+
+{% endblock %}

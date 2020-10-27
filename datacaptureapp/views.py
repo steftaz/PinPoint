@@ -5,20 +5,24 @@ from django.http import FileResponse, QueryDict, HttpResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 
+from django.http import QueryDict, HttpResponse, JsonResponse, HttpResponseServerError
+from django.shortcuts import render, redirect
 from datacaptureapp.forms import *
-from datacaptureapp.models import *
 from account.models import Account as UserAccount
 from datacaptureapp.export_builder import *
-from django import forms
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import logout, login
 from django.contrib.auth.decorators import login_required
-
 from decimal import Decimal
 from django.contrib import messages
 
 
 @login_required()
-def projects(request):
+def home(request):
+    """
+    Renders the home page with all projects of the user and the user as context
+    :param request: The incoming request
+    :return: A render to the home page
+    """
     user = request.user
     projects = Project.objects.filter(user=user)
     return render(request, 'datacaptureapp/home.html', {'projects': projects, 'user': user})
@@ -26,6 +30,13 @@ def projects(request):
 
 @login_required()
 def newproject(request):
+    """
+    Shows a page with a project form in it's context.
+    If a POST request is sent, it saves the new project to the database and
+    redirects to a page where new attributes can be added
+    :param request: The incoming request
+    :return: A render to the new project page, or a redirect to the adding attributes page
+    """
     if request.method == 'POST':
         user = request.user
         form = CreateProjectForm(request.POST)
@@ -34,13 +45,18 @@ def newproject(request):
             creator = UserAccount.objects.filter(email=user.email).first()
             new_project.user.add(creator)
             return redirect('attributes', new_project.id)
-    else:
-        form = CreateProjectForm
-        return render(request, "datacaptureapp/NewProject.html", {'form': form})
+    form = CreateProjectForm
+    return render(request, "datacaptureapp/NewProject.html", {'form': form})
 
 
 @login_required()
 def project(request, pk=0):
+    """
+
+    :param request: The incoming request
+    :param pk: The id of the project
+    :return:
+    """
     requested_project = Project.objects.filter(id=pk).first()
     if not requested_project:
         if request.headers.get('search-by-id'):
@@ -60,7 +76,7 @@ def project(request, pk=0):
                 if request.headers.get('search-by-id'):
                     return JsonResponse({'url': '/projects/' + str(pk) + '/'})
                 else:
-                    geojson = generate_geojson(pk)
+                    geojson = generate_geojson(requested_project)
                     owner = requested_project.user.all().first()  # TODO there are more users now, we do not specify the owner
                     attributes = Attribute.objects.filter(project__id=pk)
                     data = Data.objects.filter(attribute__in=attributes)
@@ -79,6 +95,12 @@ def project(request, pk=0):
 
 
 def get_node_overview(data, requested_nodes):
+    """
+
+    :param data:
+    :param requested_nodes:
+    :return:
+    """
     overview = {}
     for node in requested_nodes:
         overview[node.pk] = {'latitude': node.latitude, 'longitude': node.longitude}
@@ -90,8 +112,13 @@ def get_node_overview(data, requested_nodes):
 
 @login_required()
 def addnode(request, pk):
+    """
+
+    :param request: The incoming request
+    :param pk: The id of the project
+    :return:
+    """
     requested_project = get_object_or_404(Project, pk=pk)
-    # requested_project = Project.objects.filter(id=pk).first()
     if requested_project.is_public or requested_project.user.filter(email=request.user.email).first():
         attributes = Attribute.objects.filter(project=requested_project)
         if request.method == "POST":
@@ -134,6 +161,12 @@ def addnode(request, pk):
 
 @login_required()
 def nodes(request, pk):
+    """
+
+    :param request: The incoming request
+    :param pk: The id of the project
+    :return:
+    """
     requested_project = get_object_or_404(Project, pk=pk)
     if requested_project.is_public or requested_project.user.filter(email=request.user.email).first():
         if request.method == 'POST':
@@ -143,13 +176,20 @@ def nodes(request, pk):
                 if data_type == 'CSV':
                     response = HttpResponse(content_type='text/csv')
                     response['Content-Disposition'] = 'attachment; filename="{}.csv"'.format(requested_project.name)
-                    generate_csv(response, pk)
+                    generate_csv(response, requested_project)
                 elif data_type == 'GeoJSON':
-                    geojson = generate_geojson(pk)
+                    geojson = generate_geojson(requested_project)
                     response = HttpResponse(content_type='application/json')
                     response['Content-Disposition'] = 'attachment; filename="{}.geojson"'.format(
                         json.loads(geojson)['name'])
                     response.write(geojson)
+                elif data_type == 'Excel':
+                    response = HttpResponse(content_type='application/vnd.ms-excel')
+                    response['Content-Disposition'] = "attachment; filename={}.xlsx".format(project.name)
+                    output = generate_xls(project)
+                    response.write(output)
+                else:
+                    response = HttpResponseServerError('<h1>Something went wrong</h1>')
                 return response
             elif 'remove_node' in post:
                 Node.objects.get(id=post['remove_node']).delete()
@@ -169,6 +209,13 @@ def nodes(request, pk):
 
 @login_required()
 def edit_node(request, pk, nk):
+    """
+
+    :param request: The incoming request
+    :param pk: The id of the project
+    :param nk: The id of the node
+    :return:
+    """
     requested_project = get_object_or_404(Project, pk=pk)
     node = get_object_or_404(Node, id=nk)
     if requested_project.is_public or requested_project.user.filter(email=request.user.email).first():
@@ -198,6 +245,12 @@ def edit_node(request, pk, nk):
 
 @login_required()
 def add_attribute(request, pk):
+    """
+
+    :param request: The incoming request
+    :param pk: The id of the project
+    :return:
+    """
     requested_project = get_object_or_404(Project, pk=pk)
     if requested_project.is_public or requested_project.user.filter(email=request.user.email).first():
         if request.method == 'POST':
@@ -216,6 +269,11 @@ def add_attribute(request, pk):
 
 @login_required()
 def messagesToList(request):
+    """
+
+    :param request: The incoming request
+    :return:
+    """
     django_messages = []
     for message in messages.get_messages(request):
         django_messages.append({
@@ -228,6 +286,11 @@ def messagesToList(request):
 
 @login_required()
 def team(request, pk):
+    """
+
+    :param request: The incoming request
+    :return:
+    """
     requested_project = get_object_or_404(Project, pk=pk)
     if requested_project.user.filter(email=request.user.email).first():
         team_members = requested_project.user.all()
@@ -252,34 +315,92 @@ def team(request, pk):
         raise PermissionDenied
 
 
+@login_required()
 def formcreation(request):
+    """
+
+    :param request: The incoming request
+    :return:
+    """
     return render(request, 'datacaptureapp/FormCreation.html', {})
+
+
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        print(user, username, password)
+        if user is not None:
+            login(request, user)
+            return redirect("/projects/")
+    return render(request, 'datacaptureapp/Login.html')
+
+
+@login_required()
+def projects(request):
+    """
+
+    :param request: The incoming request
+    :return:
+    """
+    return redirect('home')
 
 
 @login_required()
 def logout_view(request):
+    """
+
+    :param request: The incoming request
+    :return:
+    """
     logout(request)
     return redirect("login")
 
 
 @login_required()
 def profile(request):
+    """
+
+    :param request: The incoming request
+    :return:
+    """
     return render(request, 'datacaptureapp/Profile.html', {})
 
 
 @login_required()
 def newprofile(request):
+    """
+
+    :param request: The incoming request
+    :return:
+    """
     return render(request, 'datacaptureapp/NewProfile.html', {})
 
 
 @login_required()
 def editprofile(request):
+    """
+
+    :param request: The incoming request
+    :return:
+    """
     return render(request, 'datacaptureapp/EditProfile.html', {})
 
 
 def about(request):
+    """
+
+    :param request: The incoming request
+    :return:
+    """
     return render(request, 'datacaptureapp/About.html', {})
 
 
 def faq(request):
+    """
+
+    :param request: The incoming request
+    :return:
+    """
     return render(request, 'datacaptureapp/FAQ.html', {})

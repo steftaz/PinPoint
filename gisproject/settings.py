@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'o28_+gdwi98zv@&i6urdpm2fcd!2582@az^l%wdxewt=gb1!w2'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 
 ALLOWED_HOSTS = ['127.0.0.1', '192.168.56.1', 'steftaz.pythonanywhere.com', '192.168.0.103']
@@ -58,7 +58,7 @@ ROOT_URLCONF = 'gisproject.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
