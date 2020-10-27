@@ -81,8 +81,7 @@
                                                     </button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <img src="/media/{{ image }}" alt="Picture" width="100%" height="auto">
-                                                    {# TODO {{ MEDIA_URL }} doesn't work ^ #}
+                                                    <img src="{{ MEDIA_URL }}{{ image }}" alt="Picture" width="100%" height="auto">
                                                 </div>
                                             </div>
                                         </div>
