@@ -24,6 +24,13 @@
           <div class="container center_div">
             <label for="name">Project Name</label>
             {{ form.name }}
+              <div id="is-public" style="display: none;">{{ project.is_public }}</div>
+              <div class="container pt-5 text-left">
+                  <div class="custom-control custom-switch">
+                      <input type="checkbox" class="custom-control-input"
+                             id="public-private-toggle">
+                      <label class="custom-control-label" for="public-private-toggle" id="toggle-label"></label>
+                  </div>
               <div class="form-group">
                 <label for="Description">Description</label>
                 {{ form.description }}

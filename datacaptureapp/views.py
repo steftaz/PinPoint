@@ -78,7 +78,6 @@ def project(request, pk=0):
                 raise PermissionDenied
 
 
-
 def get_node_overview(data, requested_nodes):
     overview = {}
     for node in requested_nodes:
@@ -89,11 +88,10 @@ def get_node_overview(data, requested_nodes):
     return overview
 
 
-
 @login_required()
 def addnode(request, pk):
     requested_project = get_object_or_404(Project, pk=pk)
-    #requested_project = Project.objects.filter(id=pk).first()
+    # requested_project = Project.objects.filter(id=pk).first()
     if requested_project.is_public or requested_project.user.filter(email=request.user.email).first():
         attributes = Attribute.objects.filter(project=requested_project)
         if request.method == "POST":
@@ -128,10 +126,10 @@ def addnode(request, pk):
                 data = data.save(commit=False)
                 data.attribute = attribute
                 datas.append(data)
-            return render(request, 'datacaptureapp/AddFeature.html', {'node_form': node_form, 'datas': datas, 'project_id': pk})
+            return render(request, 'datacaptureapp/AddFeature.html',
+                          {'node_form': node_form, 'datas': datas, 'project_id': pk})
     else:
         raise PermissionDenied
-
 
 
 @login_required()
@@ -149,7 +147,8 @@ def nodes(request, pk):
                 elif data_type == 'GeoJSON':
                     geojson = generate_geojson(pk)
                     response = HttpResponse(content_type='application/json')
-                    response['Content-Disposition'] = 'attachment; filename="{}.geojson"'.format(json.loads(geojson)['name'])
+                    response['Content-Disposition'] = 'attachment; filename="{}.geojson"'.format(
+                        json.loads(geojson)['name'])
                     response.write(geojson)
                 return response
             elif 'remove_node' in post:
@@ -166,7 +165,6 @@ def nodes(request, pk):
                           {'overview': overview, 'images': images, 'attributes': attributes})
     else:
         raise PermissionDenied
-
 
 
 @login_required()
@@ -196,7 +194,6 @@ def edit_node(request, pk, nk):
         return render(request, 'datacaptureapp/EditNode.html', {'node': node, 'datas': datas})
     else:
         raise PermissionDenied
-
 
 
 @login_required()

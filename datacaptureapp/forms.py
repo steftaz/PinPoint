@@ -7,7 +7,7 @@ from datacaptureapp.models import Project, Attribute, Data, Node
 class CreateProjectForm(forms.ModelForm):
     class Meta:
         model = Project
-        fields = ['name', 'description']
+        fields = ['name', 'description', 'is_public']
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter project name'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Description'})
