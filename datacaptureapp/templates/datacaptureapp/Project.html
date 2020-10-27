@@ -132,27 +132,26 @@
 
         {% for key, value in overview.items %}
 
-            var marker = L.marker([{{ value.latitude}}, {{ value.longitude}}]).addTo(map);
+         var marker = L.marker([{{ value.latitude}}, {{ value.longitude}}]).addTo(map);
 
-
-            marker.bindPopup('<table>'+
-                '<thead>'+
-                '<tr>'+
-                ' <th scope="col">Latitude</th>\n' +
-                '                    <th scope="col">Longitude</th>\n' +
-                '                    {% for attribute in attributes %}\n'+
-                    '                        <th scope="col">{{ attribute.name }}</th>\n'+
-                    '                    {% endfor %}'+
-                '</tr>'+
-                '</thead>'+
-                '<tbody>'+
-                '<tr>'+
-                '{% for data in value.values %}'+
-                    '<td >{{ data }}</td>'+
-                    '{% endfor %}'+
-                '</tr>'+
-                '</tbody>'+
-                '</table>');
+         marker.bindPopup('<table border="1.5px" >'+
+         '<thead>'+
+             '<tr>'+
+             ' <th scope="col"><b>Latitude</b></th>\n' +
+             '                    <th scope="col"><b>Longitude </b></th>\n' +
+             '                    {% for attribute in attributes %}\n'+
+                 '                        <th scope="col"> <b>{{ attribute.name }}</b></th>\n'+
+                 '                    {% endfor %}'+
+         '</tr>'+
+         '</thead>'+
+         '<tbody>'+
+         '<tr>'+
+         '{% for data in value.values %}'+
+         '<td > <b>{{ data }}</b></td>'+
+             '{% endfor %}'+
+         '</tr>'+
+         '</tbody>'+
+         '</table>');
 
 
         {% endfor %}
