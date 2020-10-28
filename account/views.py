@@ -48,4 +48,4 @@ def login_view(request):
         form = AccountAuthenticationForm()
 
     context['login_form'] = form
-    return render(redirect, 'account/login.html', context)
+    return render(request, 'account/login.html', context)

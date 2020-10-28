@@ -328,15 +328,16 @@ def formcreation(request):
     return render(request, 'datacaptureapp/FormCreation.html', {})
 
 
-def login_view(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect("/projects/")
-    return render(request, 'datacaptureapp/Login.html')
+# replaced by account
+# def login_view(request):
+#     if request.method == 'POST':
+#         username = request.POST['username']
+#         password = request.POST['password']
+#         user = authenticate(request, username=username, password=password)
+#         if user is not None:
+#             login(request, user)
+#             return redirect("/projects/")
+#     return render(request, 'datacaptureapp/Login.html')
 
 
 @login_required()
@@ -349,6 +350,7 @@ def projects(request):
     return redirect('home')
 
 
+# needs to be replaced by account
 @login_required()
 def logout_view(request):
     """
