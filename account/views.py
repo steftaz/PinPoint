@@ -13,7 +13,6 @@ def registration_view(request):
             raw_password = form.cleaned_data.get('password1')
             account = authenticate(email=email, password=raw_password)
             login(request, account)
-            print('successful account creation')
             return redirect('projects')
         else:
             # add errors to context (form is not valid)
@@ -27,7 +26,6 @@ def registration_view(request):
 
 
 def login_view(request):
-    print("login")
     context = {}
 
     user = request.user

@@ -93,6 +93,7 @@ def project(request, pk=0):
             else:
                 raise PermissionDenied
 
+
 def public_projects(request):
     public_projects = Project.objects.filter(is_public=True)
     return render(request, 'datacaptureapp/PublicProjects.html/', {'public_projects': public_projects})
