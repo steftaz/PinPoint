@@ -43,7 +43,7 @@ def login_view(request):
             email = request.POST['email']
             password = request.POST['password']
             user = authenticate(email=email, password=password)
-
+            print(user)
             if user:
                 login(request, user)
                 return redirect("projects")
