@@ -192,16 +192,16 @@ def nodes(request, pk):
                 return response
             elif 'remove_node' in post:
                 Node.objects.get(id=post['remove_node']).delete()
-        else:
-            attributes = Attribute.objects.filter(project__id=pk)
-            data = Data.objects.filter(attribute__in=attributes)
-            requested_nodes = Node.objects.filter(project_id=pk)
-            overview = get_node_overview(data, requested_nodes)
-            images = {}
-            for node in requested_nodes:
-                images[node.pk] = node.picture
-            return render(request, 'datacaptureapp/FeatureOverview.html',
-                          {'overview': overview, 'images': images, 'attributes': attributes})
+        # No Else statement on purpose, if a node is deleted this code needs to be called.
+        attributes = Attribute.objects.filter(project__id=pk)
+        data = Data.objects.filter(attribute__in=attributes)
+        requested_nodes = Node.objects.filter(project_id=pk)
+        overview = get_node_overview(data, requested_nodes)
+        images = {}
+        for node in requested_nodes:
+            images[node.pk] = node.picture
+        return render(request, 'datacaptureapp/FeatureOverview.html',
+                      {'overview': overview, 'images': images, 'attributes': attributes})
     else:
         raise PermissionDenied
 
