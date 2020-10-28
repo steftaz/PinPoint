@@ -93,6 +93,9 @@ def project(request, pk=0):
             else:
                 raise PermissionDenied
 
+def public_projects(request):
+    public_projects = Project.objects.filter(is_public=True)
+    return render(request, 'datacaptureapp/PublicProjects.html/', {'public_projects': public_projects})
 
 
 def get_node_overview(data, requested_nodes):
@@ -108,7 +111,6 @@ def get_node_overview(data, requested_nodes):
         for data_object in data.filter(node=node):
             overview[node.pk][data_object.attribute.name] = data_object.value
     return overview
-
 
 
 @login_required()
@@ -154,7 +156,8 @@ def addnode(request, pk):
                 data = data.save(commit=False)
                 data.attribute = attribute
                 datas.append(data)
-            return render(request, 'datacaptureapp/AddFeature.html', {'node_form': node_form, 'datas': datas, 'project_id': pk})
+            return render(request, 'datacaptureapp/AddFeature.html',
+                          {'node_form': node_form, 'datas': datas, 'project_id': pk})
     else:
         raise PermissionDenied
 
@@ -180,7 +183,8 @@ def nodes(request, pk):
                 elif data_type == 'GeoJSON':
                     geojson = generate_geojson(requested_project)
                     response = HttpResponse(content_type='application/json')
-                    response['Content-Disposition'] = 'attachment; filename="{}.geojson"'.format(json.loads(geojson)['name'])
+                    response['Content-Disposition'] = 'attachment; filename="{}.geojson"'.format(
+                        json.loads(geojson)['name'])
                     response.write(geojson)
                 elif data_type == 'Excel':
                     response = HttpResponse(content_type='application/vnd.ms-excel')
@@ -204,7 +208,6 @@ def nodes(request, pk):
                       {'overview': overview, 'images': images, 'attributes': attributes})
     else:
         raise PermissionDenied
-
 
 
 @login_required()
@@ -241,7 +244,6 @@ def edit_node(request, pk, nk):
         return render(request, 'datacaptureapp/EditNode.html', {'node': node, 'datas': datas})
     else:
         raise PermissionDenied
-
 
 
 @login_required()

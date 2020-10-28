@@ -8,6 +8,7 @@ from django.views.static import serve
 urlpatterns = [
     path('', views.home, name='home'),
     path('projects/', views.projects, name='projects'),
+    path('projects/public/', views.public_projects, name='public-projects'),
     path('projects/<int:pk>/', views.project, name='project'),
     path('projects/new/', views.newproject, name='new-project'),
     path('projects/<int:pk>/attributes/', views.add_attribute, name='attributes'),
