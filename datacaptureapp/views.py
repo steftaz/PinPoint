@@ -10,7 +10,7 @@ from django.shortcuts import render, redirect
 from datacaptureapp.forms import *
 from account.models import Account as UserAccount
 from datacaptureapp.export_builder import *
-from django.contrib.auth import logout, login
+from django.contrib.auth import logout, login, authenticate
 from django.contrib.auth.decorators import login_required
 from decimal import Decimal
 from django.contrib import messages
@@ -108,9 +108,8 @@ def get_node_overview(data, requested_nodes):
     overview = {}
     for node in requested_nodes:
         overview[node.pk] = {'latitude': node.latitude, 'longitude': node.longitude}
-        for data_object in data:
-            if data_object.node == node:
-                overview[node.pk][data_object.attribute.name] = data_object.value
+        for data_object in data.filter(node=node):
+            overview[node.pk][data_object.attribute.name] = data_object.value
     return overview
 
 
@@ -334,7 +333,6 @@ def login_view(request):
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(request, username=username, password=password)
-        print(user, username, password)
         if user is not None:
             login(request, user)
             return redirect("/projects/")
