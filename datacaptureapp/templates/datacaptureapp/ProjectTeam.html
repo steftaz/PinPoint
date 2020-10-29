@@ -20,12 +20,12 @@
 
     <!-- Public private toggle -->
     <div id="is-public" style="display: none;">{{ project.is_public }}</div>
-    <div class="container pt-5 text-left">
+    <div class="container pl-3 pt-5 text-left">
         <div class="custom-control custom-switch">
             <input change-pp-url="{% url 'project' project.id %}" type="checkbox" class="custom-control-input" id="public-private-toggle">
             <label class="custom-control-label" for="public-private-toggle" id="toggle-label"></label>
         </div>
-
+    </div>
     <div>
         {% if messages %}
             <ul class="messages">

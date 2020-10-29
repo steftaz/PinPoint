@@ -24,6 +24,25 @@
           <div class="container center_div">
             <label for="name">Project Name</label>
             {{ form.name }}
+
+              <div class="container py-4 text-left">
+                  <div class="form-row">
+                      <h5 id="helpIcon" tabindex="0" class="pull-right" data-toggle="popover" style="margin-left:5px"
+                          data-placement="left" data-trigger=focus" aria-hidden=true" data-html="true"
+                          title="New Project"
+                          data-content="<b> Private/Public project</b> <br>
+        You can set your project to be private or public. Public projects can be accessed by anyone that has a user account. Private projects can only be accessed by team members that are added to the project on the team members page. The project can later be changed to private/public on the team members page.
+            ">
+                          <span class="fa fa-question-circle" style="color:grey; margin-right:10px; margin-bottom: 10px"></span>
+                      </h5>
+                      <div class="custom-control custom-switch">
+                          <input type="checkbox" class="custom-control-input"
+                                 id="public-private-toggle" name="is_public" value="public">
+                          <label class="custom-control-label" for="public-private-toggle"
+                                 id="toggle-label"><b>Private</b> project</label>
+                      </div>
+                  </div>
+              </div>
               <div class="form-group">
                 <label for="Description">Description</label>
                 {{ form.description }}
@@ -32,5 +51,20 @@
           </div>
          </div>
     </form>
+
+    <script>
+        ppToggle = $("#public-private-toggle");
+        toggleLabel = $("#toggle-label");
+        ppToggle.on('change', function () {
+            if (ppToggle.is(':checked')) {
+                console.log("if");
+                toggleLabel.html("<b>Public</b> project");
+
+            } else {
+                console.log("else");
+                toggleLabel.html("<b>Private</b> project");
+            }
+        });
+    </script>
 
 {% endblock %}
