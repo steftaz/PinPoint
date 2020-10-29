@@ -2,38 +2,41 @@
 
 {% block content %}
 
-    <h2>Login</h2>
-    <form method = "post">
-        {% csrf_token %}
+    <br>
+    <h1 class="text-center" style="font-size:min(5vw, 50px);font-family:'Calibri'">Sign in</h1>
+    <hr/>
+    <br>
 
-        {% for field in login_form %}
-            <p>
-                {{ field.label_tag }}
-                {{ field }}
+    <div class="form-group">
+        <div class="container center_div">
+            <form method = "post">
+                {% csrf_token %}
 
-                {% if field.help_text %}
-                    <small style="color: grey;">{{ field.help_text }}</small>
+                <input type="email" name="email" class="form-control" id="inputEmail" aria-describedby="emailHelp" placeholder="Enter E-mail">
+
+                <div class="form-group">
+                    <br>
+                    <input type="password" name="password" class="form-control" id="ProjectDescription" placeholder="Enter password">
+                </div>
+
+{#                display errors#}
+                {% for field in login_form %}
+                    {% for error in field.errors %}
+                        <p style="color: red;">{{ error }}</p>
+                    {% endfor %}
+                {% endfor %}
+
+                {% if login_form.non_field_errors %}
+                    <div style="color:red;">
+                        <p>{{ login_form.non_field_errors }}</p>
+                    </div>
                 {% endif %}
 
-            </p>
+                <button  type="submit" onclick="location.href='{% url 'profile' %}'" class="btn btn-info">Sign in</button>
+                <button  type="button" onclick="location.href='{% url 'register' %}'" class="btn btn-info">Register</button>
 
-        {% endfor %}
-
-        {% for field in login_form %}
-            {% for error in field.errors %}
-                <p style="color: red;">{{ error }}</p>
-            {% endfor %}
-        {% endfor %}
-
-        {% if login_form.non_field_errors %}
-            <div style="color:red;">
-                <p>{{ login_form.non_field_errors }}</p>
-            </div>
-        {% endif %}
-
-        <button type="submit">Login</button>
-    </form>
-
-    <p>Don't have an account? Create one <a href={% url 'register' %}> here </a> </p>
+            </form>
+        </div>
+    </div>
 
 {% endblock content %}
