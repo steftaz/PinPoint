@@ -12,12 +12,13 @@
             <form method = "post">
                 {% csrf_token %}
 
+                <label for="username">E-mail</label>
                 <input type="email" name="email" class="form-control" id="inputEmail" aria-describedby="emailHelp" placeholder="Enter E-mail">
 
-                <div class="form-group">
-                    <br>
-                    <input type="password" name="password" class="form-control" id="ProjectDescription" placeholder="Enter password">
-                </div>
+                <br>
+                <label for="password">Password</label>
+                <input type="password" name="password" class="form-control" id="ProjectDescription" placeholder="Enter password">
+                <br>
 
 {#                display errors#}
                 {% for field in login_form %}
