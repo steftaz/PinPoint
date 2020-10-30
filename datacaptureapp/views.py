@@ -315,7 +315,7 @@ def team(request, pk):
                 messages.success(request, 'Successfully removed the member from this project')
                 return JsonResponse({"messages": messagesToList(request), "removed_user": user_to_remove.email})
             else:
-                form = AddMemberForm(request.POST)  # TODO remove team members
+                form = AddMemberForm(request.POST)
                 if form.is_valid():
                     if Account.objects.filter(email=request.POST.get('email')).exists():
                         account = Account.objects.filter(email=form.cleaned_data.get('email')).first()
