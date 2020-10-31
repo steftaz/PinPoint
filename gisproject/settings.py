@@ -25,7 +25,7 @@ SECRET_KEY = 'o28_+gdwi98zv@&i6urdpm2fcd!2582@az^l%wdxewt=gb1!w2'
 DEBUG = True
 
 
-ALLOWED_HOSTS = ['127.0.0.1', '192.168.56.1', 'steftaz.pythonanywhere.com', '192.168.0.103']
+ALLOWED_HOSTS = ['127.0.0.1', '192.168.56.1', 'steftaz.pythonanywhere.com', '192.168.0.103', '192.168.189.1']
 
 STATIC_URL = '/static/'
 

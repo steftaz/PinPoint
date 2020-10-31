@@ -90,7 +90,6 @@
             }
         });
 
-
         function onSubmit() {
             var iLat = document.getElementById('latitude');
             if (!iLat.value) {
@@ -98,8 +97,6 @@
                 return false;
             }
         }
-
-
 
         function recordPosition(position) {
             var iLat = document.getElementById('latitude');
@@ -151,8 +148,6 @@
         function onLocationError(e) {
             alert(e.message);
         }
-
-
 
         map.on('locationfound', onLocationFound);
 
