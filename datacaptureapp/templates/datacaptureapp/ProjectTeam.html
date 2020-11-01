@@ -24,10 +24,17 @@
 
     <!-- Public private toggle -->
     <div id="is-public" style="display: none;">{{ project.is_public }}</div>
-    <div class="container pl-3 pt-5 text-left">
-        <div class="custom-control custom-switch">
-            <input change-pp-url="{% url 'project' project.id %}" type="checkbox" class="custom-control-input" id="public-private-toggle">
-            <label class="custom-control-label" for="public-private-toggle" id="toggle-label"></label>
+    <div class="container pl-3 pt-5">
+        <div class="row">
+            <div class="col custom-control custom-switch text-left" >
+                <input change-pp-url="{% url 'project' project.id %}" type="checkbox" class="custom-control-input" id="public-private-toggle">
+                <label class="custom-control-label" for="public-private-toggle" id="toggle-label"></label>
+            </div>
+             <div class="col text-right">
+                <a href="../">
+                    <button type="button" class="btn btn-outline-danger">Return to project</button>
+                </a>
+            </div>
         </div>
     </div>
     <div>
