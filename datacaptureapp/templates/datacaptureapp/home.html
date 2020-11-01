@@ -36,7 +36,7 @@
                 <hr/>
                 <div class="text-center"  style="font-size:min(5vw, 50px);">
                     {% for project in  projects %}
-                        <a class="btn btn-info btn-lg" role="button" href="{% url 'project' project.id %}" style="margin-top:15px; margin-left:5px"> <i class="fa fa-folder" aria-hidden="true"></i> {{ project.name }}</a>
+                        <a class="btn btn-info btn-lg mb-2 ml-1" role="button" href="{% url 'project' project.id %}"> <i class="fa fa-folder" aria-hidden="true"></i> {{ project.name }}</a>
                     {% endfor %}
                 </div>
             </div>
