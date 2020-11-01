@@ -16,6 +16,7 @@ urlpatterns = [
     path('projects/<int:pk>/nodes/', views.nodes, name='nodes'),
     path('projects/<int:pk>/nodes/<int:nk>/edit/', views.edit_node, name='edit-node'),
     path('projects/<int:pk>/team/', views.team, name='team'),
+    path('projects/<int:pk>/edit/', views.edit_project, name='edit-project'),
     # path('login/', views.login_view, name='login'),
     path('profile/', views.profile, name='profile'),
     path('profile/new', views.newprofile, name='new-profile'),

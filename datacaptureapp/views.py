@@ -44,6 +44,8 @@ def newproject(request):
             new_project = form.save()
             creator = UserAccount.objects.filter(email=user.email).first()
             new_project.user.add(creator)
+            request = QueryDict()
+            request.method = "GET"
             return redirect('attributes', new_project.id)
     form = CreateProjectForm
     return render(request, "datacaptureapp/NewProject.html", {'form': form})
@@ -57,7 +59,7 @@ def project(request, pk=0):
     :param pk: The id of the project
     :return:
     """
-    requested_project = Project.objects.filter(id=pk).first()
+    requested_project = Project.objects.get(id=pk)
     if not requested_project:
         if request.headers.get('search-by-id'):
             messages.error(request, 'The project you were looking for does not exist')
@@ -74,24 +76,38 @@ def project(request, pk=0):
                     return JsonResponse({'is_public': requested_project.is_public})
             else:
                 if request.headers.get('search-by-id'):
-                    return JsonResponse({'url': '/projects/' + str(pk) + '/'})
+                    return JsonResponse({'url': '/projects/{}/'.format(pk)})
                 else:
-                    geojson = generate_geojson(requested_project)
                     owner = requested_project.user.all().first()  # TODO there are more users now, we do not specify the owner
                     attributes = Attribute.objects.filter(project__id=pk)
                     data = Data.objects.filter(attribute__in=attributes)
                     requested_nodes = Node.objects.filter(project_id=pk)
                     overview = get_node_overview(data, requested_nodes)
-                    return render(request, 'datacaptureapp/Project.html',
-                                  {'project': requested_project, 'owner': owner, 'geojson': geojson,
-                                   'overview': overview, 'data': data, 'attributes': attributes,
-                                   'requested_nodes': requested_nodes})
+                    return render(request, 'datacaptureapp/Project.html', {'project': requested_project, 'owner': owner,
+                                   'overview': overview, 'data': data, 'attributes': attributes})
         else:
             if request.headers.get('search-by-id'):
                 messages.error(request, 'This project is private. Ask the project owner to add you to this project.')
                 return JsonResponse({"messages": messagesToList(request)})
             else:
                 raise PermissionDenied
+
+
+@login_required()
+def edit_project(request, pk):
+    post = request.POST
+    if post:
+        requested_project = Project.objects.get(id=pk)
+        if "remove_project" in request.POST:
+            requested_project.delete()
+            return redirect('home')
+        else:
+            requested_project.name = post['name']
+            requested_project.description = post['description']
+            requested_project.save()
+            return redirect('project', pk)
+    return render(request, 'datacaptureapp/Edit_Project.html', {'form': CreateProjectForm()})
+
 
 def public_projects(request):
     public_projects = Project.objects.filter(is_public=True)

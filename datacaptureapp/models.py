@@ -9,14 +9,15 @@ class Project(models.Model):
     user = models.ManyToManyField(Account)
     is_public = models.BooleanField(default=False)
 
+
 class Profile(models.Model):
     username = models.CharField(max_length=50)
     email = models.CharField(max_length=50)
     password = models.CharField(max_length=50)
 
+
 class Attribute(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)  # A form belongs to a single project
-
     type = models.CharField(max_length=50)
     name = models.CharField(max_length=50)
     description = models.TextField()
