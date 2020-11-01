@@ -6,9 +6,21 @@
 
 
 {% block content %}
+<h3 id="helpIcon" tabindex="0" class="pull-right" data-toggle="popover" style="margin-left:5px; margin-top:2px"
+        data-placement="left" data-trigger=focus" aria-hidden=true" data-html="true"
+        title="Profile"
+        data-content="<b> Profile Data </b> <br>
+        An overview of your data is shown in the table on this page.
+        <br>
+        <br>
+        <b> Edit profile data </b> <br>
+        To edit your profile data click the 'Edit profile' button.">
+        <span class="fa fa-question-circle" style="color:grey; margin-right:10px"></span>
+    </h3>
     <br>
     <h1 class="text-center" style="font-size:min(5vw, 50px);font-family:'Calibri'">{{ user.username }}'s profile</h1>
     <hr/>
+
 
     <div class="container">
         <br>
