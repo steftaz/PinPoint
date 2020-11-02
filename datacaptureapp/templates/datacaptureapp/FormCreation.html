@@ -31,11 +31,9 @@
                     Note: attributes are created one at a time an this is the only moment you can add them!
                 </div>
                 <div class="text-center">
-                    <a href="../" class="btn btn-outline-danger">Go to project</a>
+                    <a href="../" class="btn btn-outline-danger btn-lg">Go to project</a>
                 </div>
                 <label for="name">Name</label>
-                <i tabindex="0" class="fa fa-question-circle" data-container="body" data-toggle="popover"  data-placement="right" data-trigger=focus" data-content="Add a name and description for each attribute and define the type of data." aria-hidden=true"></i>
-
                 {{ form.name }}
                 <div class="form-group">
                     <br>
@@ -46,7 +44,7 @@
                     <label for="type">Type of data</label>
                     {{ form.type }}
                 </div>
-                <button type="submit" class="btn btn-info"> Save attribute </button>
+                <button type="submit" class="btn btn-info btn-lg"> Save attribute </button>
 
                 <div class="modal fade" id="addAttribute" tabindex="-1" role="dialog" aria-labelledby="#addAttribute" aria-hidden="true">
                     <div class="modal-dialog" role="document">

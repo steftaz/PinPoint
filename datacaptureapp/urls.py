@@ -1,7 +1,9 @@
+from django.conf.urls import url
 from django.urls import path
 from . import views
 from django.conf import settings
-from django.conf.urls.static import static
+from django.views.static import serve
+
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -14,10 +16,12 @@ urlpatterns = [
     path('projects/<int:pk>/nodes/', views.nodes, name='nodes'),
     path('projects/<int:pk>/nodes/<int:nk>/edit/', views.edit_node, name='edit-node'),
     path('projects/<int:pk>/team/', views.team, name='team'),
+    path('projects/<int:pk>/edit/', views.edit_project, name='edit-project'),
     path('profile/', views.profile, name='profile'),
     path('profile/new', views.newprofile, name='new-profile'),
     path('profile/edit', views.editprofile, name='edit-profile'),
     path('about/', views.about, name='about'),
     path('FAQ/', views.faq, name='faq'),
-    ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    url(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT})
+    ]
 

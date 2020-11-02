@@ -1,30 +1,27 @@
 from django.core.exceptions import PermissionDenied
-from django.http import QueryDict, HttpResponse, JsonResponse
-from django.core import serializers
-from django.http import FileResponse, QueryDict, HttpResponse, JsonResponse
-from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse
-
-from django.http import QueryDict, HttpResponse, JsonResponse, HttpResponseServerError
+from django.shortcuts import  get_object_or_404
+from django.http import QueryDict, HttpResponse, JsonResponse, HttpResponseServerError, Http404
 from django.shortcuts import render, redirect
 from datacaptureapp.forms import *
-from account.models import Account as UserAccount
+from account.models import Account
 from datacaptureapp.export_builder import *
 from django.contrib.auth import logout, login, authenticate
 from django.contrib.auth.decorators import login_required
 from decimal import Decimal
 from django.contrib import messages
+from django.db.models import Q, Count
 
 
 @login_required()
 def home(request):
     """
     Renders the home page with all projects of the user and the user as context
+    Context variables: projects, user
     :param request: The incoming request
     :return: A render to the home page
     """
     user = request.user
-    projects = Project.objects.filter(user=user)
+    projects = Project.objects.filter(Q(users=user) | Q(owner=user))
     return render(request, 'datacaptureapp/home.html', {'projects': projects, 'user': user})
 
 
@@ -34,6 +31,7 @@ def newproject(request):
     Shows a page with a project form in it's context.
     If a POST request is sent, it saves the new project to the database and
     redirects to a page where new attributes can be added
+    Context variables: form
     :param request: The incoming request
     :return: A render to the new project page, or a redirect to the adding attributes page
     """
@@ -41,9 +39,10 @@ def newproject(request):
         user = request.user
         form = CreateProjectForm(request.POST)
         if form.is_valid():
-            new_project = form.save()
-            creator = UserAccount.objects.filter(email=user.email).first()
-            new_project.user.add(creator)
+            new_project = form.save(commit=False)
+            owner = Account.objects.filter(email=user.email).first()
+            new_project.owner = owner
+            form.save()
             return redirect('attributes', new_project.id)
     form = CreateProjectForm
     return render(request, "datacaptureapp/NewProject.html", {'form': form})
@@ -52,10 +51,13 @@ def newproject(request):
 @login_required()
 def project(request, pk=0):
     """
-
+    First checks whether the requested project exists, otherwise throws a 404
+    or notifies the requesting page that this project does not exist.
+    Then check whether the user is allowed to access this project. If so, render the project page with the necesary parameters.
+    Context variables: project, owner, overview, data, attributes, is_owner
     :param request: The incoming request
     :param pk: The id of the project
-    :return:
+    :return: A JsonResponse for the search-by-id or a render to the project page
     """
     requested_project = Project.objects.filter(id=pk).first()
     if not requested_project:
@@ -63,48 +65,86 @@ def project(request, pk=0):
             messages.error(request, 'The project you were looking for does not exist')
             return JsonResponse({"messages": messagesToList(request)})
         else:
-            raise PermissionDenied
+            raise Http404
     else:
-        if requested_project.is_public or requested_project.user.filter(email=request.user.email).first():
-            # POST request to change private/public
-            if request.POST:
+        is_owner = requested_project.owner == request.user
+        if request.method == 'POST':
+            if is_owner:
                 form = ChangePublicPrivateForm(request.POST, instance=requested_project)
                 if form.is_valid():
                     form.save()
                     return JsonResponse({'is_public': requested_project.is_public})
-            else:
-                if request.headers.get('search-by-id'):
-                    return JsonResponse({'url': '/projects/' + str(pk) + '/'})
-                else:
-                    geojson = generate_geojson(requested_project)
-                    owner = requested_project.user.all().first()  # TODO there are more users now, we do not specify the owner
-                    attributes = Attribute.objects.filter(project__id=pk)
-                    data = Data.objects.filter(attribute__in=attributes)
-                    requested_nodes = Node.objects.filter(project_id=pk)
-                    overview = get_node_overview(data, requested_nodes)
-                    return render(request, 'datacaptureapp/Project.html',
-                                  {'project': requested_project, 'owner': owner, 'geojson': geojson,
-                                   'overview': overview, 'data': data, 'attributes': attributes,
-                                   'requested_nodes': requested_nodes})
-        else:
-            if request.headers.get('search-by-id'):
-                messages.error(request, 'This project is private. Ask the project owner to add you to this project.')
-                return JsonResponse({"messages": messagesToList(request)})
+            elif requested_project.is_public and not is_owner and not requested_project.users.filter(
+                    email=request.user.email).first():
+                requested_project.users.add(request.user)
+                messages.success(request, 'This project has been added to your projects')
+                return JsonResponse({'messages': messagesToList(request)})
             else:
                 raise PermissionDenied
+        elif requested_project.is_public or is_owner or requested_project.users.filter(
+                email=request.user.email).first():
+            attributes = Attribute.objects.filter(project__id=pk)
+            data = Data.objects.filter(attribute__in=attributes)
+            requested_nodes = Node.objects.filter(project_id=pk)
+            overview = get_node_overview(data, requested_nodes)
+            context = {'project': requested_project,
+                       'overview': overview, 'data': data, 'attributes': attributes,
+                       'requested_nodes': requested_nodes, 'user': request.user, 'is_owner': is_owner}
+            if requested_project.is_public and not is_owner and not requested_project.users.filter(
+                    email=request.user.email).first():
+                context['can_join'] = True
+            return render(request, 'datacaptureapp/Project.html', context)
+        else:
+            raise PermissionDenied
+
+
+@login_required()
+def edit_project(request, pk):
+    """
+    Renders the edit-project page with a the project, so the name and description can be used as placeholders.
+    In a POST request the project is either edited or deleted.
+    Only the project owner can access this page
+    Context variables: project
+    :param request: The incoming request
+    :param pk: The id of the project
+    :return: A render to the edit-project page or a redirect to the home or project page.
+    """
+    post = request.POST
+    requested_project = get_object_or_404(Project, pk=pk)
+    if requested_project.owner == request.user:
+        if post:
+            if "remove_project" in request.POST:
+                requested_project.delete()
+                return redirect('home')
+            else:
+                requested_project.name = post['name']
+                requested_project.description = post['description']
+                requested_project.save()
+                return redirect('project', pk)
+        else:
+            return render(request, 'datacaptureapp/Edit_Project.html', {'project': requested_project})
+    else:
+        raise PermissionDenied
 
 
 def public_projects(request):
-    public_projects = Project.objects.filter(is_public=True)
-    return render(request, 'datacaptureapp/PublicProjects.html/', {'public_projects': public_projects})
+    """
+    Gets all public projects and renders a page with these projects in the context
+    Context variables: public_projects
+    :param request: The incoming request
+    :return: A Render to the public projects page
+    """
+    public_projects_all = Project.objects.filter(is_public=True).annotate(no_nodes=Count('node', distinct=True), no_users=Count('users', distinct=True) + Count('owner', distinct=True)).order_by('-no_nodes', '-no_users')
+    return render(request, 'datacaptureapp/PublicProjects.html/', {'public_projects': public_projects_all})
 
 
 def get_node_overview(data, requested_nodes):
     """
-
-    :param data:
-    :param requested_nodes:
-    :return:
+    Creates a dictionary with all node keys as keys, and as value another dictionary which has
+    all attribute names as keys and the corresponding values as values.
+    :param data: The data objects corresponding to the nodes
+    :param requested_nodes: The nodes to make an overview for
+    :return: The overview
     """
     overview = {}
     for node in requested_nodes:
@@ -117,13 +157,16 @@ def get_node_overview(data, requested_nodes):
 @login_required()
 def addnode(request, pk):
     """
-
+    If the project exists and the user is allowed to add nodes to this project, renders a page with a form to add a new node.
+    If a POST is received, add the node and all of its data to the database and return to the project page
+    Context variables: node_form, datas, project_id
     :param request: The incoming request
     :param pk: The id of the project
-    :return:
+    :return: A render to the add_node page or a redirect to the project
     """
     requested_project = get_object_or_404(Project, pk=pk)
-    if requested_project.is_public or requested_project.user.filter(email=request.user.email).first():
+    if requested_project.is_public or requested_project.owner == request.user or requested_project.users.filter(
+            email=request.user.email).first():
         attributes = Attribute.objects.filter(project=requested_project)
         if request.method == "POST":
             latitude_formatted = "{:.8f}".format(Decimal(request.POST.get('latitude')))
@@ -137,6 +180,7 @@ def addnode(request, pk):
             if node_form.is_valid():
                 node = node_form.save(commit=False)
                 node.project = requested_project
+                node.user = request.user
                 node.save()
 
             for attribute in attributes:
@@ -166,13 +210,16 @@ def addnode(request, pk):
 @login_required()
 def nodes(request, pk):
     """
-
+    Renders a page which shows an overview of all nodes and their data of a project, if the user is allowed to.
+    If a post request is sent either 2 things can be asked, or a GeoJson/CSV/Excel export of the data, or the removal of a node.
+    Context variables: overview, images, attributes
     :param request: The incoming request
     :param pk: The id of the project
-    :return:
+    :return: A render to the overview page or a HttpResponse containing a file export.
     """
     requested_project = get_object_or_404(Project, pk=pk)
-    if requested_project.is_public or requested_project.user.filter(email=request.user.email).first():
+    if requested_project.is_public or requested_project.owner == request.user or requested_project.users.filter(
+            email=request.user.email).first():
         if request.method == 'POST':
             post = request.POST
             if 'data_type' in post:
@@ -197,16 +244,16 @@ def nodes(request, pk):
                 return response
             elif 'remove_node' in post:
                 Node.objects.get(id=post['remove_node']).delete()
-        else:
-            attributes = Attribute.objects.filter(project__id=pk)
-            data = Data.objects.filter(attribute__in=attributes)
-            requested_nodes = Node.objects.filter(project_id=pk)
-            overview = get_node_overview(data, requested_nodes)
-            images = {}
-            for node in requested_nodes:
-                images[node.pk] = node.picture
-            return render(request, 'datacaptureapp/FeatureOverview.html',
-                          {'overview': overview, 'images': images, 'attributes': attributes})
+        # No Else statement on purpose, if a node is deleted this code needs to be called.
+        attributes = Attribute.objects.filter(project__id=pk)
+        data = Data.objects.filter(attribute__in=attributes)
+        requested_nodes = Node.objects.filter(project_id=pk)
+        overview = get_node_overview(data, requested_nodes)
+        images = {}
+        for node in requested_nodes:
+            images[node.pk] = node.picture
+        return render(request, 'datacaptureapp/FeatureOverview.html',
+                      {'overview': overview, 'images': images, 'attributes': attributes})
     else:
         raise PermissionDenied
 
@@ -214,15 +261,18 @@ def nodes(request, pk):
 @login_required()
 def edit_node(request, pk, nk):
     """
-
+    Shows a page on which the values of the data objects of a node can be altered.
+    If a POST is sent the program will check which values were entered and will update all which have a value
+    Context variables: node, datas
     :param request: The incoming request
     :param pk: The id of the project
     :param nk: The id of the node
-    :return:
+    :return: A render to the edit node page or a redirect to the nodes page
     """
     requested_project = get_object_or_404(Project, pk=pk)
     node = get_object_or_404(Node, id=nk)
-    if requested_project.is_public or requested_project.user.filter(email=request.user.email).first():
+    if requested_project.is_public or requested_project.owner == request.user or requested_project.users.filter(
+            email=request.user.email).first():
         if request.method == 'POST':
             post = request.POST
             for coor in ['longitude', 'latitude']:
@@ -250,19 +300,26 @@ def edit_node(request, pk, nk):
 @login_required()
 def add_attribute(request, pk):
     """
-
+    Shows a page on which a new attribute can be added to a project.
+    When a POST is sent, create the new attribute and create null data objects for all existing nodes
+    Context variables: form
     :param request: The incoming request
     :param pk: The id of the project
-    :return:
+    :return: A render to the adding attributes page or a redirect to the attributes page.
     """
     requested_project = get_object_or_404(Project, pk=pk)
-    if requested_project.is_public or requested_project.user.filter(email=request.user.email).first():
+    if requested_project.is_public or requested_project.owner == request.user:
         if request.method == 'POST':
             form = CreateAttributeForm(request.POST)
             if form.is_valid():
                 new_attribute = form.save(commit=False)
                 new_attribute.project = requested_project
                 new_attribute.save()
+                for node in Node.objects.filter(project=requested_project):
+                    new_data = CreateDataForm(QueryDict("value=Null")).save(commit=False)
+                    new_data.node = node
+                    new_data.attribute = new_attribute
+                    new_data.save()
                 return redirect('attributes', pk)
         else:
             form = CreateAttributeForm
@@ -274,7 +331,7 @@ def add_attribute(request, pk):
 @login_required()
 def messagesToList(request):
     """
-
+    TODO No idea what this method does
     :param request: The incoming request
     :return:
     """
@@ -291,30 +348,39 @@ def messagesToList(request):
 @login_required()
 def team(request, pk):
     """
-
+    A page where the owner of a project can add people to the project.
+    Context variables: form, team, project, owner
     :param request: The incoming request
-    :return:
+    :return: A render to the teams page, or a JsonResponse containing messages and other useful info.
     """
     requested_project = get_object_or_404(Project, pk=pk)
-    if requested_project.user.filter(email=request.user.email).first():
-        team_members = requested_project.user.all()
-        if request.POST:
-            form = AddMemberForm(request.POST)
-            if form.is_valid():
-                if Account.objects.filter(email=request.POST.get('email')).exists():
-                    account = Account.objects.filter(email=form.cleaned_data.get('email')).first()
-                    requested_project.user.add(account)
-                    messages.success(request, 'Successfully added the user to this project')
-                    return JsonResponse({"messages": messagesToList(request), 'email': account.email,
-                                         'username': account.username})
-                else:
-                    messages.error(request, 'Adding team member failed: no user found with that email')
-                    return JsonResponse({"messages": messagesToList(request)})
+    owner = requested_project.owner
+    if owner == request.user:
+        team_members = requested_project.users.all()
+        if request.method == 'POST':
+            if request.POST.get('action') == 'remove_member':
+                user_to_remove = requested_project.users.get(id=request.POST.get('member-id'))
+                requested_project.users.remove(user_to_remove)
+                messages.success(request, 'Successfully removed the member from this project')
+                return JsonResponse({"messages": messagesToList(request), "removed_user": user_to_remove.email})
+            else:
+                form = AddMemberForm(request.POST)
+                if form.is_valid():
+                    if Account.objects.filter(email=request.POST.get('email')).exists():
+                        account = Account.objects.filter(email=form.cleaned_data.get('email')).first()
+                        requested_project.users.add(account)
+                        added_user = requested_project.users.get(email=account.email)
+                        messages.success(request, 'Successfully added the user to this project')
+                        return JsonResponse({"messages": messagesToList(request), 'email': added_user.email,
+                                             'username': added_user.username, 'member_id': added_user.id})
+                    else:
+                        messages.error(request, 'Adding team member failed: no user found with that email')
+                        return JsonResponse({"messages": messagesToList(request)})
 
         else:
             form = AddMemberForm()
             return render(request, 'datacaptureapp/ProjectTeam.html',
-                          {'form': form, 'team': team_members, 'project': requested_project})
+                          {'form': form, 'team': team_members, 'project': requested_project, 'owner': owner})
     else:
         raise PermissionDenied
 
@@ -332,9 +398,9 @@ def formcreation(request):
 @login_required()
 def projects(request):
     """
-
+    Redirects to the home page
     :param request: The incoming request
-    :return:
+    :return: A redirect to the home page
     """
     return redirect('home')
 
@@ -342,46 +408,51 @@ def projects(request):
 @login_required()
 def profile(request):
     """
-
+    Renders the profile page
+    Context variables: _
     :param request: The incoming request
-    :return:
+    :return: A render of the profile page
     """
-    return render(request, 'datacaptureapp/Profile.html', {})
+    return render(request, 'datacaptureapp/Profile.html')
 
 
 @login_required()
 def newprofile(request):
     """
-
+    Renders the new profile page
+    Context variables: _
     :param request: The incoming request
-    :return:
+    :return: A render of the NewProfile page
     """
-    return render(request, 'datacaptureapp/NewProfile.html', {})
+    return render(request, 'datacaptureapp/NewProfile.html')
 
 
 @login_required()
 def editprofile(request):
     """
-
+    Renders the EditProfile page
+    Context variables: _
     :param request: The incoming request
-    :return:
+    :return: A render of the edit profile page
     """
-    return render(request, 'datacaptureapp/EditProfile.html', {})
+    return render(request, 'datacaptureapp/EditProfile.html')
 
 
 def about(request):
     """
-
+    Renders the about page
+    Context variables: _
     :param request: The incoming request
-    :return:
+    :return: A render of the About page
     """
-    return render(request, 'datacaptureapp/About.html', {})
+    return render(request, 'datacaptureapp/About.html')
 
 
 def faq(request):
     """
-
+    Renders the FAQ page
+    Context variables: _
     :param request: The incoming request
-    :return:
+    :return: A render of the FAQ page
     """
-    return render(request, 'datacaptureapp/FAQ.html', {})
+    return render(request, 'datacaptureapp/FAQ.html')

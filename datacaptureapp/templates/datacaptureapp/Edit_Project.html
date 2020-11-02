@@ -1,0 +1,67 @@
+{% extends "datacaptureapp/base.html" %}
+
+<!--
+    This page gives the user the optionality to change
+ !-->
+
+
+{% block content %}
+    <h3 id="helpIcon" tabindex="0" class="pull-right" data-toggle="popover" style="margin-left:5px"
+        data-placement="left" data-trigger=focus" aria-hidden=true" data-html="true"
+        title="Edit Project"
+        data-content="<b> Create new project </b> <br>
+        In here you can change the name and description of a project, or delete it entirely.
+        If you leave a field empty it's value will remain unchanged.
+            ">
+        <span class="fa fa-question-circle" style="color:grey; margin-right:10px"></span>
+    </h3>
+    <br>
+    <h1 class="text-center" style="font-size:min(5vw, 50px); font-family:'Calibri'">Edit Project</h1>
+    <hr/>
+    <br>
+    <form method="POST">
+        <div class="form-group">
+            {% csrf_token %}
+            <div class="container center_div">
+                <a data-toggle="modal" data-target="#delete" class="btn btn-danger">Delete project</a>
+                <br>
+                <br>
+                <div class="form-group">
+                    <label for="name">Project Name</label>
+                    <input type="text" name="name" class="form-control"
+                           placeholder="{{ project.name }}" id="name">
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea name="description" cols="40" rows="10" class="form-control"
+                              placeholder="{{ project.description }}" id="description"></textarea>
+                </div>
+                <button  type="submit" class="btn btn-info"> Save Edits</button>
+                <a href="../" class="btn btn-outline-danger">Return to project</a>
+            </div>
+        </div>
+    </form>
+
+    <div class="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="Delete project" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Delete project</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">Are you sure you want to delete this project and all of its nodes?</div>
+                <div class="modal-footer">
+                    <form method="post">
+                        {% csrf_token %}
+                        <input class="form-control" type="hidden" id="remove_project" name="remove_project">
+                        <button class="btn btn-danger" aria-label="Yes" type="submit">Yes</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,7 +1,7 @@
 {% extends "datacaptureapp/base.html" %}
 
 <!--
-    This page is shown whenever a user tries to access a page that does not exist
+    This page is shown whenever a HTTP 403 error occurs.
  !-->
 
 {% block content %}
@@ -19,7 +19,7 @@
         <br>
         <br>
         <br>
-        <a href="{% url 'home' %}" class="btn btn-outline-secondary btn-lg">Go back to home page</a>
+        <a onclick="history.back()" class="btn btn-outline-secondary btn-lg">Return to previous page</a>
     </div>
 
 {% endblock %}

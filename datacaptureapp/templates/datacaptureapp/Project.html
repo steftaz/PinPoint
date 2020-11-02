@@ -17,12 +17,16 @@
         To add a data point click the button 'Record data point'.
         <br>
         <br>
-        <b> See Data </b> <br>
+        <b> View Data </b> <br>
         To see an overview of all the data collected click the button 'Data overview'.
         <br>
         <br>
+         <b> Project Team </b> <br>
+        To see an overview of all the contributors of the project click 'Project team'.
+        <br>
+        <br>
         <b> Project info </b> <br>
-        Below the section 'About' you can see the Id, Name, description, creation date and owner of the project.
+        Below the section 'About' you can see the Id, Name, description and owner of the project.
             ">
         <span class="fa fa-question-circle" style="color:grey; margin-right:10px"></span>
     </h3>
@@ -42,20 +46,24 @@
                 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
                         integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
                         crossorigin=""></script>
-                <div id="map" style="height:450px"></div>
+
+                <div id="map" style="height:450px">
+                </div>
                 <br>
             </div>
+            <div class="text-center" id="div_messages">
+            </div>
             <div class ="text-center">
+                <button id="join-public-project" onclick="joinPublicProject()" class="text-center btn btn-success btn-lg"  type="button"><i class="fa fa-plus"> </i> Add to your projects</button>
                 <button onclick="location.href='nodes/new'" class="text-center btn btn-info btn-lg"  type="button"><i class="fa fa-plus"> </i> Record data point</button>
-                <button onclick="location.href='nodes'" class="text-center btn btn-info btn-lg"  type="button"> Data overview</button>
-                <button onclick="location.href='team'" class="text-center btn btn-info btn-lg"  type="button"><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-people" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd" d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1h8zm-7.978-1h7.956a.274.274 0 0 0 .014-.002l.008-.002c-.002-.264-.167-1.03-.76-1.72C13.688 10.629 12.718 10 11 10c-1.717 0-2.687.63-3.24 1.276-.593.69-.759 1.457-.76 1.72a1.05 1.05 0 0 0 .022.004zM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM6.936 9.28a5.88 5.88 0 0 0-1.23-.247A7.35 7.35 0 0 0 5 9c-4 0-5 3-5 4 0 .667.333 1 1 1h4.216A2.238 2.238 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816zM4.92 10c-1.668.02-2.615.64-3.16 1.276C1.163 11.97 1 12.739 1 13h3c0-1.045.323-2.086.92-3zM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0zm3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/>
-                </svg>Project team </button>
+                <button onclick="location.href='nodes'" class="text-center btn btn-info btn-lg"  type="button"><i class="fa fa-bars"></i> Data overview</button>
+                {% if is_owner %}
+                    <button onclick="location.href='team'" class="text-center btn btn-info btn-lg"  type="button"><i class="fa fa-group"></i> Project team </button>
+                    <button onclick="location.href='edit'" class="text-center btn btn-info btn-lg"  type="button"><i class="fa fa-pencil-square-o"></i> Edit project </button>
+                {% endif %}
             </div>
         </div>
     </div>
-
-
 
     <div class="container">
         <div class="row sm">
@@ -86,7 +94,7 @@
 
                     <tr>
                         <th scope="row">Owner</th>
-                        <td>{{owner.username}}</td>
+                        <td>{{project.owner.username}}</td>
                     </tr>
                     </tbody>
                 </table>
@@ -94,21 +102,28 @@
         </div>
 
     </div>
-    {#                {{ geojson|json_script:"geojson_map" }}#}
 
     <script>
+
+        // Hide the add public project to your projects button if the user is already a member or the project is not public
+        const canJoin = '' + '{{ can_join }}';
+        if (canJoin !== 'True') {
+            $('#join-public-project').hide()
+        }
+
         // LEAFLET script:
+
 
         var map = L.map('map').fitWorld();
 
         L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
-            maxZoom: 18,
+            maxZoom: 20,
             attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
                 '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
                 'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
             id: 'mapbox/streets-v11',
             tileSize: 512,
-            zoomOffset: -1
+            zoomOffset: -1,
         }).addTo(map);
 
         function onLocationFound(e) {
@@ -129,31 +144,34 @@
             }
         }
 
+        function locate() {
+            map.locate({setView: false});
+        }
+
+        // call locate every 3 seconds... forever
+        setInterval(locate, 3000);
 
         {% for key, value in overview.items %}
+            var marker = L.marker([{{ value.latitude}}, {{ value.longitude}}]).addTo(map);
 
-         var marker = L.marker([{{ value.latitude}}, {{ value.longitude}}]).addTo(map);
-
-         marker.bindPopup('<table border="1.5px" >'+
-         '<thead>'+
-             '<tr>'+
-             ' <th scope="col"><b>Latitude</b></th>\n' +
-             '                    <th scope="col"><b>Longitude </b></th>\n' +
-             '                    {% for attribute in attributes %}\n'+
-                 '                        <th scope="col"> <b>{{ attribute.name }}</b></th>\n'+
-                 '                    {% endfor %}'+
-         '</tr>'+
-         '</thead>'+
-         '<tbody>'+
-         '<tr>'+
-         '{% for data in value.values %}'+
-         '<td > <b>{{ data }}</b></td>'+
-             '{% endfor %}'+
-         '</tr>'+
-         '</tbody>'+
-         '</table>');
-
-
+            marker.bindPopup('<table class="table table-stripped" >'+
+                '<thead>'+
+                '<tr>'+
+                '<th scope="col"><b>Latitude</b></th>' +
+                '<th scope="col"><b>Longitude </b></th>' +
+                '{% for attribute in attributes %}'+
+                    '<th scope="col"> <b>{{ attribute.name }}</b></th>'+
+                    '{% endfor %}'+
+                '</tr>'+
+                '</thead>'+
+                '<tbody>'+
+                '<tr>'+
+                '{% for data in value.values %}'+
+                    '<td > <b>{{ data }}</b></td>'+
+                    '{% endfor %}'+
+                '</tr>'+
+                '</tbody>'+
+                '</table>');
         {% endfor %}
 
         map.locate({setView: true, maxZoom: 16});
@@ -175,6 +193,22 @@
             x.innerHTML = "Latitude: " + position.coords.latitude +
                 "<br>Longitude: " + position.coords.longitude;
         }
+
+
+        function joinPublicProject() {
+            $.ajax({
+                type: "POST",
+                url: "{% url 'project' project.id %}",
+                headers: {"X-CSRFToken": "{{csrf_token}}"},
+                data: '',
+                success: function (response) {
+                    $("#div_messages").append("<div class='alert alert-success' role='alert'>" + response.messages[0]['message'] + "</div>");
+                    $("#join-public-project").hide()
+                }
+
+            });
+        }
+
     </script>
 
 {% endblock %}
