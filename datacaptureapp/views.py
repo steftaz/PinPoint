@@ -1,11 +1,6 @@
 from django.core.exceptions import PermissionDenied
-from django.http import QueryDict, HttpResponse, JsonResponse
-from django.core import serializers
-from django.http import FileResponse, QueryDict, HttpResponse, JsonResponse
-from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse
-
-from django.http import QueryDict, HttpResponse, JsonResponse, HttpResponseServerError
+from django.shortcuts import  get_object_or_404
+from django.http import QueryDict, HttpResponse, JsonResponse, HttpResponseServerError, Http404
 from django.shortcuts import render, redirect
 from datacaptureapp.forms import *
 from account.models import Account as UserAccount
@@ -20,6 +15,7 @@ from django.contrib import messages
 def home(request):
     """
     Renders the home page with all projects of the user and the user as context
+    Context variables: projects, user
     :param request: The incoming request
     :return: A render to the home page
     """
@@ -34,6 +30,7 @@ def newproject(request):
     Shows a page with a project form in it's context.
     If a POST request is sent, it saves the new project to the database and
     redirects to a page where new attributes can be added
+    Context variables: form
     :param request: The incoming request
     :return: A render to the new project page, or a redirect to the adding attributes page
     """
@@ -54,23 +51,26 @@ def newproject(request):
 @login_required()
 def project(request, pk=0):
     """
-
+    First checks whether the requested project exists, otherwise throws a 404
+    or notifies the requesting page that this project does not exist.
+    Then check whether the user is allowed to access this project. If so, render the project page with the necesary parameters.
+    Context variables: project, owner, overview, data, attributes, is_owner
     :param request: The incoming request
     :param pk: The id of the project
-    :return:
+    :return: A JsonResponse for the search-by-id or a render to the project page
     """
-    requested_project = Project.objects.get(id=pk)
+    requested_project = Project.objects.filter(id=pk).first()
     if not requested_project:
         if request.headers.get('search-by-id'):
             messages.error(request, 'The project you were looking for does not exist')
             return JsonResponse({"messages": messagesToList(request)})
         else:
-            raise PermissionDenied
+            raise Http404
     else:
         if requested_project.is_public or requested_project.user.filter(email=request.user.email).first():
             # POST request to change private/public
             if request.POST:
-                form = ChangePublicPrivateForm(request.POST, instance=requested_project)
+                form = ChangePublicPrivateForm(request.POST, instance=requested_project) # TODO this is not on this pagy anymore right?
                 if form.is_valid():
                     form.save()
                     return JsonResponse({'is_public': requested_project.is_public})
@@ -84,7 +84,7 @@ def project(request, pk=0):
                     requested_nodes = Node.objects.filter(project_id=pk)
                     overview = get_node_overview(data, requested_nodes)
                     return render(request, 'datacaptureapp/Project.html', {'project': requested_project, 'owner': owner,
-                                   'overview': overview, 'data': data, 'attributes': attributes})
+                                   'overview': overview, 'data': data, 'attributes': attributes, 'is_owner': owner == request.user})
         else:
             if request.headers.get('search-by-id'):
                 messages.error(request, 'This project is private. Ask the project owner to add you to this project.')
@@ -95,31 +95,51 @@ def project(request, pk=0):
 
 @login_required()
 def edit_project(request, pk):
+    """
+    Renders the edit-project page with a the project, so the name and description can be used as placeholders.
+    In a POST request the project is either edited or deleted.
+    Only the project owner can access this page
+    Context variables: project
+    :param request: The incoming request
+    :param pk: The id of the project
+    :return: A render to the edit-project page or a redirect to the home or project page.
+    """
     post = request.POST
-    if post:
-        requested_project = Project.objects.get(id=pk)
-        if "remove_project" in request.POST:
-            requested_project.delete()
-            return redirect('home')
+    requested_project = get_object_or_404(Project, pk=pk)
+    if requested_project.user.filter(email=request.user.email).first():
+        if post:
+            if "remove_project" in request.POST:
+                requested_project.delete()
+                return redirect('home')
+            else:
+                requested_project.name = post['name']
+                requested_project.description = post['description']
+                requested_project.save()
+                return redirect('project', pk)
         else:
-            requested_project.name = post['name']
-            requested_project.description = post['description']
-            requested_project.save()
-            return redirect('project', pk)
-    return render(request, 'datacaptureapp/Edit_Project.html', {'form': CreateProjectForm()})
+            return render(request, 'datacaptureapp/Edit_Project.html', {'project': requested_project})
+    else:
+        raise PermissionDenied
 
 
 def public_projects(request):
+    """
+    Gets all public projects and renders a page with these projects in the context
+    Context variables: public_projects
+    :param request: The incoming request
+    :return: A Render to the public projects page
+    """
     public_projects = Project.objects.filter(is_public=True)
     return render(request, 'datacaptureapp/PublicProjects.html/', {'public_projects': public_projects})
 
 
 def get_node_overview(data, requested_nodes):
     """
-
-    :param data:
-    :param requested_nodes:
-    :return:
+    Creates a dictionary with all node keys as keys, and as value another dictionary which has
+    all attribute names as keys and the corresponding values as values.
+    :param data: The data objects corresponding to the nodes
+    :param requested_nodes: The nodes to make an overview for
+    :return: The overview
     """
     overview = {}
     for node in requested_nodes:
@@ -132,10 +152,12 @@ def get_node_overview(data, requested_nodes):
 @login_required()
 def addnode(request, pk):
     """
-
+    If the project exists and the user is allowed to add nodes to this project, renders a page with a form to add a new node.
+    If a POST is received, add the node and all of its data to the database and return to the project page
+    Context variables: node_form, datas, project_id
     :param request: The incoming request
     :param pk: The id of the project
-    :return:
+    :return: A render to the add_node page or a redirect to the project
     """
     requested_project = get_object_or_404(Project, pk=pk)
     if requested_project.is_public or requested_project.user.filter(email=request.user.email).first():
@@ -181,10 +203,12 @@ def addnode(request, pk):
 @login_required()
 def nodes(request, pk):
     """
-
+    Renders a page which shows an overview of all nodes and their data of a project, if the user is allowed to.
+    If a post request is sent either 2 things can be asked, or a GeoJson/CSV/Excel export of the data, or the removal of a node.
+    Context variables: overview, images, attributes
     :param request: The incoming request
     :param pk: The id of the project
-    :return:
+    :return: A render to the overview page or a HttpResponse containing a file export.
     """
     requested_project = get_object_or_404(Project, pk=pk)
     if requested_project.is_public or requested_project.user.filter(email=request.user.email).first():
@@ -230,6 +254,7 @@ def nodes(request, pk):
 def edit_node(request, pk, nk):
     """
 
+    Context variables:
     :param request: The incoming request
     :param pk: The id of the project
     :param nk: The id of the node
@@ -266,6 +291,7 @@ def edit_node(request, pk, nk):
 def add_attribute(request, pk):
     """
 
+    Context variables:
     :param request: The incoming request
     :param pk: The id of the project
     :return:
@@ -306,7 +332,8 @@ def messagesToList(request):
 @login_required()
 def team(request, pk):
     """
-
+    If the user is the owner of the project.
+    Context variables:
     :param request: The incoming request
     :return:
     """
@@ -334,33 +361,29 @@ def team(request, pk):
         raise PermissionDenied
 
 
-@login_required()
-def formcreation(request):
-    """
-
-    :param request: The incoming request
-    :return:
-    """
-    return render(request, 'datacaptureapp/FormCreation.html', {})
-
-
 def login_view(request):
+    """
+    Renders the login page or logs a user in and redirects to the home page
+    Context variables: _
+    :param request:
+    :return: A Render of the login page or a redirect to the home page
+    """
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect("/projects/")
+            return redirect("home")
     return render(request, 'datacaptureapp/Login.html')
 
 
 @login_required()
 def projects(request):
     """
-
+    Redirects to the home page
     :param request: The incoming request
-    :return:
+    :return: A redirect to the home page
     """
     return redirect('home')
 
@@ -368,9 +391,9 @@ def projects(request):
 @login_required()
 def logout_view(request):
     """
-
+    Function that's called when a user logs out, redirects to the login page
     :param request: The incoming request
-    :return:
+    :return: A redirect to the login page
     """
     logout(request)
     return redirect("login")
@@ -379,46 +402,51 @@ def logout_view(request):
 @login_required()
 def profile(request):
     """
-
+    Renders the profile page
+    Context variables: _
     :param request: The incoming request
-    :return:
+    :return: A render of the profile page
     """
-    return render(request, 'datacaptureapp/Profile.html', {})
+    return render(request, 'datacaptureapp/Profile.html')
 
 
 @login_required()
 def newprofile(request):
     """
-
+    Renders the new profile page
+    Context variables: _
     :param request: The incoming request
-    :return:
+    :return: A render of the NewProfile page
     """
-    return render(request, 'datacaptureapp/NewProfile.html', {})
+    return render(request, 'datacaptureapp/NewProfile.html')
 
 
 @login_required()
 def editprofile(request):
     """
-
+    Renders the EditProfile page
+    Context variables: _
     :param request: The incoming request
-    :return:
+    :return: A render of the edit profile page
     """
-    return render(request, 'datacaptureapp/EditProfile.html', {})
+    return render(request, 'datacaptureapp/EditProfile.html')
 
 
 def about(request):
     """
-
+    Renders the about page
+    Context variables: _
     :param request: The incoming request
-    :return:
+    :return: A render of the About page
     """
-    return render(request, 'datacaptureapp/About.html', {})
+    return render(request, 'datacaptureapp/About.html')
 
 
 def faq(request):
     """
-
+    Renders the FAQ page
+    Context variables: _
     :param request: The incoming request
-    :return:
+    :return: A render of the FAQ page
     """
-    return render(request, 'datacaptureapp/FAQ.html', {})
+    return render(request, 'datacaptureapp/FAQ.html')

@@ -1,7 +1,7 @@
 {% extends "datacaptureapp/base.html" %}
 
 <!--
-    This code shows a form where the user can specify the name and description of a new project which will then be created in the database.
+    This page gives the user the optionality to change
  !-->
 
 
@@ -10,34 +10,39 @@
         data-placement="left" data-trigger=focus" aria-hidden=true" data-html="true"
         title="Edit Project"
         data-content="<b> Create new project </b> <br>
-        To create a new project type the project name and description in the corresponding fields and click 'Create Project'. Afterwards you will be redirected to a page where you can define the attributes.
+        In here you can change the name and description of a project, or delete it entirely.
+        If you leave a field empty it's value will remain unchanged.
             ">
         <span class="fa fa-question-circle" style="color:grey; margin-right:10px"></span>
     </h3>
     <br>
-    <h1 class="text-center" style="font-size:min(5vw, 50px);font-family:'Calibri'">Edit Project</h1>
+    <h1 class="text-center" style="font-size:min(5vw, 50px); font-family:'Calibri'">Edit Project</h1>
     <hr/>
     <br>
     <form method="POST">
         <div class="form-group">
             {% csrf_token %}
             <div class="container center_div">
+                <a data-toggle="modal" data-target="#delete" class="btn btn-danger">Delete project</a>
+                <br>
+                <br>
                 <div class="form-group">
                     <label for="name">Project Name</label>
-                    {{ form.name }}
+                    <input type="text" name="name" class="form-control"
+                           placeholder="{{ project.name }}" id="name">
                 </div>
                 <div class="form-group">
-                    <label for="Description">Description</label>
-                    {{ form.description }}
+                    <label for="description">Description</label>
+                    <textarea name="description" cols="40" rows="10" class="form-control"
+                              placeholder="{{ project.description }}" id="description"></textarea>
                 </div>
                 <button  type="submit" class="btn btn-info"> Save Edits</button>
                 <a href="../" class="btn btn-outline-danger">Return to project</a>
-                <a data-toggle="modal" data-target="#delete" class="btn btn-danger">Delete project</a>
             </div>
         </div>
     </form>
 
-     <div class="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="Delete project" aria-hidden="true">
+    <div class="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="Delete project" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">

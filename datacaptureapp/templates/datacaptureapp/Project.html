@@ -49,7 +49,9 @@
                 <button onclick="location.href='nodes/new'" class="text-center btn btn-info btn-lg"  type="button"><i class="fa fa-plus"> </i> Record data point</button>
                 <button onclick="location.href='nodes'" class="text-center btn btn-info btn-lg"  type="button"><i class="fa fa-bars"></i> Data overview</button>
                 <button onclick="location.href='team'" class="text-center btn btn-info btn-lg"  type="button"><i class="fa fa-group"></i> Project team </button>
+                {% if is_owner %}
                 <button onclick="location.href='edit'" class="text-center btn btn-info btn-lg"  type="button"><i class="fa fa-pencil-square-o"></i> Edit project </button>
+                {% endif %}
             </div>
         </div>
     </div>
