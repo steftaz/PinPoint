@@ -67,20 +67,21 @@ def project(request, pk=0):
         else:
             raise Http404
     else:
+        is_owner = requested_project.owner == request.user
         if request.method == 'POST':
-            if requested_project.owner == request.user:
+            if is_owner:
                 form = ChangePublicPrivateForm(request.POST, instance=requested_project)
                 if form.is_valid():
                     form.save()
                     return JsonResponse({'is_public': requested_project.is_public})
-            elif requested_project.is_public and not requested_project.owner == request.user and not requested_project.users.filter(
+            elif requested_project.is_public and not is_owner and not requested_project.users.filter(
                     email=request.user.email).first():
                 requested_project.users.add(request.user)
                 messages.success(request, 'This project has been added to your projects')
                 return JsonResponse({'messages': messagesToList(request)})
             else:
                 raise PermissionDenied
-        elif requested_project.is_public or requested_project.owner == request.user or requested_project.users.filter(
+        elif requested_project.is_public or is_owner or requested_project.users.filter(
                 email=request.user.email).first():
             attributes = Attribute.objects.filter(project__id=pk)
             data = Data.objects.filter(attribute__in=attributes)
@@ -88,8 +89,8 @@ def project(request, pk=0):
             overview = get_node_overview(data, requested_nodes)
             context = {'project': requested_project,
                        'overview': overview, 'data': data, 'attributes': attributes,
-                       'requested_nodes': requested_nodes, 'user': request.user, 'is_owner': True}
-            if requested_project.is_public and not requested_project.owner == request.user and not requested_project.users.filter(
+                       'requested_nodes': requested_nodes, 'user': request.user, 'is_owner': is_owner}
+            if requested_project.is_public and not is_owner and not requested_project.users.filter(
                     email=request.user.email).first():
                 context['can_join'] = True
             return render(request, 'datacaptureapp/Project.html', context)
@@ -110,7 +111,7 @@ def edit_project(request, pk):
     """
     post = request.POST
     requested_project = get_object_or_404(Project, pk=pk)
-    if requested_project.user.filter(email=request.user.email).first():
+    if requested_project.owner == request.user:
         if post:
             if "remove_project" in request.POST:
                 requested_project.delete()
