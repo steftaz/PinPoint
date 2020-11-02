@@ -2,28 +2,73 @@
 
 {% block content %}
 
-    <h2>Register</h2>
-    <form method = "post">
-        {% csrf_token %}
+    <br>
+    <h1 class="text-center" style="font-size:min(5vw, 50px);font-family:'Calibri'">Register</h1>
+    <br>
 
-        {% for field in registration_form %}
+    <div class="form-group">
+        <div class="container center_div">
 
-            <p>
-                {{ field.label_tag }}
-                {{ field }}
+            {% if registration_form.errors %}
+                <div class='alert alert-danger' role='alert'>
 
-                {% if field.help_text %}
-                    <small style="color: grey;">{{ field.help_text }}</small>
-                {% endif %}
+                    {% for field in registration_form %}
+                        {% for error in field.errors %}
+                            <p style="color: red;">{{ field.help_text }}</p>
+                        {% endfor %}
+                    {% endfor %}
 
-                {% for error in field.errors %}
-                    <p style="color: red;">{{ field.help_text }}</p>
-                {% endfor %}
-            </p>
 
-        {% endfor %}
+                </div>
+            {% endif %}
 
-        <button type="submit">Register</button>
-    </form>
+            <form method="post">
+                {% csrf_token %}
+
+                <label for="email">Email</label>
+                <input type="email" name="email" class="form-control" id="Email" placeholder="Enter email address" autofocus >
+                <br>
+
+                <label for="username">Username</label>
+                <input type="username" name="username" class="form-control" id="UserName" aria-describedby="emailHelp" placeholder="Create username" >
+                <br>
+
+                <label for="password">Password</label>
+                <input type="password" name="password1" class="form-control" id="Password" placeholder="Create password" >
+                <br>
+
+                <label for="password">Repeat password</label>
+                <input type="password" name="password2" class="form-control" id="Password" placeholder="Repeat password" >
+                <br>
+
+                <button  type="submit" onclick="location.href='../login'" class="btn btn-primary">Create Account</button>
+            </form>
+        </div>
+    </div>
+
+{#    old#}
+{#    <h2>Register</h2>#}
+{#    <form method = "post">#}
+{#        {% csrf_token %}#}
+{##}
+{#        {% for field in registration_form %}#}
+{##}
+{#            <p>#}
+{#                {{ field.label_tag }}#}
+{#                {{ field }}#}
+{##}
+{#                {% if field.help_text %}#}
+{#                    <small style="color: grey;">{{ field.help_text }}</small>#}
+{#                {% endif %}#}
+{##}
+{#                {% for error in field.errors %}#}
+{#                    <p style="color: red;">{{ field.help_text }}</p>#}
+{#                {% endfor %}#}
+{#            </p>#}
+{##}
+{#        {% endfor %}#}
+{##}
+{#        <button type="submit">Register</button>#}
+{#    </form>#}
 
 {% endblock content %}
