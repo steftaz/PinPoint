@@ -1,5 +1,5 @@
 from django.core.exceptions import PermissionDenied
-from django.shortcuts import  get_object_or_404
+from django.shortcuts import get_object_or_404
 from django.http import QueryDict, HttpResponse, JsonResponse, HttpResponseServerError, Http404
 from django.shortcuts import render, redirect
 from datacaptureapp.forms import *
@@ -127,7 +127,54 @@ def edit_project(request, pk):
         raise PermissionDenied
 
 
+@login_required()
+def attribute_overview(request, pk):
+    """
+    Renders an overview of all attributes.
+    If a POST is received, delete the node for which the id is sent in remove_attribute, then render the page again.
+    :param request: The incoming request
+    :param pk: The id of the project
+    :return:
+    """
+    requested_project = get_object_or_404(Project, pk=pk)
+    if requested_project.owner == request.user:
+        if request.POST:
+            Attribute.objects.get(id=request.POST['remove_attribute']).delete()
+        # No Else so the page get reloaded after a delete
+        return render(request, 'datacaptureapp/Attribute_Overview.html', {'attributes':
+                    Attribute.objects.filter(project=requested_project)})
+    else:
+        raise PermissionDenied
 
+
+@login_required()
+def edit_attribute(request, pk, ak):
+    """
+    Renders the edit_attribute page.
+    If a POST is received, it will change the name and description of the attribute if they are filled in.
+    Then it redirects back to the attribute overview
+    :param request: The incoming request
+    :param pk: The id of the project
+    :param ak: The id of the attribute
+    :return:A render of the Edit_Attribute page or a redirect to the attribute overview
+    """
+    requested_project = get_object_or_404(Project, pk=pk)
+    if requested_project.owner == request.user:
+        post = request.POST
+        attribute = Attribute.objects.get(id=ak)
+        if post:
+            if post['name']:
+                attribute.name = post['name']
+            if post['description']:
+                attribute.description = post['description']
+            attribute.save()
+            return redirect('attribute-overview', pk)
+        return render(request, 'datacaptureapp/Edit_Attribute.html', {'attribute': attribute})
+    else:
+        raise PermissionDenied
+
+
+@login_required()
 def public_projects(request):
     """
     Gets all public projects and renders a page with these projects in the context
@@ -135,7 +182,11 @@ def public_projects(request):
     :param request: The incoming request
     :return: A Render to the public projects page
     """
-    public_projects_all = Project.objects.filter(is_public=True).annotate(no_nodes=Count('node', distinct=True), no_users=Count('users', distinct=True) + Count('owner', distinct=True)).order_by('-no_nodes', '-no_users')
+    public_projects_all = Project.objects.filter(is_public=True).annotate(no_nodes=Count('node', distinct=True),
+                                                                          no_users=Count('users',
+                                                                                         distinct=True) + Count('owner',
+                                                                                                                distinct=True)).order_by(
+        '-no_nodes', '-no_users')
     return render(request, 'datacaptureapp/PublicProjects.html/', {'public_projects': public_projects_all})
 
 
@@ -232,13 +283,12 @@ def nodes(request, pk):
                 elif data_type == 'GeoJSON':
                     geojson = generate_geojson(requested_project)
                     response = HttpResponse(content_type='application/json')
-                    response['Content-Disposition'] = 'attachment; filename="{}.geojson"'.format(
-                        json.loads(geojson)['name'])
+                    response['Content-Disposition'] = 'attachment; filename="{}.geojson"'.format(requested_project.name)
                     response.write(geojson)
                 elif data_type == 'Excel':
                     response = HttpResponse(content_type='application/vnd.ms-excel')
-                    response['Content-Disposition'] = "attachment; filename={}.xlsx".format(project.name)
-                    output = generate_xls(project)
+                    response['Content-Disposition'] = 'attachment; filename="{}.xlsx"'.format(requested_project.name)
+                    output = generate_xls(requested_project)
                     response.write(output)
                 else:
                     response = HttpResponseServerError('<h1>Something went wrong</h1>')
@@ -332,9 +382,10 @@ def add_attribute(request, pk):
 @login_required()
 def messagesToList(request):
     """
-    TODO No idea what this method does
+    Gets messages out of a request and puts them in a list
+    For each message store a dictionary with their level, message and extra_tags
     :param request: The incoming request
-    :return:
+    :return: The list of messages
     """
     django_messages = []
     for message in messages.get_messages(request):

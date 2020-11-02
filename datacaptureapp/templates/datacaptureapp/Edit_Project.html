@@ -9,7 +9,7 @@
     <h3 id="helpIcon" tabindex="0" class="pull-right" data-toggle="popover" style="margin-left:5px"
         data-placement="left" data-trigger=focus" aria-hidden=true" data-html="true"
         title="Edit Project"
-        data-content="<b> Create new project </b> <br>
+        data-content="<b> Edit project </b> <br>
         In here you can change the name and description of a project, or delete it entirely.
         If you leave a field empty it's value will remain unchanged.
             ">
@@ -23,7 +23,8 @@
         <div class="form-group">
             {% csrf_token %}
             <div class="container center_div">
-                <a data-toggle="modal" data-target="#delete" class="btn btn-danger">Delete project</a>
+                <a href="attributes" class="btn btn-info">Edit attributes</a>
+                <a data-toggle="modal" data-target="#delete_project" class="btn btn-danger">Delete project</a>
                 <br>
                 <br>
                 <div class="form-group">
@@ -42,7 +43,8 @@
         </div>
     </form>
 
-    <div class="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="Delete project" aria-hidden="true">
+
+    <div class="modal fade" id="delete_project" tabindex="-1" role="dialog" aria-labelledby="Delete project" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">

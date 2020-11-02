@@ -92,7 +92,7 @@
                                     {% endif %}
                                 </td>
                             {% endwith %}
-                            <td style="border:none;"><a onclick="edit_node({{ key }})" class="btn btn-outline-secondary btn-sm" type="button">
+                            <td style="border:none;"><a href="{{ key }}/edit" class="btn btn-outline-secondary btn-sm" type="button">
                                 Edit
                             </a></td>
                             <td style="border:none;"><a data-toggle="modal" data-target="#delete{{ key }}" class="close" aria-label="Close" style=" color: red; opacity: 1;" type="button">
@@ -131,10 +131,6 @@
             let elem = document.getElementById("data_type");
             elem.value = type;
             elem.form.submit();
-        }
-
-        function edit_node(id) {
-            location.href = id+"/edit/";
         }
 
         function remove_node(id) {
