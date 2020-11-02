@@ -57,8 +57,8 @@
                 <button id="join-public-project" onclick="joinPublicProject()" class="text-center btn btn-success btn-lg"  type="button"><i class="fa fa-plus"> </i> Add to your projects</button>
                 <button onclick="location.href='nodes/new'" class="text-center btn btn-info btn-lg"  type="button"><i class="fa fa-plus"> </i> Record data point</button>
                 <button onclick="location.href='nodes'" class="text-center btn btn-info btn-lg"  type="button"><i class="fa fa-bars"></i> Data overview</button>
-                <button onclick="location.href='team'" class="text-center btn btn-info btn-lg"  type="button"><i class="fa fa-group"></i> Project team </button>
                 {% if is_owner %}
+                    <button onclick="location.href='team'" class="text-center btn btn-info btn-lg"  type="button"><i class="fa fa-group"></i> Project team </button>
                     <button onclick="location.href='edit'" class="text-center btn btn-info btn-lg"  type="button"><i class="fa fa-pencil-square-o"></i> Edit project </button>
                 {% endif %}
             </div>
@@ -105,16 +105,9 @@
 
     <script>
 
-        // Hide team button if the user is not the owner
-        const user = '' + '{{ user.email }}';
-        const owner = '' + '{{ project.owner.email }}';
-        if (user != owner) {
-            $('#team-button').hide()
-        }
-
         // Hide the add public project to your projects button if the user is already a member or the project is not public
         const canJoin = '' + '{{ can_join }}';
-        if (canJoin != 'True') {
+        if (canJoin !== 'True') {
             $('#join-public-project').hide()
         }
 
@@ -162,22 +155,22 @@
             var marker = L.marker([{{ value.latitude}}, {{ value.longitude}}]).addTo(map);
 
             marker.bindPopup('<table class="table table-stripped" >'+
-                    '<thead>'+
-                        '<tr>'+
-                            '<th scope="col"><b>Latitude</b></th>' +
-                            '<th scope="col"><b>Longitude </b></th>' +
-                            '{% for attribute in attributes %}'+
-                                '<th scope="col"> <b>{{ attribute.name }}</b></th>'+
-                            '{% endfor %}'+
-                        '</tr>'+
-                    '</thead>'+
-                    '<tbody>'+
-                        '<tr>'+
-                            '{% for data in value.values %}'+
-                                '<td > <b>{{ data }}</b></td>'+
-                            '{% endfor %}'+
-                        '</tr>'+
-                    '</tbody>'+
+                '<thead>'+
+                '<tr>'+
+                '<th scope="col"><b>Latitude</b></th>' +
+                '<th scope="col"><b>Longitude </b></th>' +
+                '{% for attribute in attributes %}'+
+                    '<th scope="col"> <b>{{ attribute.name }}</b></th>'+
+                    '{% endfor %}'+
+                '</tr>'+
+                '</thead>'+
+                '<tbody>'+
+                '<tr>'+
+                '{% for data in value.values %}'+
+                    '<td > <b>{{ data }}</b></td>'+
+                    '{% endfor %}'+
+                '</tr>'+
+                '</tbody>'+
                 '</table>');
         {% endfor %}
 

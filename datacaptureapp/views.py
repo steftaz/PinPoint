@@ -262,12 +262,13 @@ def nodes(request, pk):
 @login_required()
 def edit_node(request, pk, nk):
     """
-
-    Context variables:
+    Shows a page on which the values of the data objects of a node can be altered.
+    If a POST is sent the program will check which values were entered and will update all which have a value
+    Context variables: node, datas
     :param request: The incoming request
     :param pk: The id of the project
     :param nk: The id of the node
-    :return:
+    :return: A render to the edit node page or a redirect to the nodes page
     """
     requested_project = get_object_or_404(Project, pk=pk)
     node = get_object_or_404(Node, id=nk)
@@ -300,11 +301,12 @@ def edit_node(request, pk, nk):
 @login_required()
 def add_attribute(request, pk):
     """
-
-    Context variables:
+    Shows a page on which a new attribute can be added to a project.
+    When a POST is sent, create the new attribute and create null data objects for all existing nodes
+    Context variables: form
     :param request: The incoming request
     :param pk: The id of the project
-    :return:
+    :return: A render to the adding attributes page or a redirect to the attributes page.
     """
     requested_project = get_object_or_404(Project, pk=pk)
     if requested_project.is_public or requested_project.owner == request.user:
@@ -314,6 +316,11 @@ def add_attribute(request, pk):
                 new_attribute = form.save(commit=False)
                 new_attribute.project = requested_project
                 new_attribute.save()
+                for node in Node.objects.filter(project=requested_project):
+                    new_data = CreateDataForm(QueryDict("value=Null")).save(commit=False)
+                    new_data.node = node
+                    new_data.attribute = new_attribute
+                    new_data.save()
                 return redirect('attributes', pk)
         else:
             form = CreateAttributeForm
@@ -325,7 +332,7 @@ def add_attribute(request, pk):
 @login_required()
 def messagesToList(request):
     """
-
+    TODO No idea what this method does
     :param request: The incoming request
     :return:
     """
@@ -342,10 +349,10 @@ def messagesToList(request):
 @login_required()
 def team(request, pk):
     """
-    If the user is the owner of the project.
-    Context variables:
+    A page where the owner of a project can add people to the project.
+    Context variables: form, team, project, owner
     :param request: The incoming request
-    :return:
+    :return: A render to the teams page, or a JsonResponse containing messages and other useful info.
     """
     requested_project = get_object_or_404(Project, pk=pk)
     owner = requested_project.owner
