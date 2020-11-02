@@ -6,8 +6,10 @@ from account.models import Account
 class Project(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField()
-    user = models.ManyToManyField(Account)
+    owner = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='projects')
+    users = models.ManyToManyField(Account)
     is_public = models.BooleanField(default=False)
+    creation_date = models.DateTimeField(auto_now=True)
 
 
 class Profile(models.Model):
@@ -28,6 +30,8 @@ class Node(models.Model):
     latitude = models.DecimalField(decimal_places=8, max_digits=10)
     longitude = models.DecimalField(decimal_places=8, max_digits=11)
     picture = models.ImageField(upload_to='images', blank=True)
+    date_time_stored = models.DateTimeField(auto_now=True)
+    user = models.ForeignKey(Account, blank=True, null=True, on_delete=models.SET_NULL)
 
 
 class Data(models.Model):

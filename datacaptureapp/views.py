@@ -3,12 +3,13 @@ from django.shortcuts import  get_object_or_404
 from django.http import QueryDict, HttpResponse, JsonResponse, HttpResponseServerError, Http404
 from django.shortcuts import render, redirect
 from datacaptureapp.forms import *
-from account.models import Account as UserAccount
+from account.models import Account
 from datacaptureapp.export_builder import *
 from django.contrib.auth import logout, login, authenticate
 from django.contrib.auth.decorators import login_required
 from decimal import Decimal
 from django.contrib import messages
+from django.db.models import Q, Count
 
 
 @login_required()
@@ -20,7 +21,7 @@ def home(request):
     :return: A render to the home page
     """
     user = request.user
-    projects = Project.objects.filter(user=user)
+    projects = Project.objects.filter(Q(users=user) | Q(owner=user))
     return render(request, 'datacaptureapp/home.html', {'projects': projects, 'user': user})
 
 
@@ -38,11 +39,10 @@ def newproject(request):
         user = request.user
         form = CreateProjectForm(request.POST)
         if form.is_valid():
-            new_project = form.save()
-            creator = UserAccount.objects.filter(email=user.email).first()
-            new_project.user.add(creator)
-            request = QueryDict()
-            request.method = "GET"
+            new_project = form.save(commit=False)
+            owner = Account.objects.filter(email=user.email).first()
+            new_project.owner = owner
+            form.save()
             return redirect('attributes', new_project.id)
     form = CreateProjectForm
     return render(request, "datacaptureapp/NewProject.html", {'form': form})
@@ -67,30 +67,34 @@ def project(request, pk=0):
         else:
             raise Http404
     else:
-        if requested_project.is_public or requested_project.user.filter(email=request.user.email).first():
-            # POST request to change private/public
-            if request.POST:
-                form = ChangePublicPrivateForm(request.POST, instance=requested_project) # TODO this is not on this pagy anymore right?
+        if request.method == 'POST':
+            if requested_project.owner == request.user:
+                form = ChangePublicPrivateForm(request.POST, instance=requested_project)
                 if form.is_valid():
                     form.save()
                     return JsonResponse({'is_public': requested_project.is_public})
-            else:
-                if request.headers.get('search-by-id'):
-                    return JsonResponse({'url': '/projects/{}/'.format(pk)})
-                else:
-                    owner = requested_project.user.all().first()  # TODO there are more users now, we do not specify the owner
-                    attributes = Attribute.objects.filter(project__id=pk)
-                    data = Data.objects.filter(attribute__in=attributes)
-                    requested_nodes = Node.objects.filter(project_id=pk)
-                    overview = get_node_overview(data, requested_nodes)
-                    return render(request, 'datacaptureapp/Project.html', {'project': requested_project, 'owner': owner,
-                                   'overview': overview, 'data': data, 'attributes': attributes, 'is_owner': owner == request.user})
-        else:
-            if request.headers.get('search-by-id'):
-                messages.error(request, 'This project is private. Ask the project owner to add you to this project.')
-                return JsonResponse({"messages": messagesToList(request)})
+            elif requested_project.is_public and not requested_project.owner == request.user and not requested_project.users.filter(
+                    email=request.user.email).first():
+                requested_project.users.add(request.user)
+                messages.success(request, 'This project has been added to your projects')
+                return JsonResponse({'messages': messagesToList(request)})
             else:
                 raise PermissionDenied
+        elif requested_project.is_public or requested_project.owner == request.user or requested_project.users.filter(
+                email=request.user.email).first():
+            attributes = Attribute.objects.filter(project__id=pk)
+            data = Data.objects.filter(attribute__in=attributes)
+            requested_nodes = Node.objects.filter(project_id=pk)
+            overview = get_node_overview(data, requested_nodes)
+            context = {'project': requested_project,
+                       'overview': overview, 'data': data, 'attributes': attributes,
+                       'requested_nodes': requested_nodes, 'user': request.user, 'is_owner': True}
+            if requested_project.is_public and not requested_project.owner == request.user and not requested_project.users.filter(
+                    email=request.user.email).first():
+                context['can_join'] = True
+            return render(request, 'datacaptureapp/Project.html', context)
+        else:
+            raise PermissionDenied
 
 
 @login_required()
@@ -122,6 +126,7 @@ def edit_project(request, pk):
         raise PermissionDenied
 
 
+
 def public_projects(request):
     """
     Gets all public projects and renders a page with these projects in the context
@@ -129,8 +134,8 @@ def public_projects(request):
     :param request: The incoming request
     :return: A Render to the public projects page
     """
-    public_projects = Project.objects.filter(is_public=True)
-    return render(request, 'datacaptureapp/PublicProjects.html/', {'public_projects': public_projects})
+    public_projects_all = Project.objects.filter(is_public=True).annotate(no_nodes=Count('node', distinct=True), no_users=Count('users', distinct=True) + Count('owner', distinct=True)).order_by('-no_nodes', '-no_users')
+    return render(request, 'datacaptureapp/PublicProjects.html/', {'public_projects': public_projects_all})
 
 
 def get_node_overview(data, requested_nodes):
@@ -160,7 +165,8 @@ def addnode(request, pk):
     :return: A render to the add_node page or a redirect to the project
     """
     requested_project = get_object_or_404(Project, pk=pk)
-    if requested_project.is_public or requested_project.user.filter(email=request.user.email).first():
+    if requested_project.is_public or requested_project.owner == request.user or requested_project.users.filter(
+            email=request.user.email).first():
         attributes = Attribute.objects.filter(project=requested_project)
         if request.method == "POST":
             latitude_formatted = "{:.8f}".format(Decimal(request.POST.get('latitude')))
@@ -174,6 +180,7 @@ def addnode(request, pk):
             if node_form.is_valid():
                 node = node_form.save(commit=False)
                 node.project = requested_project
+                node.user = request.user
                 node.save()
 
             for attribute in attributes:
@@ -211,7 +218,8 @@ def nodes(request, pk):
     :return: A render to the overview page or a HttpResponse containing a file export.
     """
     requested_project = get_object_or_404(Project, pk=pk)
-    if requested_project.is_public or requested_project.user.filter(email=request.user.email).first():
+    if requested_project.is_public or requested_project.owner == request.user or requested_project.users.filter(
+            email=request.user.email).first():
         if request.method == 'POST':
             post = request.POST
             if 'data_type' in post:
@@ -262,7 +270,8 @@ def edit_node(request, pk, nk):
     """
     requested_project = get_object_or_404(Project, pk=pk)
     node = get_object_or_404(Node, id=nk)
-    if requested_project.is_public or requested_project.user.filter(email=request.user.email).first():
+    if requested_project.is_public or requested_project.owner == request.user or requested_project.users.filter(
+            email=request.user.email).first():
         if request.method == 'POST':
             post = request.POST
             for coor in ['longitude', 'latitude']:
@@ -297,7 +306,7 @@ def add_attribute(request, pk):
     :return:
     """
     requested_project = get_object_or_404(Project, pk=pk)
-    if requested_project.is_public or requested_project.user.filter(email=request.user.email).first():
+    if requested_project.is_public or requested_project.owner == request.user:
         if request.method == 'POST':
             form = CreateAttributeForm(request.POST)
             if form.is_valid():
@@ -338,25 +347,33 @@ def team(request, pk):
     :return:
     """
     requested_project = get_object_or_404(Project, pk=pk)
-    if requested_project.user.filter(email=request.user.email).first():
-        team_members = requested_project.user.all()
-        if request.POST:
-            form = AddMemberForm(request.POST)
-            if form.is_valid():
-                if Account.objects.filter(email=request.POST.get('email')).exists():
-                    account = Account.objects.filter(email=form.cleaned_data.get('email')).first()
-                    requested_project.user.add(account)
-                    messages.success(request, 'Successfully added the user to this project')
-                    return JsonResponse({"messages": messagesToList(request), 'email': account.email,
-                                         'username': account.username})
-                else:
-                    messages.error(request, 'Adding team member failed: no user found with that email')
-                    return JsonResponse({"messages": messagesToList(request)})
+    owner = requested_project.owner
+    if owner == request.user:
+        team_members = requested_project.users.all()
+        if request.method == 'POST':
+            if request.POST.get('action') == 'remove_member':
+                user_to_remove = requested_project.users.get(id=request.POST.get('member-id'))
+                requested_project.users.remove(user_to_remove)
+                messages.success(request, 'Successfully removed the member from this project')
+                return JsonResponse({"messages": messagesToList(request), "removed_user": user_to_remove.email})
+            else:
+                form = AddMemberForm(request.POST)
+                if form.is_valid():
+                    if Account.objects.filter(email=request.POST.get('email')).exists():
+                        account = Account.objects.filter(email=form.cleaned_data.get('email')).first()
+                        requested_project.users.add(account)
+                        added_user = requested_project.users.get(email=account.email)
+                        messages.success(request, 'Successfully added the user to this project')
+                        return JsonResponse({"messages": messagesToList(request), 'email': added_user.email,
+                                             'username': added_user.username, 'member_id': added_user.id})
+                    else:
+                        messages.error(request, 'Adding team member failed: no user found with that email')
+                        return JsonResponse({"messages": messagesToList(request)})
 
         else:
             form = AddMemberForm()
             return render(request, 'datacaptureapp/ProjectTeam.html',
-                          {'form': form, 'team': team_members, 'project': requested_project})
+                          {'form': form, 'team': team_members, 'project': requested_project, 'owner': owner})
     else:
         raise PermissionDenied
 

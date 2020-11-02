@@ -26,11 +26,11 @@
     <hr/>
     <div class="container">
         <div class="row justify-content-center">
-            <button class="text-center btn btn-info btn-lg" onclick="location.href='../'" type="button" style="margin-right:10px"> Back to Map</button>
+            <button class="text-center btn btn-outline-danger btn-lg" onclick="location.href='../'" type="button" style="margin-right:10px"> Return to project</button>
             <form method="POST" >
                 {% csrf_token %}
                 <div class="dropdown">
-                    <button class=" btn btn-outline-danger btn-lg dropdown-toggle" data-toggle="dropdown" style="margin-right:5px">
+                    <button class=" btn btn-info btn-lg dropdown-toggle" data-toggle="dropdown" style="margin-right:5px">
                         Export Data</button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <div class="dropdown-header">Choose data type</div>

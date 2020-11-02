@@ -17,12 +17,16 @@
         To add a data point click the button 'Record data point'.
         <br>
         <br>
-        <b> See Data </b> <br>
+        <b> View Data </b> <br>
         To see an overview of all the data collected click the button 'Data overview'.
         <br>
         <br>
+         <b> Project Team </b> <br>
+        To see an overview of all the contributors of the project click 'Project team'.
+        <br>
+        <br>
         <b> Project info </b> <br>
-        Below the section 'About' you can see the Id, Name, description, creation date and owner of the project.
+        Below the section 'About' you can see the Id, Name, description and owner of the project.
             ">
         <span class="fa fa-question-circle" style="color:grey; margin-right:10px"></span>
     </h3>
@@ -42,10 +46,15 @@
                 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
                         integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
                         crossorigin=""></script>
-                <div id="map" style="height:450px"></div>
+
+                <div id="map" style="height:450px">
+                </div>
                 <br>
             </div>
+            <div class="text-center" id="div_messages">
+            </div>
             <div class ="text-center">
+                <button id="join-public-project" onclick="joinPublicProject()" class="text-center btn btn-success btn-lg"  type="button"><i class="fa fa-plus"> </i>Add this public project to your projects</button>
                 <button onclick="location.href='nodes/new'" class="text-center btn btn-info btn-lg"  type="button"><i class="fa fa-plus"> </i> Record data point</button>
                 <button onclick="location.href='nodes'" class="text-center btn btn-info btn-lg"  type="button"><i class="fa fa-bars"></i> Data overview</button>
                 <button onclick="location.href='team'" class="text-center btn btn-info btn-lg"  type="button"><i class="fa fa-group"></i> Project team </button>
@@ -55,8 +64,6 @@
             </div>
         </div>
     </div>
-
-
 
     <div class="container">
         <div class="row sm">
@@ -87,7 +94,7 @@
 
                     <tr>
                         <th scope="row">Owner</th>
-                        <td>{{owner.username}}</td>
+                        <td>{{project.owner.username}}</td>
                     </tr>
                     </tbody>
                 </table>
@@ -97,18 +104,33 @@
     </div>
 
     <script>
+
+    // Hide team button if the user is not the owner
+        const user = '' + '{{ user.email }}';
+        const owner = '' + '{{ project.owner.email }}';
+        if (user != owner) {
+            $('#team-button').hide()
+        }
+
+        // Hide the add public project to your projects button if the user is already a member or the project is not public
+        const canJoin = '' + '{{ can_join }}';
+        if (canJoin != 'True') {
+            $('#join-public-project').hide()
+        }
+
         // LEAFLET script:
+
 
         var map = L.map('map').fitWorld();
 
         L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
-            maxZoom: 18,
+            maxZoom: 20,
             attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
                 '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
                 'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
             id: 'mapbox/streets-v11',
             tileSize: 512,
-            zoomOffset: -1
+            zoomOffset: -1,
         }).addTo(map);
 
         function onLocationFound(e) {
@@ -129,30 +151,35 @@
             }
         }
 
+     function locate() {
+      map.locate({setView: false});
+    }
+
+    // call locate every 3 seconds... forever
+    setInterval(locate, 3000);
 
         {% for key, value in overview.items %}
 
             var marker = L.marker([{{ value.latitude}}, {{ value.longitude}}]).addTo(map);
 
-            marker.bindPopup(
-                '<table>'+
-                '<thead>'+
-                '<tr>'+
-                '<th scope="col">Latitude</th>\n' +
-                '<th scope="col">Longitude</th>\n' +
-                '{% for attribute in attributes %}\n'+
-                    '<th scope="col">{{ attribute.name }}</th>\n'+
-                    '{% endfor %}'+
-                '</tr>'+
-                '</thead>'+
-                '<tbody>'+
-                '<tr>'+
-                '{% for data in value.values %}'+
-                    '<td>{{ data }}</td>'+
-                    '{% endfor %}'+
-                '</tr>'+
-                '</tbody>'+
-                '</table>');
+         marker.bindPopup('<table class="table table-stripped" >'+
+         '<thead>'+
+             '<tr>'+
+             ' <th scope="col"><b>Latitude</b></th>\n' +
+             '                    <th scope="col"><b>Longitude </b></th>\n' +
+             '                    {% for attribute in attributes %}\n'+
+                 '                        <th scope="col"> <b>{{ attribute.name }}</b></th>\n'+
+                 '                    {% endfor %}'+
+         '</tr>'+
+         '</thead>'+
+         '<tbody>'+
+         '<tr>'+
+         '{% for data in value.values %}'+
+         '<td > <b>{{ data }}</b></td>'+
+             '{% endfor %}'+
+         '</tr>'+
+         '</tbody>'+
+         '</table>');
 
 
         {% endfor %}
@@ -176,6 +203,22 @@
             x.innerHTML = "Latitude: " + position.coords.latitude +
                 "<br>Longitude: " + position.coords.longitude;
         }
+
+
+        function joinPublicProject() {
+            $.ajax({
+                type: "POST",
+                url: "{% url 'project' project.id %}",
+                headers: {"X-CSRFToken": "{{csrf_token}}"},
+                data: '',
+                success: function (response) {
+                    $("#div_messages").append("<div class='alert alert-success' role='alert'>" + response.messages[0]['message'] + "</div>");
+                    $("#join-public-project").hide()
+                }
+
+            });
+        }
+
     </script>
 
 {% endblock %}

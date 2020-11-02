@@ -64,3 +64,9 @@ class ChangePublicPrivateForm(forms.ModelForm):
     class Meta:
         model = Project
         fields = ['is_public']
+
+
+class AddUserToProjectForm(forms.ModelForm):
+    class Meta:
+        model = Project
+        fields = ['users']
