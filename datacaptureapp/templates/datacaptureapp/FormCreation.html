@@ -23,11 +23,15 @@
     <hr/>
     <br>
 
+
     <form method="POST" id="addAttribute">
         {% csrf_token %}
         <div class="form-group">
             <div class="container center_div">
                 <div class="text-center">
+                        <div class="alert alert-info" role="alert">
+                          Note: Don't forget to click 'Save attribute' to finish adding you attribute to the project!
+                        </div>
                     <a href="../" class="btn btn-outline-danger btn-lg">Go to project</a>
                 </div>
                 <label for="name">Name</label>
