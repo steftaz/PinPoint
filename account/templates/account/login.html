@@ -1,0 +1,50 @@
+{% extends 'datacaptureapp/base.html' %}
+
+{% block content %}
+
+    <br>
+    <h1 class="text-center" style="font-size:min(5vw, 50px);font-family:'Calibri'">Sign in</h1>
+    <hr/>
+    <br>
+
+
+
+    <div class="form-group">
+        <div class="container center_div">
+            {% if login_form.non_field_errors or login_form.has_error %}
+                <div class='alert alert-danger' role='alert'>
+                    <p>{{ login_form.non_field_errors }}</p>
+
+                    {% for field in login_form %}
+                        {% for error in field.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    {% endfor %}
+
+                </div>
+            {% endif %}
+
+            <form method = "post">
+                {% csrf_token %}
+
+                <label for="username">E-mail</label>
+                <input type="email" name="email" class="form-control" id="inputEmail" aria-describedby="emailHelp" placeholder="Enter E-mail" autofocus>
+
+                <br>
+                <label for="password">Password</label>
+                <input type="password" name="password" class="form-control" id="ProjectDescription" placeholder="Enter password">
+                <br>
+
+{#                display errors#}
+
+
+
+
+                <button  type="submit" onclick="location.href='{% url 'profile' %}'" class="btn btn-info">Sign in</button>
+                <button  type="button" onclick="location.href='{% url 'register' %}'" class="btn btn-info">Register</button>
+
+            </form>
+        </div>
+    </div>
+
+{% endblock content %}

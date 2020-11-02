@@ -437,21 +437,14 @@ def team(request, pk):
         raise PermissionDenied
 
 
-def login_view(request):
+@login_required()
+def formcreation(request):
     """
-    Renders the login page or logs a user in and redirects to the home page
-    Context variables: _
-    :param request:
-    :return: A Render of the login page or a redirect to the home page
+
+    :param request: The incoming request
+    :return:
     """
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect("home")
-    return render(request, 'datacaptureapp/Login.html')
+    return render(request, 'datacaptureapp/FormCreation.html', {})
 
 
 @login_required()
@@ -462,17 +455,6 @@ def projects(request):
     :return: A redirect to the home page
     """
     return redirect('home')
-
-
-@login_required()
-def logout_view(request):
-    """
-    Function that's called when a user logs out, redirects to the login page
-    :param request: The incoming request
-    :return: A redirect to the login page
-    """
-    logout(request)
-    return redirect("login")
 
 
 @login_required()
