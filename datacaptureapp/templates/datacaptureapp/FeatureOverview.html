@@ -8,25 +8,37 @@
 
 
 {% block content %}
-<div class="container">
-     <a href="../">
-         <button type="button" class="btn mb-1 text-secondary"> <i class="fa fa-arrow-left" aria-hidden="true"></i> Return to project</button>
-     </a>
-    <h3 id="helpIcon" tabindex="0" class="pull-right" data-toggle="popover" style="margin-left:5px"
-        data-placement="left" data-trigger=focus" aria-hidden=true" data-html="true"
-        title="Data overview"
-        data-content="<b> Data overview</b> <br>
+    <br>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <a href="../">
+                    <button type="button" class="btn mb-1 text-secondary"> <i class="fa fa-arrow-left" aria-hidden="true"></i> Return to project</button>
+                </a>
+            </div>
+            <div class="col">
+                <h1 class="text-center" style="font-size:min(5vw, 50px); font-family:'Calibri'">Data overview</h1>
+
+            </div>
+            <div class="col">
+                <h3 id="helpIcon" tabindex="0" class="pull-right" data-toggle="popover" style="margin-left:5px"
+                    data-placement="left" data-trigger=focus" aria-hidden=true" data-html="true"
+                    title="Data overview"
+                    data-content="<b> Data overview</b> <br>
         All the points you have collected so far are visible in the table below. Click 'Back to Map' to go back to the project where all the points are visible on a map.
         <br>
         <br>
         <b> Export Data </b> <br>
         Click the 'Export Data' button to export your data from this project. You can define the type of data by clicking the arrow down and choosing your data type.
             ">
-        <span class="fa fa-question-circle" style="color:grey; margin-right:10px"></span>
-    </h3>
+                    <span class="fa fa-question-circle" style="color:grey; margin-right:10px"></span>
+                </h3>
+            </div>
+        </div>
 
-    <h1 class="text-center" style="font-size:min(5vw, 50px); font-family:'Calibri'">Data overview</h1>
-    <hr/>
+
+
+        <hr/>
         <div class="row justify-content-center">
             <form method="POST" >
                 {% csrf_token %}
@@ -38,7 +50,7 @@
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="#" onclick="set_data_type('GeoJSON')">GeoJSON</a>
                         <a class="dropdown-item" href="#" onclick="set_data_type('CSV')">CSV</a>
-                        <a class="dropdown-item" href="#" onclick="set_data_type('Excel')">Excel</a>
+                        <a class="dropdown-item" href="#" onclick="set_data_type('XLSX')">XLSX</a>
                     </div>
                 </div>
                 <input class="form-control" type="hidden" id="data_type" name="data_type">
@@ -46,82 +58,86 @@
         </div>
     </div>
 
-    <br>
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-auto">
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                        <tr>
-                            <th scope="col">Latitude</th>
-                            <th scope="col">Longitude</th>
-                            {% for attribute in attributes %}
-                                <th scope="col"> {{ attribute.name }}</th>
-                            {% endfor %}
-                            <th scope="col">Picture</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for key, value in overview.items %}
-                            <tr>
-                                {% for data in value.values %}
-                                    <td>{{ data|default:"Null" }}</td>
-                                {% endfor %}
-                                {% with image=images|get:key %}
-                                    <td>
-                                        {% if image %}
-                                            <a data-toggle="modal" data-target="#picture{{ key }}" class="btn btn-primary btn-sm" aria-label="View picture" type="button">
-                                                View
-                                            </a>
-                                            <div class="modal fade" id="picture{{ key }}" tabindex="-1" role="dialog" aria-labelledby="picture of {{ key }}" aria-hidden="true">
-                                                <div class="modal-dialog" role="document">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title" id="exampleModalLabel">Picture</h5>
-                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                <span aria-hidden="true">&times;</span>
-                                                            </button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <img src="{{ MEDIA_URL }}{{ image }}" alt="Picture" width="100%" height="auto">
-                                                        </div>
-                                                    </div>
+    <div class="container text-center">
+
+        <label for="search-table"></label>
+        <input class="form-control" type="text" id="search-table" placeholder="Search through data">
+        <br>
+        <div class="table-responsive" id="data-nodes">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th scope="col">Latitude</th>
+                    <th scope="col">Longitude</th>
+                    {% for attribute in attributes %}
+                        <th scope="col"> {{ attribute.name }}</th>
+                    {% endfor %}
+                    <th scope="col">Picture</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for key, value in overview.items %}
+                    <tr>
+                        {% for data in value.values %}
+                            <td>{{ data|default:"Null" }}</td>
+                        {% endfor %}
+                        {% with image=images|get:key %}
+                            <td>
+                                {% if image %}
+                                    <a data-toggle="modal" data-target="#picture{{ key }}" class="btn btn-primary btn-sm" aria-label="View picture" type="button">
+                                        View
+                                    </a>
+                                    <div class="modal fade" id="picture{{ key }}" tabindex="-1" role="dialog" aria-labelledby="picture of {{ key }}" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Picture</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <img src="{{ MEDIA_URL }}{{ image }}" alt="Picture" width="100%" height="auto">
                                                 </div>
                                             </div>
-                                        {% else %}
-                                            Null
-                                        {% endif %}
-                                    </td>
-                                {% endwith %}
-                                <td style="border:none;"><a href="{{ key }}/edit" class="btn btn-outline-secondary btn-sm" type="button">
-                                    Edit
-                                </a></td>
-                                <td style="border:none;"><a data-toggle="modal" data-target="#delete{{ key }}" class="close" aria-label="Close" style=" color: red; opacity: 1;" type="button">
-                                    <span aria-hidden="true">&times;</span>
-                                </a></td>
-                            </tr>
-                            <div class="modal fade" id="delete{{ key }}" tabindex="-1" role="dialog" aria-labelledby="deleteNode{{ key }}" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalLabel">Delete node</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">Are you sure you want to delete this node?</div>
-                                        <div class="modal-footer">
-                                            <a onclick="remove_node({{ key }})" class="btn btn-danger" aria-label="Yes" type="button">Yes</a>
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
                                         </div>
                                     </div>
+                                {% else %}
+                                    Null
+                                {% endif %}
+                            </td>
+                        {% endwith %}
+                        <td style="border:none;"><a href="{{ key }}/edit" class="btn btn-outline-secondary btn-sm" type="button">
+                            Edit
+                        </a></td>
+                        <td style="border:none;"><a data-toggle="modal" data-target="#delete{{ key }}" class="close" aria-label="Close" style=" color: red; opacity: 1;" type="button">
+                            <span aria-hidden="true">&times;</span>
+                        </a></td>
+                    </tr>
+                    <div class="modal fade" id="delete{{ key }}" tabindex="-1" role="dialog" aria-labelledby="deleteNode{{ key }}" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Delete node</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">Are you sure you want to delete this node?</div>
+                                <div class="modal-footer">
+                                    <a onclick="remove_node({{ key }})" class="btn btn-danger" aria-label="Yes" type="button">Yes</a>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
                                 </div>
                             </div>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                </tbody>
+            </table>
+            <div class="pagination-div">
+                <nav>
+                    <ul class="pagination"></ul>
+                </nav>
             </div>
         </div>
     </div>
@@ -141,7 +157,54 @@
             elem.value = id;
             elem.form.submit();
         }
+
+
+        $(document).ready(function () {
+            $("#search-table").on("keyup", function () {
+                let input = $(this).val();
+                $("#data-nodes tr").filter(function () {
+                    if($(this).parent().is("tbody")) {
+                        $(this).toggle($(this).text().indexOf(input) > -1)
+                    }
+
+                });
+            });
+
+        });
+
+        const table = "#data-nodes"
+        $('.pagination').html('')
+        let rowNum = 0;
+        const maxRows = 10;
+        let totalRows = $(table+' tbody tr').length
+        $(table+' tr:gt(0)').each(function () {
+            rowNum++
+            if (rowNum > maxRows) {
+                $(this).hide()
+            } else {
+                $(this).show()
+            }
+        })
+        if(totalRows > maxRows) {
+            let pageNum = Math.ceil(totalRows/maxRows)
+            for (let i = 1; i <= pageNum;) {
+                $('.pagination').append('<li class="page-item" data-page="'+i+'">\<span class="page-link">'+ i++ +'<span class="sr-only">(current)</span></span>\</li>').show()
+            }
+        }
+        $('.pagination li:first-child').addClass('active')
+        $('.pagination li').on('click', function () {
+            let pageNum = $(this).attr('data-page')
+            let rowIndex = 0;
+            $('.pagination li').removeClass('active')
+            $(table+' tr:gt(0)').each(function () {
+                rowIndex++
+                if(rowIndex > (maxRows*pageNum) || rowIndex <= ((maxRows*pageNum)-maxRows)) {
+                    $(this).hide()
+                } else {
+                    $(this).show()
+                }
+            })
+        })
     </script>
-    </form>
 
 {% endblock %}
