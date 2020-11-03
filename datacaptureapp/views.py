@@ -276,20 +276,17 @@ def nodes(request, pk):
             post = request.POST
             if 'data_type' in post:
                 data_type = request.POST.get('data_type')
+                response = HttpResponse(content_type='application/zip')
                 if data_type == 'CSV':
-                    response = HttpResponse(content_type='text/csv')
-                    response['Content-Disposition'] = 'attachment; filename="{}.csv"'.format(requested_project.name)
-                    generate_csv(response, requested_project)
+                    response['Content-Disposition'] = 'attachment; filename="{}-csv.zip"'.format(
+                        requested_project.name)
+                    response.write(generate_csv(requested_project))
                 elif data_type == 'GeoJSON':
-                    geojson = generate_geojson(requested_project)
-                    response = HttpResponse(content_type='application/json')
-                    response['Content-Disposition'] = 'attachment; filename="{}.geojson"'.format(requested_project.name)
-                    response.write(geojson)
-                elif data_type == 'Excel':
-                    response = HttpResponse(content_type='application/vnd.ms-excel')
-                    response['Content-Disposition'] = 'attachment; filename="{}.xlsx"'.format(requested_project.name)
-                    output = generate_xls(requested_project)
-                    response.write(output)
+                    response['Content-Disposition'] = 'attachment; filename="{}-geojson.zip"'.format(requested_project.name)
+                    response.write(generate_geojson(requested_project))
+                elif data_type == 'XLSX':
+                    response['Content-Disposition'] = 'attachment; filename="{}-xlsx.zip"'.format(requested_project.name)
+                    response.write(generate_xlsx(requested_project))
                 else:
                     response = HttpResponseServerError('<h1>Something went wrong</h1>')
                 return response

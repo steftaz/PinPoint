@@ -35,7 +35,7 @@
                             integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
                             crossorigin=""></script>
                     <div id="map" style="height:300px"></div>
-                    <button id="refreshButton"  onclick="onSubmit()" class="text-center btn btn-secondary btn-lg mt-2"  type="button"><i class="fa fa-refresh"> </i> Refresh location</button>
+                    <button id="refreshButton"  onclick="onSubmit()" class="text-center btn btn-secondary mt-2"  type="button"><i class="fa fa-refresh"> </i> Refresh location</button>
                 </div>
             </div>
 
@@ -115,6 +115,7 @@
             map.locate({setView: false, enableHighAccuracy: true});
         }
 
+        {#map.setView([0, 0], 1);#}
         map.locate({setView: true, maxZoom: 18});
 
 
