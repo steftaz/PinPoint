@@ -469,17 +469,6 @@ def profile(request):
 
 
 @login_required()
-def newprofile(request):
-    """
-    Renders the new profile page
-    Context variables: _
-    :param request: The incoming request
-    :return: A render of the NewProfile page
-    """
-    return render(request, 'datacaptureapp/NewProfile.html')
-
-
-@login_required()
 def editprofile(request):
     """
     Renders the EditProfile page
