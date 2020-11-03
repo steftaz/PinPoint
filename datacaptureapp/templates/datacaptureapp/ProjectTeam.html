@@ -5,6 +5,10 @@
  !-->
 
 {% block content %}
+<div class="container">
+     <a href="../">
+         <button type="button" class="btn mb-1 text-secondary"> <i class="fa fa-arrow-left" aria-hidden="true"></i> Return to project</button>
+     </a>
     <h3 id="helpIcon" tabindex="0" class="pull-right" data-toggle="popover" style="margin-left:5px"
         data-placement="left" data-trigger=focus" aria-hidden=true" data-html="true"
         title="Project Team"
@@ -17,23 +21,18 @@
         <br>">
         <span class="fa fa-question-circle" style="color:grey; margin-right:10px"></span>
     </h3>
-    <br>
+</div>
     <h1 class="text-center" style="font-size:min(5vw, 50px);font-family:'Calibri'">Project Team</h1>
     <hr/>
 
 
     <!-- Public private toggle -->
     <div id="is-public" style="display: none;">{{ project.is_public }}</div>
-    <div class="container pl-3 pt-5">
+    <div class="container pl-3 pt-3">
         <div class="row">
-            <div class="col custom-control custom-switch text-left" >
+            <div class="col custom-control custom-switch text-left ml-3" >
                 <input change-pp-url="{% url 'project' project.id %}" type="checkbox" class="custom-control-input" id="public-private-toggle">
                 <label class="custom-control-label" for="public-private-toggle" id="toggle-label"></label>
-            </div>
-             <div class="col text-right">
-                <a href="../">
-                    <button type="button" class="btn btn-outline-danger btn-lg">Return to project</button>
-                </a>
             </div>
         </div>
     </div>
@@ -57,7 +56,7 @@
             <div class="input-group mb-3">
                 {{ form }}
                 <div class="input-group">
-                    <button class="text-center btn btn-info btn-lg" type="submit"><i class="fa fa-plus"> </i> Add team member
+                    <button class="text-center btn btn-info" type="submit"><i class="fa fa-plus"> </i> Add team member
                     </button>
                 </div>
             </div>

@@ -6,6 +6,10 @@
 
 
 {% block content %}
+<div class="container">
+     <a href="../../">
+         <button type="button" class="btn text-secondary"> <i class="fa fa-arrow-left" aria-hidden="true"></i> Return to project</button>
+     </a>
     <h3 id="helpIcon" tabindex="0" class="pull-right" data-toggle="popover" style="margin-left:5px"
         data-placement="left" data-trigger=focus" aria-hidden=true" data-html="true"
         title="Adding Data"
@@ -14,7 +18,7 @@
         <br>">
         <span class="fa fa-question-circle" style="color:grey; margin-right:10px"></span>
     </h3>
-    <br>
+    </div>
     <h1 class="text-center" onload="onSubmit(); redraw()" style="font-size:min(5vw, 50px); font-family:'Calibri'">Add Data</h1>
     <hr/>
     <br>
@@ -30,7 +34,7 @@
                             integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
                             crossorigin=""></script>
                     <div id="map" style="height:300px"></div>
-                    <button id="refreshButton"  onclick="onSubmit()" class="text-center btn btn-secondary btn-lg mt-1"  type="button"><i class="fa fa-refresh"> </i> Refresh location</button>
+                    <button id="refreshButton"  onclick="onSubmit()" class="text-center btn btn-secondary mt-1"  type="button"><i class="fa fa-refresh"> </i> Refresh location</button>
 
                  </div>
             </div>
@@ -47,10 +51,9 @@
                                    placeholder="{{ data.attribute.description }}" id="{{ data.attribute.description }} required ">
                         {% endfor %}
                         <br>
-                        <br>
                         <div class="custom-file">
                             {{ node_form }}
-                            <button type="button" id="picture-button" class="btn btn-dark btn-lg">
+                            <button type="button" id="picture-button" class="btn btn-dark">
                                 <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-file-image"
                                      fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                     <path fill-rule="evenodd"
@@ -59,14 +62,11 @@
                                 </svg>
                                 Picture
                             </button>
-                            <span id="chosen-file">No picture chosen</span>
+                            <span id="chosen-file" class="text-secondary">No picture chosen. </span>
                         </div>
                         <br>
                         <br>
-                        <button type="submit" class="btn btn-info btn-lg mb-1">Store data point</button>
-                        <a href="../../">
-                            <button type="button" class="btn btn-outline-danger btn-lg mb-1">Return to project</button>
-                        </a>
+                        <button type="submit" class="btn btn-info mb-1"><i class="fa fa-map-marker" aria-hidden="true"></i> Store data point</button>
                     </div>
                 </div>
             </form>

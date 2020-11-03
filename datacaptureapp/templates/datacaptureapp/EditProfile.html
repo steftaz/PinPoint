@@ -20,7 +20,7 @@
                 <tr>
                  <th scope="row">Username</th>
                  <td>{{user.username}}</td>
-                  <td type="button" class="btn btn-link" data-toggle="modal" data-target="#changeusername">Change username</td>
+                  <td type="button" class="btn btn-info btn-xs" data-toggle="modal" data-target="#changeusername"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></td>
                   <!-- Modal -->
                     <div class="modal fade" id="changeusername" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                       <div class="modal-dialog" role="document">
@@ -47,7 +47,7 @@
                  <tr>
                   <th scope="row">Email</th>
                   <td>{{user.email}}</td>
-                     <td type="button" class="btn btn-link" data-toggle="modal" data-target="#changeemail">Change email</td>
+                     <td type="button" class="btn btn-info" data-toggle="modal" data-target="#changeemail"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></td>
                     <!-- Modal -->
                     <div class="modal fade" id="changeemail" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                       <div class="modal-dialog" role="document">
@@ -73,7 +73,7 @@
                     <tr>
                       <th scope="row">Password</th>
                       <td> -</td>
-                        <td type="button" class="btn btn-link" data-toggle="modal" data-target="#changepassword">Change password</td>
+                        <td type="button" class="btn btn-info" data-toggle="modal" data-target="#changepassword"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></td>
 
                     <!-- Modal -->
                     <div class="modal fade" id="changepassword" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -105,7 +105,7 @@
     </div>
 
    <div class="text-center">
-     <a href="../profile" type="button" class="btn btn-info">View profile</a>
+     <a href="../profile" type="button" class="btn btn-outline-danger">Back to profile</a>
    </div>
 
 {% endblock %}
