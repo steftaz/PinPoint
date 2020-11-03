@@ -20,7 +20,6 @@ urlpatterns = [
     path('projects/<int:pk>/edit/attributes/', views.attribute_overview, name='attribute-overview'),
     path('projects/<int:pk>/edit/attributes/<int:ak>/', views.edit_attribute, name='edit-attribute'),
     path('profile/', views.profile, name='profile'),
-    path('profile/new', views.newprofile, name='new-profile'),
     path('profile/edit', views.editprofile, name='edit-profile'),
     path('about/', views.about, name='about'),
     path('FAQ/', views.faq, name='faq'),
