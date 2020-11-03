@@ -19,10 +19,10 @@
     </h3>
     <br>
     <h1 class="text-center" style="font-size:min(5vw, 50px);font-family:'Calibri'">{{ user.username }}'s profile</h1>
-    <hr/>
 
 
     <div class="container">
+        <hr/>
         <br>
         <div class="row-justify-content-center">
             <div class="col sm auto">
@@ -54,8 +54,7 @@
     </div>
 
     <div class="text-center">
-        <a href='{% url 'edit-profile' %}' type="button" class="btn btn-info btn-lg">Edit profile</a>
-        <a href='{% url 'projects' %}' type="button" class="btn btn-info btn-lg" data-dismiss="modal">Work on a project</a>
+        <a href='{% url 'edit-profile' %}' type="button" class="btn btn-info"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit profile</a>
     </div>
 
 {% endblock %}

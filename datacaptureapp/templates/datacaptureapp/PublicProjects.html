@@ -2,7 +2,8 @@
 
 {% block content %}
 
-<h3 id="helpIcon" tabindex="0" class="pull-right" data-toggle="popover" style="margin-left:5px"
+<div class="containter">
+    <h3 id="helpIcon" tabindex="0" class="pull-right" data-toggle="popover" style="margin-left:5px"
         data-placement="left" data-trigger=focus" aria-hidden=true" data-html="true"
         title="Public Project"
         data-content="<b>Find a project</b> <br>
@@ -12,9 +13,8 @@
     </h3>
     <br>
     <h1 class="text-center" style="font-size:min(5vw, 50px);font-family:'Calibri'">Public Projects</h1>
-    <hr/>
-
-
+<hr/>
+</div>
     <!-- Public private toggle -->
     <div>
         {% if messages %}
@@ -27,24 +27,26 @@
     </div>
 
     <div class="container pt-5 text-center">
-        <!-- div where messages are inserted -->
-        <div id="div_messages"></div>
+    <!-- div where messages are inserted -->
+    <div id="div_messages"></div>
 
 
 
     <!-- Public projects list -->
-<input class="form-control" type="text" id="search-table" placeholder="Search through public projects">
-    <div class="container py-3">
-        <table class="table py-5" id="public-projects">
+    <label for="search-table"></label>
+    <input class="form-control" type="text" id="search-table" placeholder="Search through public projects">
+    <br>
+    <div class="table-responsive">
+        <table class="table table-hover" id="public-projects">
             <thead>
-                <tr>
-                    <th scope="col">id</th>
-                    <th scope="col">name</th>
-                    <th scope="col">description</th>
-                    <th scope="col">data-points</th>
-                    <th scope="col">members</th>
-                    <th scope="col" id="go-to-project">go to project</th>
-                </tr>
+            <tr>
+                <th scope="col">id</th>
+                <th scope="col">name</th>
+                <th scope="col">description</th>
+                <th scope="col">data-points</th>
+                <th scope="col">members</th>
+                <th scope="col" id="go-to-project">go to project</th>
+            </tr>
             </thead>
             <tbody>
             {% for project in public_projects %}
@@ -81,52 +83,52 @@
     <script>
 
 
-    $(document).ready(function () {
-        $("#search-table").on("keyup", function () {
-            let input = $(this).val();
-            $("#public-projects tr").filter(function () {
-                if($(this).parent().is("tbody")) {
-                    $(this).toggle($(this).text().indexOf(input) > -1)
-                }
+        $(document).ready(function () {
+            $("#search-table").on("keyup", function () {
+                let input = $(this).val();
+                $("#public-projects tr").filter(function () {
+                    if($(this).parent().is("tbody")) {
+                        $(this).toggle($(this).text().indexOf(input) > -1)
+                    }
 
+                });
             });
+
         });
 
-    });
-
-    const table = "#public-projects"
-    $('.pagination').html('')
-    let rowNum = 0;
-    const maxRows = 10;
-    let totalRows = $(table+' tbody tr').length
-    $(table+' tr:gt(0)').each(function () {
-        rowNum++
-        if (rowNum > maxRows) {
-            $(this).hide()
-        } else {
-            $(this).show()
-        }
-    })
-    if(totalRows > maxRows) {
-        let pageNum = Math.ceil(totalRows/maxRows)
-        for (let i = 1; i <= pageNum;) {
-            $('.pagination').append('<li class="page-item" data-page="'+i+'">\<span class="page-link">'+ i++ +'<span class="sr-only">(current)</span></span>\</li>').show()
-        }
-    }
-    $('.pagination li:first-child').addClass('active')
-    $('.pagination li').on('click', function () {
-        let pageNum = $(this).attr('data-page')
-        let rowIndex = 0;
-        $('.pagination li').removeClass('active')
+        const table = "#public-projects"
+        $('.pagination').html('')
+        let rowNum = 0;
+        const maxRows = 10;
+        let totalRows = $(table+' tbody tr').length
         $(table+' tr:gt(0)').each(function () {
-            rowIndex++
-            if(rowIndex > (maxRows*pageNum) || rowIndex <= ((maxRows*pageNum)-maxRows)) {
+            rowNum++
+            if (rowNum > maxRows) {
                 $(this).hide()
             } else {
                 $(this).show()
             }
         })
-    })
+        if(totalRows > maxRows) {
+            let pageNum = Math.ceil(totalRows/maxRows)
+            for (let i = 1; i <= pageNum;) {
+                $('.pagination').append('<li class="page-item" data-page="'+i+'">\<span class="page-link">'+ i++ +'<span class="sr-only">(current)</span></span>\</li>').show()
+            }
+        }
+        $('.pagination li:first-child').addClass('active')
+        $('.pagination li').on('click', function () {
+            let pageNum = $(this).attr('data-page')
+            let rowIndex = 0;
+            $('.pagination li').removeClass('active')
+            $(table+' tr:gt(0)').each(function () {
+                rowIndex++
+                if(rowIndex > (maxRows*pageNum) || rowIndex <= ((maxRows*pageNum)-maxRows)) {
+                    $(this).hide()
+                } else {
+                    $(this).show()
+                }
+            })
+        })
 
 
 

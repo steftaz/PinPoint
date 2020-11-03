@@ -33,10 +33,10 @@
     <br>
 
     <h1 class="text-center" style="font-size:min(5vw, 50px);font-family:'Calibri'">{{project.name}}</h1>
-    <hr/>
 
 
     <div class="container">
+        <hr/>
         <div class="row-justify-content-center">
             <div class="col lg auto">
                 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
@@ -54,12 +54,12 @@
             <div class="text-center" id="div_messages">
             </div>
             <div class ="text-center">
-                <button id="join-public-project" onclick="joinPublicProject()" class="text-center btn btn-success btn-lg"  type="button"><i class="fa fa-plus"> </i> Add to your projects</button>
-                <button onclick="location.href='nodes/new'" class="text-center btn btn-info btn-lg"  type="button"><i class="fa fa-plus"> </i> Record data point</button>
-                <button onclick="location.href='nodes'" class="text-center btn btn-info btn-lg"  type="button"><i class="fa fa-bars"></i> Data overview</button>
+                <button id="join-public-project" onclick="joinPublicProject()" class="text-center btn btn-success btn-lg mb-1"  type="button"><i class="fa fa-plus"> </i> Add to your projects</button>
+                <button onclick="location.href='nodes/new'" class="text-center btn btn-info btn-lg mb-1"  type="button"><i class="fa fa-plus"> </i> Record data point</button>
+                <button onclick="location.href='nodes'" class="text-center btn btn-info btn-lg mb-1"  type="button"><i class="fa fa-table"></i> Data overview</button>
                 {% if is_owner %}
-                    <button onclick="location.href='team'" class="text-center btn btn-info btn-lg"  type="button"><i class="fa fa-group"></i> Project team </button>
-                    <button onclick="location.href='edit'" class="text-center btn btn-info btn-lg"  type="button"><i class="fa fa-pencil-square-o"></i> Edit project </button>
+                    <button onclick="location.href='team'" class="text-center btn btn-info btn-lg mb-1"  type="button"><i class="fa fa-group"></i> Project team </button>
+                    <button onclick="location.href='edit'" class="text-center btn btn-info btn-lg mb-1"  type="button"><i class="fa fa-pencil-square-o"></i> Edit project </button>
                 {% endif %}
             </div>
         </div>
@@ -114,7 +114,8 @@
         // LEAFLET script:
 
 
-        var map = L.map('map').fitWorld();
+        let map = L.map('map').fitWorld();
+        let positionMarker;
 
         L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
             maxZoom: 20,
@@ -127,8 +128,12 @@
         }).addTo(map);
 
         function onLocationFound(e) {
-            L.circleMarker(e.latlng, {radius: 7, color: '#FFFFFF', fillOpacity: 1, fillColor: '#FF0000', opacity: 0.5})
-                .addTo(map).bindPopup("You are here");
+            if (positionMarker == null) {
+                positionMarker = L.circleMarker(e.latlng, {radius: 7, color: '#FFFFFF', fillOpacity: 1, fillColor: '#FF0000', opacity: 0.5})
+                    .addTo(map).bindPopup("You are here");
+            } else {
+                positionMarker.setLatLng(e.latlng);
+            }
         }
 
         function onLocationError(e) {
@@ -145,11 +150,11 @@
         }
 
         function locate() {
-            map.locate({setView: false});
+            map.locate({setView: false, enableHighAccuracy: true});
         }
 
         // call locate every 3 seconds... forever
-        setInterval(locate, 3000);
+        setInterval(locate, 1000);
 
         {% for key, value in overview.items %}
             var marker = L.marker([{{ value.latitude}}, {{ value.longitude}}]).addTo(map);
