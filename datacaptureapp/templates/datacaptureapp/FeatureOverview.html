@@ -50,76 +50,78 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-auto">
-                <table class="table table-responsive table-hover">
-                    <thead>
-                    <tr>
-                        <th scope="col">Latitude</th>
-                        <th scope="col">Longitude</th>
-                        {% for attribute in attributes %}
-                            <th scope="col"> {{ attribute.name }}</th>
-                        {% endfor %}
-                        <th scope="col">Picture</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for key, value in overview.items %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
                         <tr>
-                            {% for data in value.values %}
-                                <td>{{ data|default:"Null" }}</td>
+                            <th scope="col">Latitude</th>
+                            <th scope="col">Longitude</th>
+                            {% for attribute in attributes %}
+                                <th scope="col"> {{ attribute.name }}</th>
                             {% endfor %}
-                            {% with image=images|get:key %}
-                                <td>
-                                    {% if image %}
-                                        <a data-toggle="modal" data-target="#picture{{ key }}" class="btn btn-primary btn-sm" aria-label="View picture" type="button">
-                                            View
-                                        </a>
-                                        <div class="modal fade" id="picture{{ key }}" tabindex="-1" role="dialog" aria-labelledby="picture of {{ key }}" aria-hidden="true">
-                                            <div class="modal-dialog" role="document">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="exampleModalLabel">Picture</h5>
-                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                            <span aria-hidden="true">&times;</span>
-                                                        </button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <img src="{{ MEDIA_URL }}{{ image }}" alt="Picture" width="100%" height="auto">
+                            <th scope="col">Picture</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for key, value in overview.items %}
+                            <tr>
+                                {% for data in value.values %}
+                                    <td>{{ data|default:"Null" }}</td>
+                                {% endfor %}
+                                {% with image=images|get:key %}
+                                    <td>
+                                        {% if image %}
+                                            <a data-toggle="modal" data-target="#picture{{ key }}" class="btn btn-primary btn-sm" aria-label="View picture" type="button">
+                                                View
+                                            </a>
+                                            <div class="modal fade" id="picture{{ key }}" tabindex="-1" role="dialog" aria-labelledby="picture of {{ key }}" aria-hidden="true">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="exampleModalLabel">Picture</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <img src="{{ MEDIA_URL }}{{ image }}" alt="Picture" width="100%" height="auto">
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
+                                        {% else %}
+                                            Null
+                                        {% endif %}
+                                    </td>
+                                {% endwith %}
+                                <td style="border:none;"><a href="{{ key }}/edit" class="btn btn-outline-secondary btn-sm" type="button">
+                                    Edit
+                                </a></td>
+                                <td style="border:none;"><a data-toggle="modal" data-target="#delete{{ key }}" class="close" aria-label="Close" style=" color: red; opacity: 1;" type="button">
+                                    <span aria-hidden="true">&times;</span>
+                                </a></td>
+                            </tr>
+                            <div class="modal fade" id="delete{{ key }}" tabindex="-1" role="dialog" aria-labelledby="deleteNode{{ key }}" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Delete node</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
                                         </div>
-                                    {% else %}
-                                        Null
-                                    {% endif %}
-                                </td>
-                            {% endwith %}
-                            <td style="border:none;"><a href="{{ key }}/edit" class="btn btn-outline-secondary btn-sm" type="button">
-                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit
-                            </a></td>
-                            <td style="border:none;"><a data-toggle="modal" data-target="#delete{{ key }}" class="close" aria-label="Close" style=" color: red; opacity: 1;" type="button">
-                                <span aria-hidden="true">&times;</span>
-                            </a></td>
-                        </tr>
-                        <div class="modal fade" id="delete{{ key }}" tabindex="-1" role="dialog" aria-labelledby="deleteNode{{ key }}" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Delete node</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">Are you sure you want to delete this node?</div>
-                                    <div class="modal-footer">
-                                        <a onclick="remove_node({{ key }})" class="btn btn-danger" aria-label="Yes" type="button">Yes</a>
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                                        <div class="modal-body">Are you sure you want to delete this node?</div>
+                                        <div class="modal-footer">
+                                            <a onclick="remove_node({{ key }})" class="btn btn-danger" aria-label="Yes" type="button">Yes</a>
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    {% endfor %}
-                    </tbody>
-                </table>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

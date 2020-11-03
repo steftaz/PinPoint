@@ -14,7 +14,7 @@
 
                     {% for field in registration_form %}
                         {% for error in field.errors %}
-                            <p style="color: red;">{{ field.help_text }}</p>
+                            <p style="color: red;">{{ error }}</p>
                         {% endfor %}
                     {% endfor %}
 
@@ -26,11 +26,11 @@
                 {% csrf_token %}
 
                 <label for="email">Email</label>
-                <input type="email" name="email" class="form-control" id="Email" placeholder="Enter email address" autofocus >
+                <input type="email" name="email" class="form-control" id="Email" placeholder="Enter email address" autocomplete="on" autofocus>
                 <br>
 
                 <label for="username">Username</label>
-                <input type="username" name="username" class="form-control" id="UserName" aria-describedby="emailHelp" placeholder="Create username" >
+                <input type="username" name="username" class="form-control" id="UserName" aria-describedby="emailHelp" autocomplete="on" placeholder="Create username" >
                 <br>
 
                 <label for="password">Password</label>
@@ -41,7 +41,7 @@
                 <input type="password" name="password2" class="form-control" id="Password" placeholder="Repeat password" >
                 <br>
 
-                <button  type="submit" onclick="location.href='../login'" class="btn btn-info">Create Account</button>
+                <button type="submit" class="btn btn-info">Create Account</button>
             </form>
         </div>
     </div>
@@ -68,7 +68,7 @@
 {##}
 {#        {% endfor %}#}
 {##}
-{#        <button class="btn btn-info"type="submit">Register</button>#}
+{#        <button type="submit">Register</button>#}
 {#    </form>#}
 
 {% endblock content %}
