@@ -9,43 +9,43 @@
     <div class="home">
         <br/>
         <div class="container">
-            <div class="row">
-                <div class="col">
-                    <h3 id="helpIcon" tabindex="0" class="pull-right" data-toggle="popover" style="margin-left:5px; margin-top:2px"
-                        data-placement="left" data-trigger=focus" aria-hidden=true" data-html="true"
-                        title="Home Page"
-                        data-content="<b> Open project </b> <br>
+            <div class="col-md-12">
+                <h3 id="helpIcon" tabindex="0" class="pull-right" data-toggle="popover" style="margin-left:5px; margin-top:2px"
+                    data-placement="left" data-trigger=focus" aria-hidden=true" data-html="true"
+                    title="Home Page"
+                    data-content="<b> Open project </b> <br>
             The overview of your projects is visible below '[Username]'s Projects. Click on a project to visit its page. To open a public project click on 'Go to public projects' and search for a project.<br>
             <br>
             <b> Create project </b> <br>
             To create a new project click the button 'Create new Project'. You will be redirected to a page where you can define the specifications.">
-                        <span class="fa fa-question-circle" style="color:grey; margin-right:10px"></span>
-                    </h3>
+                    <span class="fa fa-question-circle" style="color:grey; margin-right:10px"></span>
+                </h3>
+                <h1 class="text-center" style="font-size:min(5vw, 50px); font-family:'Calibri'" >Choose your project below</h1>
+                <hr/>
+                <br>
+                <div class ="text-center">
+                    <div class="btn-group-vertical ">
+                        <button type="button" class="btn btn-info btn-lg" onclick="location.href='{% url 'public-projects' %}'"><i class="fa fa-arrow-right" aria-hidden="true"></i> Go to public projects  </button>
+                        <button onclick="location.href='{%  url 'new-project' %}'" type="button" class="btn btn-light btn-lg" ><i class="fa fa-plus"> </i> Create new Project</button>
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <h1 class="text-center" style="font-size:min(5vw, 50px); font-family:'Calibri'" >Choose your project below</h1>
+                <br>
+                <h1 class="text-center" style="font-size:min(5vw, 50px);font-family:'Calibri'">{{ user.username }}'s projects </h1>
+                <hr/>
+                <div class="text-center"  style="font-size:min(5vw, 50px);">
+                {% if projects %}
+                    {% for project in  projects %}
+                        <a class="btn btn-info btn-lg mb-2 ml-1" role="button" href="{% url 'project' project.id %}"> <i class="fa fa-folder" aria-hidden="true"></i> {{ project.name }}</a>
+                    {% endfor %}
+                {% else %}
+                    <div style="font-size: 20px" class="alert alert-light" role="alert">
+                        You do not have any projects yet. If you create a project or become a member of a project, that project will appear here.
+                    </div>
+                {% endif %}
+
                 </div>
-            </div>
-            <hr/>
-            <br>
-            <div class ="text-center">
-                <div class="btn-group-vertical ">
-                    <button type="button" class="btn btn-info btn-lg" onclick="location.href='{% url 'public-projects' %}'"><i class="fa fa-arrow-right" aria-hidden="true"></i> Go to public projects  </button>
-                    <button onclick="location.href='{%  url 'new-project' %}'" type="button" class="btn btn-light btn-lg" ><i class="fa fa-plus"> </i> Create new Project</button>
-                </div>
-            </div>
-            <br>
-            <h1 class="text-center" style="font-size:min(5vw, 50px);font-family:'Calibri'">{{ user.username }}'s projects </h1>
-            <hr/>
-            <div class="text-center"  style="font-size:min(5vw, 50px);">
-                {% for project in  projects %}
-                    <a class="btn btn-info btn-lg mb-2 ml-1" role="button" href="{% url 'project' project.id %}"> <i class="fa fa-folder" aria-hidden="true"></i> {{ project.name }}</a>
-                {% endfor %}
             </div>
         </div>
-    </div>
     </div>
 
 
