@@ -85,13 +85,9 @@
         {% csrf_token %}
         <input class="form-control" type="hidden" id="remove_attribute" name="remove_attribute">
     </form>
+    {% load static %}
+    <script type="text/javascript" src="{% static '/javascript/delete-attribute.js' %}"></script>
 
-    <script>
-        function delete_attribute(id) {
-            let elem = document.getElementById("remove_attribute");
-            elem.value = id;
-            elem.form.submit();
-        }
-    </script>
+
 
 {% endblock %}

@@ -129,19 +129,7 @@
         {% csrf_token %}
         <input class="form-control" type="hidden" id="remove_node" name="remove_node">
     </form>
-    <script>
-        function set_data_type(type) {
-            let elem = document.getElementById("data_type");
-            elem.value = type;
-            elem.form.submit();
-        }
-
-        function remove_node(id) {
-            let elem = document.getElementById("remove_node");
-            elem.value = id;
-            elem.form.submit();
-        }
-    </script>
-    </form>
+    {% load static %}
+    <script type="text/javascript" src="{% static '/javascript/node-overview.js' %}"></script>
 
 {% endblock %}
