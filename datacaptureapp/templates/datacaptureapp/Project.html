@@ -9,13 +9,10 @@
     <br>
     <div class="container">
         <div class="row">
-            <div class="col">
+            <div class="col-auto">
                 <a href="../">
                     <button type="button" class="btn mb-1 text-secondary"> <i class="fa fa-arrow-left" aria-hidden="true"></i> Return to home</button>
                 </a>
-            </div>
-            <div class="col-auto">
-                <h1 class="text-center" style="font-size:min(5vw, 50px);font-family:'Calibri'">{{project.name}}</h1>
             </div>
             <div class="col">
                 <h3 id="helpIcon" tabindex="0" class="pull-right" data-toggle="popover" style="margin-left:5px"
@@ -42,6 +39,11 @@
             ">
                     <span class="fa fa-question-circle" style="color:grey; margin-right:10px"></span>
                 </h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <h1 class="text-center" style="font-size:min(5vw, 50px);font-family:'Calibri'">{{project.name}}</h1>
             </div>
         </div>
         <hr/>

@@ -323,17 +323,19 @@ def edit_node(request, pk, nk):
             email=request.user.email).first():
         if request.method == 'POST':
             post = request.POST
-            for coor in ['longitude', 'latitude']:
-                value = post[coor]
-                if value != '':
-                    node.coor = value
+            lat = post['latitude']
+            if lat:
+                node.latitude = lat
+            long = post['longitude']
+            if long:
+                node.longitude = long
             if 'picture' in request.FILES:
                 node.picture = request.FILES['picture']
             node.save()
             attributes = Attribute.objects.filter(project=Project.objects.get(id=pk))
             for attribute in attributes:
                 value = post[attribute.name]
-                if value != '':
+                if value:
                     data = Data.objects.get(node=node, attribute=attribute)
                     data.value = value
                     data.save()
