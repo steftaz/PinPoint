@@ -6,84 +6,103 @@
 
 
 {% block content %}
-    <BR xmlns="http://www.w3.org/1999/html">
-    <h1 class="text-center" style="font-size:min(5vw, 50px);font-family:'Calibri'">{{ user.username }}'s profile</h1>
+    <br>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <a href="../">
+                    <button type="button" class="btn mb-1 text-secondary"> <i class="fa fa-arrow-left" aria-hidden="true"></i> Return to profile</button>
+                </a>
+            </div>
+            <div class="col-auto">
+                <h1 class="text-center" style="font-size:min(5vw, 50px);font-family:'Calibri'">{{ user.username }}'s profile</h1>
+            </div>
+            <div class="col">
+                <h3 id="helpIcon" tabindex="0" class="pull-right" data-toggle="popover" style="margin-left:5px; margin-top:2px"
+                    data-placement="left" data-trigger=focus" aria-hidden=true" data-html="true"
+                    title="Profile"
+                    data-content="<b> Edit profile </b> <br>
+                    On this page your profile details can be edited by pressing the edit button next to the field you want to edit. <br>
+                    Note that changes are immediately saved, and your username and email should be unique.">
+                    <span class="fa fa-question-circle" style="color:grey; margin-right:10px"></span>
+                </h3>
+            </div>
+        </div>
+    </div>
     <hr/>
-
-	<div class="container">
-        <br>
-
-      <div class="row-justify-content-center">
-        <div class="col sm auto">
-         <table class="table table-center table-unbordered  text-muted">
-            <tbody>
-                <tr>
-                 <th scope="row">Username</th>
-                 <td>{{user.username}}</td>
-                  <td type="button" class="btn btn-info btn-xs" data-toggle="modal" data-target="#changeusername"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></td>
-                  <!-- Modal -->
-                    <div class="modal fade" id="changeusername" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                      <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                          <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Change username</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                              <span aria-hidden="true">&times;</span>
-                            </button>
-                          </div>
-                          <div class="modal-body">
-                             <label for="changeusername" class="col-form-label">New username</label>
-                              <input type="text"  class="form-control">
-
-                          </div>
-                          <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Save new username</button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                </tr>
-                 <tr>
-                  <th scope="row">Email</th>
-                  <td>{{user.email}}</td>
-                     <td type="button" class="btn btn-info" data-toggle="modal" data-target="#changeemail"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></td>
-                    <!-- Modal -->
-                    <div class="modal fade" id="changeemail" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                      <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                          <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Change email</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                              <span aria-hidden="true">&times;</span>
-                            </button>
-                          </div>
-                          <div class="modal-body">
-                             <label for="changeemailemail" class="col-form-label">New email address</label>
-                              <input type="email"  class="form-control">
-                          </div>
-                          <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Save new email</button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                 </tr>
+    <br>
+    <div class="container">
+        <div class="row-justify-content-center">
+            <div class="col sm auto">
+                <table class="table table-center table-unbordered  text-muted">
+                    <tbody>
                     <tr>
-                      <th scope="row">Password</th>
-                      <td> -</td>
+                        <th scope="row">Username</th>
+                        <td>{{user.username}}</td>
+                        <td type="button" class="btn btn-info btn-xs" data-toggle="modal" data-target="#changeusername"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></td>
+                        <!-- Modal -->
+                        <div class="modal fade" id="changeusername" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Change username</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <label for="changeusername" class="col-form-label">New username</label>
+                                        <input type="text"  class="form-control">
+
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-primary">Save new username</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </tr>
+                    <tr>
+                        <th scope="row">Email</th>
+                        <td>{{user.email}}</td>
+                        <td type="button" class="btn btn-info" data-toggle="modal" data-target="#changeemail"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></td>
+                        <!-- Modal -->
+                        <div class="modal fade" id="changeemail" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Change email</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <label for="changeemailemail" class="col-form-label">New email address</label>
+                                        <input type="email"  class="form-control">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-primary">Save new email</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </tr>
+                    <tr>
+                        <th scope="row">Password</th>
+                        <td> -</td>
                         <td onclick="location.href='{% url 'password_change' %}'" type="button" class="btn btn-info" data-toggle="modal" data-target="#changepassword"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></td>
                     </tr>
 
-                </tbody>
-         </table>
+                    </tbody>
+                </table>
+            </div>
         </div>
-      </div>
     </div>
 
-   <div class="text-center">
-     <a href="../profile" type="button" class="btn btn-outline-danger">Back to profile</a>
-   </div>
+    <div class="text-center">
+        <a href="../profile" type="button" class="btn btn-outline-danger">Back to profile</a>
+    </div>
 
 {% endblock %}
