@@ -20,7 +20,7 @@ urlpatterns = [
     path('projects/<int:pk>/edit/attributes/', views.attribute_overview, name='attribute-overview'),
     path('projects/<int:pk>/edit/attributes/<int:ak>/', views.edit_attribute, name='edit-attribute'),
     path('profile/', views.profile, name='profile'),
-    path('profile/edit', views.editprofile, name='edit-profile'),
+    path('profile/edit/', views.editprofile, name='edit-profile'),
     path('about/', views.about, name='about'),
     path('FAQ/', views.faq, name='faq'),
     url(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT})
