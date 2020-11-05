@@ -10,6 +10,7 @@ Documentation of how to use our product can be found on the webpages itself and 
 How to deploy PinPoint:
 - Clone the git repository.
 - Navigate to the mobile-gis folder in your terminal.
+- Type: 'pip3 install -r requirements.txt.
 - Type: 'python manage.py migrate' to initialize the database.
 - Type: 'python manage.py runserver' to run PinPoint on localhost. 
 
