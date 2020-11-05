@@ -62,12 +62,13 @@ def account_view(request):
         form = AccountUpdateForm(request.POST)
         if form.is_valid():
             form.save()
+            return redirect("profile")
     else:
         form = AccountUpdateForm(
-            initial= {
+            initial={
                 "email": request.user.email,
                 "username": request.user.username,
             }
         )
-
-
+    context['account_form'] = form
+    return render(request, 'account/account.html', context)

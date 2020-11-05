@@ -22,27 +22,31 @@
                  <td>{{user.username}}</td>
                   <td type="button" class="btn btn-info btn-xs" data-toggle="modal" data-target="#changeusername"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></td>
                   <!-- Modal -->
-                    <div class="modal fade" id="changeusername" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                      <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                          <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Change username</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                              <span aria-hidden="true">&times;</span>
-                            </button>
-                          </div>
-                          <div class="modal-body">
-                             <label for="changeusername" class="col-form-label">New username</label>
-                              <input type="text"  class="form-control">
+                    <form method="post" action="{% url 'change_username' %}">
+                        {% csrf_token %}
+                        <div class="modal fade" id="changeusername" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                          <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Change username</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+                              <div class="modal-body">
+                                 <label for="changeusername" class="col-form-label">New username</label>
+                                  <input type="text" class="form-control" name="email" autofocus>
 
-                          </div>
-                          <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Save new username</button>
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary" data-dismiss="modal">Save new username</button>
+                              </div>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </div>
+                    </form>
+
                 </tr>
                  <tr>
                   <th scope="row">Email</th>

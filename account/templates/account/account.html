@@ -1,0 +1,46 @@
+{% extends 'datacaptureapp/base.html' %}
+
+{% block content %}
+
+    <br>
+    <h1 class="text-center" style="font-size:min(5vw, 50px);font-family:'Calibri'">Change account</h1>
+    <hr/>
+    <br>
+
+
+
+    <div class="form-group">
+        <div class="container center_div">
+
+{#            display errrors#}
+            {% if account_form.errors %}
+
+                <div class='alert alert-danger' role='alert'>
+                    <p>{{ account_form.non_field_errors }}</p>
+
+                    {% for field in account_form %}
+                        {% for error in field.errors %}
+
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    {% endfor %}
+
+                </div>
+            {% endif %}
+
+            <form method = "post">
+                {% csrf_token %}
+                {% for field in account_form %}
+                    {{ field.label_tag }}
+                    {{ field }}
+                    <br>
+                {% endfor %}
+
+                <button type="submit" class="btn btn-info">Save changes</button>
+                <button type="button" onclick="location.href='{% url 'password_change' %}'" class="btn btn-info">Change password</button>
+
+            </form>
+        </div>
+    </div>
+
+{% endblock content %}
