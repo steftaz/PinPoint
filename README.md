@@ -13,4 +13,6 @@ How to deploy PinPoint:
 - Type: 'python manage.py migrate' to initialize the database.
 - Type: 'python manage.py runserver' to run PinPoint on localhost. 
 
+For further questions you can contact gispinpoint@gmail.com.
+
 
