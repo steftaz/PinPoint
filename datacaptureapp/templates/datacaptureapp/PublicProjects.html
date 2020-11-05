@@ -52,7 +52,7 @@
     <input class="form-control" type="text" id="search-table" placeholder="Search through public projects">
     <br>
     <div class="table-responsive">
-        <table class="table table-hover" id="public-projects">
+        <table class="table table-hover" id="table">
             <thead>
             <tr>
                 <th scope="col">id</th>
@@ -95,24 +95,12 @@
             </nav>
         </div>
     </div>
+    {% load static %}
+    <script type="text/javascript" src="{% static '/javascript/table-pagination.js' %}"></script>
+    <script type="text/javascript" src="{% static '/javascript/search-table.js' %}"></script>
 
-    <script>const table = "#public-projects"
-    $(document).ready(function () {
-    $("#search-table").on("keyup", function () {
-        let input = $(this).val();
-        $("#data-nodes tr").filter(function () {
-            if ($(this).parent().is("tbody")) {
-                $(this).toggle($(this).text().indexOf(input) > -1)
-            }
 
-        });
-    });
 
-});
-    </script>
 
-{#    {% load static %}#}
-{#    <script type="text/javascript" src="{% static '/javascript/search-table.js' %}"></script>#}
-{#    <script type="text/javascript" src="{% static '/javascript/table-pagination.js' %}"></script>#}
 {% endblock %}
 

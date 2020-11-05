@@ -62,7 +62,7 @@
         <label for="search-table"></label>
         <input class="form-control" type="text" id="search-table" placeholder="Search through data">
         <br>
-        <div class="table-responsive" id="data-nodes">
+        <div class="table-responsive" id="table">
             <table class="table table-hover">
                 <thead>
                 <tr>
@@ -147,7 +147,10 @@
 
     {% load static %}
     <script type="text/javascript" src="{% static '/javascript/node-overview.js' %}"></script>
-    <script>const table = "#data-nodes";</script>
-    <script type="text/javascript" src="{% static '/javascript/search-table.js' %}"></script>
     <script type="text/javascript" src="{% static '/javascript/table-pagination.js' %}"></script>
+    <script type="text/javascript" src="{% static '/javascript/search-table.js' %}"></script>
+
+
+
+
 {% endblock %}
