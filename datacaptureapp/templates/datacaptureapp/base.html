@@ -47,15 +47,8 @@
         </ul>
     </div>
 </nav>
-<script>
-    $(function () {
-        $('[data-toggle="popover"]').popover()
-    })
-
-    $('.popover-dismiss').popover({
-        trigger: 'focus'
-    })
-</script>
+{% load static %}
+<script type="text/javascript" src="{% static '/javascript/base-page.js' %}"></script>
 
 
 {% block content %}

@@ -6,10 +6,19 @@
 
 {% block content %}
 
-    <h3 id="helpIcon" tabindex="0" class="pull-right" data-toggle="popover" style="margin-left:5px"
-        data-placement="left" data-trigger=focus" aria-hidden=true" data-html="true"
-        title="Project page"
-        data-content="<b> Map </b> <br>
+    <br>
+    <div class="container">
+        <div class="row">
+            <div class="col-auto">
+                <a href="../">
+                    <button type="button" class="btn mb-1 text-secondary"> <i class="fa fa-arrow-left" aria-hidden="true"></i> Return to home</button>
+                </a>
+            </div>
+            <div class="col">
+                <h3 id="helpIcon" tabindex="0" class="pull-right" data-toggle="popover" style="margin-left:5px"
+                    data-placement="left" data-trigger=focus" aria-hidden=true" data-html="true"
+                    title="Project page"
+                    data-content="<b> Map </b> <br>
         The map in the middle of the page shows all the points that are collected for the project and the red dot visualises your current location.
         <br>
         <br>
@@ -28,15 +37,21 @@
         <b> Project info </b> <br>
         Below the section 'About' you can see the Id, Name, description and owner of the project.
             ">
-        <span class="fa fa-question-circle" style="color:grey; margin-right:10px"></span>
-    </h3>
-    <br>
+                    <span class="fa fa-question-circle" style="color:grey; margin-right:10px"></span>
+                </h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <h1 class="text-center" style="font-size:min(5vw, 50px);font-family:'Calibri'">{{project.name}}</h1>
+            </div>
+        </div>
+        <hr/>
+        <br>
 
-    <h1 class="text-center" style="font-size:min(5vw, 50px);font-family:'Calibri'">{{project.name}}</h1>
-
+    </div>
 
     <div class="container">
-        <hr/>
         <div class="row-justify-content-center">
             <div class="col lg auto">
                 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
@@ -119,6 +134,7 @@
 
         L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
             maxZoom: 20,
+            {#minZoom: 1,#}
             attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
                 '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
                 'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
@@ -149,12 +165,13 @@
             }
         }
 
-        function locate() {
+        // call locate every 3 seconds...
+        setInterval(function () {
             map.locate({setView: false, enableHighAccuracy: true});
-        }
+        }, 1000);
 
-        // call locate every 3 seconds... forever
-        setInterval(locate, 1000);
+        map.locate({setView: true, maxZoom: 16});
+
 
         {% for key, value in overview.items %}
             var marker = L.marker([{{ value.latitude}}, {{ value.longitude}}]).addTo(map);
@@ -178,8 +195,6 @@
                 '</tbody>'+
                 '</table>');
         {% endfor %}
-
-        map.locate({setView: true, maxZoom: 16});
 
 
         function joinPublicProject() {

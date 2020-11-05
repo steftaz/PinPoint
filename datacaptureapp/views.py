@@ -276,20 +276,17 @@ def nodes(request, pk):
             post = request.POST
             if 'data_type' in post:
                 data_type = request.POST.get('data_type')
+                response = HttpResponse(content_type='application/zip')
                 if data_type == 'CSV':
-                    response = HttpResponse(content_type='text/csv')
-                    response['Content-Disposition'] = 'attachment; filename="{}.csv"'.format(requested_project.name)
-                    generate_csv(response, requested_project)
+                    response['Content-Disposition'] = 'attachment; filename="{}-csv.zip"'.format(
+                        requested_project.name)
+                    response.write(generate_csv(requested_project))
                 elif data_type == 'GeoJSON':
-                    geojson = generate_geojson(requested_project)
-                    response = HttpResponse(content_type='application/json')
-                    response['Content-Disposition'] = 'attachment; filename="{}.geojson"'.format(requested_project.name)
-                    response.write(geojson)
-                elif data_type == 'Excel':
-                    response = HttpResponse(content_type='application/vnd.ms-excel')
-                    response['Content-Disposition'] = 'attachment; filename="{}.xlsx"'.format(requested_project.name)
-                    output = generate_xls(requested_project)
-                    response.write(output)
+                    response['Content-Disposition'] = 'attachment; filename="{}-geojson.zip"'.format(requested_project.name)
+                    response.write(generate_geojson(requested_project))
+                elif data_type == 'XLSX':
+                    response['Content-Disposition'] = 'attachment; filename="{}-xlsx.zip"'.format(requested_project.name)
+                    response.write(generate_xlsx(requested_project))
                 else:
                     response = HttpResponseServerError('<h1>Something went wrong</h1>')
                 return response
@@ -326,17 +323,19 @@ def edit_node(request, pk, nk):
             email=request.user.email).first():
         if request.method == 'POST':
             post = request.POST
-            for coor in ['longitude', 'latitude']:
-                value = post[coor]
-                if value != '':
-                    node.coor = value
+            lat = post['latitude']
+            if lat:
+                node.latitude = lat
+            long = post['longitude']
+            if long:
+                node.longitude = long
             if 'picture' in request.FILES:
                 node.picture = request.FILES['picture']
             node.save()
             attributes = Attribute.objects.filter(project=Project.objects.get(id=pk))
             for attribute in attributes:
                 value = post[attribute.name]
-                if value != '':
+                if value:
                     data = Data.objects.get(node=node, attribute=attribute)
                     data.value = value
                     data.save()
@@ -466,17 +465,6 @@ def profile(request):
     :return: A render of the profile page
     """
     return render(request, 'datacaptureapp/Profile.html')
-
-
-@login_required()
-def newprofile(request):
-    """
-    Renders the new profile page
-    Context variables: _
-    :param request: The incoming request
-    :return: A render of the NewProfile page
-    """
-    return render(request, 'datacaptureapp/NewProfile.html')
 
 
 @login_required()
