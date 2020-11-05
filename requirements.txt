@@ -1,3 +1,4 @@
 xlsxwriter
 django-easy-maps
 Django~=3.1.2
+Pillow
