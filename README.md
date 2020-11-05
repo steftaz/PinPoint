@@ -8,9 +8,9 @@ A demonstration of our functioning project can be found at: steftaz.pythonanywhe
 Documentation of how to use our product can be found on the webpages itself and on the user guide page. 
 
 How to deploy PinPoint:
-- clone the git repository
-- navigate to the mobile-gis folder in your terminal
-- type: 'python manage.py migrate' to initialize the database
-- type: 'python manage.py runserver' to run PinPoint on localhost. 
+- Clone the git repository.
+- Navigate to the mobile-gis folder in your terminal.
+- Type: 'python manage.py migrate' to initialize the database.
+- Type: 'python manage.py runserver' to run PinPoint on localhost. 
 
 
